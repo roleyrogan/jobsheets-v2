@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import Auth from './components/Auth'
 import JobForm from './components/JobForm'
+import JobList from './components/JobList'
 import Summary from './components/Summary'
 import { supabase } from './supabase'
 import type { Application } from './types'
@@ -60,6 +61,10 @@ function App() {
     setApplications(prev => [application, ...prev])
   }
 
+  function handleDelete(id: string) {
+    setApplications(prev => prev.filter(app => app.id !== id))
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#10002B] flex items-center justify-center">
@@ -92,15 +97,13 @@ function App() {
 
         <JobForm userId={session.user.id} onAdd={handleAdd} />
 
-        <div className="border border-dashed border-[#3C096C] rounded-xl p-8 text-center">
-          {appsLoading ? (
-            <p className="text-[#C77DFF] text-sm">Loading applications...</p>
-          ) : appsError ? (
-            <p className="text-red-400 text-sm">{appsError}</p>
-          ) : (
-            <p className="text-[#C77DFF] text-sm">Your applications will appear here</p>
-          )}
-        </div>
+        {appsLoading ? (
+          <p className="text-[#C77DFF] text-sm text-center">Loading applications...</p>
+        ) : appsError ? (
+          <p className="text-red-400 text-sm text-center">{appsError}</p>
+        ) : (
+          <JobList applications={applications} onDelete={handleDelete} />
+        )}
       </main>
     </div>
   )
