@@ -132,7 +132,14 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
           }}
         >
           {STATUS_OPTIONS.map(option => (
-            <option key={option} value={option}>
+            <option
+              key={option}
+              value={option}
+              style={{
+                backgroundColor: STATUS_STYLES[option].bg,
+                color: STATUS_STYLES[option].text,
+              }}
+            >
               {option}
             </option>
           ))}
