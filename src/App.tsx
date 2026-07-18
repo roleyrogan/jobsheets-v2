@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import Auth from './components/Auth'
 import JobForm from './components/JobForm'
+import Summary from './components/Summary'
 import { supabase } from './supabase'
 import type { Application } from './types'
 
 function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
-  const [, setApplications] = useState<Application[]>([])
+  const [applications, setApplications] = useState<Application[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
   const [appsError, setAppsError] = useState('')
 
@@ -87,6 +88,8 @@ function App() {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8">
+        {!appsLoading && <Summary applications={applications} />}
+
         <JobForm userId={session.user.id} onAdd={handleAdd} />
 
         <div className="border border-dashed border-[#3C096C] rounded-xl p-8 text-center">
