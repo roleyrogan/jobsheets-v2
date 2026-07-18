@@ -1,83 +1,75 @@
-# JobSheets V2
+# React + TypeScript + Vite
 
-## Overview
-JobSheets is a full stack job application tracker built for students and job seekers to manage their applications across devices. Users create an account, log in, and track every application in one place with real-time data stored in a PostgreSQL database.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-V1 was built with vanilla HTML, CSS, and JavaScript using localStorage. V2 is a complete rebuild with React, TypeScript, Tailwind CSS, and Supabase.
+Currently, two official plugins are available:
 
----
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Tech Stack
-- **React** — component based UI
-- **TypeScript** — type safety and better developer experience
-- **Tailwind CSS** — utility first styling
-- **Supabase** — PostgreSQL database and authentication
-- **Vite** — build tool and development server
-- **Vercel** — deployment
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Features
-- User authentication — sign up, log in, log out
-- Add job applications with the following fields:
-  - Company name (required)
-  - Role (required)
-  - Status — Applied, Interview, Offer, Rejected (required)
-  - Application URL (optional)
-  - Location (optional)
-  - Deadline (optional)
-  - Notes (optional)
-  - Date added — auto stamped
-- Delete applications
-- Edit application status
-- Filter applications by status
-- Summary counts — Total, Applied, Interview, Offer, Rejected
-- Data persists in Supabase PostgreSQL database
-- Each user only sees their own applications (Row Level Security)
-- Fully responsive
+## Expanding the ESLint configuration
 
----
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Color Palette
-All colors come from a dark purple ramp:
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-| Name | Hex | Usage |
-|------|-----|-------|
-| Deep Black | `#10002B` | Page background |
-| Dark Purple | `#240046` | Card and form backgrounds |
-| Mid Purple | `#3C096C` | Borders and separators |
-| Purple | `#5A189A` | Subtle accents |
-| Medium Purple | `#7B2CBF` | Buttons and interactive elements |
-| Light Purple | `#9D4EDD` | Button hover states |
-| Lavender | `#C77DFF` | Secondary text and labels |
-| Pale Lavender | `#E0AAFF` | Primary text |
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
-Status badge colors (off palette for clarity):
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 
-| Status | Background | Text |
-|--------|------------|------|
-| Applied | `#1a3a5c` | `#60a5fa` (blue) |
-| Interview | `#3a2a00` | `#fbbf24` (amber) |
-| Offer | `#0a3a1a` | `#34d399` (green) |
-| Rejected | `#3a0a0a` | `#f87171` (red) |
+```
 
----
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-## Typography
-- **Primary font:** Inter or Work Sans — clean, modern, readable
-- **Monospace accents:** JetBrains Mono or Fira Code — for status badges and dates
-- Font sizes follow Tailwind defaults
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
----
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 
-## Design Principles
-- Clean and minimal — no unnecessary elements
-- Dark mode only
-- Purple as the primary accent throughout
-- Status badges are the only off-palette colors — they need to be immediately scannable
-- Cards use subtle borders and slightly lighter backgrounds to lift off the page background
-- Consistent border radius throughout — rounded-xl for cards, rounded-lg for inputs, rounded-full for badges
-
----
-
-## Component Structure
+```
