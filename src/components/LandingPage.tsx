@@ -34,7 +34,35 @@ const features = [
 
 export default function LandingPage({ onGetStarted }: LandingPageProps) {
   return (
-    <div className="min-h-screen bg-[#10002B] text-[#E0AAFF]">
+    <div className="relative isolate min-h-screen overflow-hidden bg-[#10002B] text-[#E0AAFF]">
+      <div className="pointer-events-none fixed inset-0 -z-20">
+        <Grainient
+          color1="#10002B"
+          color2="#7B2CBF"
+          color3="#E0AAFF"
+          timeSpeed={0.25}
+          colorBalance={0.0}
+          warpStrength={1.0}
+          warpFrequency={5.0}
+          warpSpeed={2.0}
+          warpAmplitude={50.0}
+          blendAngle={0.0}
+          blendSoftness={0.05}
+          rotationAmount={500.0}
+          noiseScale={2.0}
+          grainAmount={0.1}
+          grainScale={2.0}
+          grainAnimated={false}
+          contrast={1.5}
+          gamma={1.0}
+          saturation={1.0}
+          centerX={0.0}
+          centerY={0.0}
+          zoom={0.9}
+        />
+      </div>
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[#10002B]/35" />
+
       {/* Nav */}
       <nav className="fixed top-0 inset-x-0 z-50 border-b border-[#3C096C] bg-[#10002B]/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
@@ -59,35 +87,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       </nav>
 
       {/* Hero */}
-      <section className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 pb-24 pt-28 text-center sm:px-6 sm:pb-32 sm:pt-32">
-        <div className="pointer-events-none absolute inset-0">
-          <Grainient
-            color1="#10002B"
-            color2="#7B2CBF"
-            color3="#E0AAFF"
-            timeSpeed={0.25}
-            colorBalance={0.0}
-            warpStrength={1.0}
-            warpFrequency={5.0}
-            warpSpeed={2.0}
-            warpAmplitude={50.0}
-            blendAngle={0.0}
-            blendSoftness={0.05}
-            rotationAmount={500.0}
-            noiseScale={2.0}
-            grainAmount={0.1}
-            grainScale={2.0}
-            grainAnimated={false}
-            contrast={1.5}
-            gamma={1.0}
-            saturation={1.0}
-            centerX={0.0}
-            centerY={0.0}
-            zoom={0.9}
-          />
-        </div>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#10002B]/40 via-transparent to-[#10002B]" />
-
+      <section className="relative flex min-h-svh flex-col items-center justify-center px-4 pb-24 pt-28 text-center sm:px-6 sm:pb-32 sm:pt-32">
         <div className="relative z-10 flex flex-col items-center">
           <h1 className="max-w-3xl text-5xl font-bold leading-[1.1] tracking-tight text-[#E0AAFF] sm:text-6xl">
             Track every application.
@@ -120,22 +120,24 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Features */}
-      <section className="mx-auto max-w-5xl px-4 pb-24 sm:px-6 sm:pb-32">
-        <h2 className="mb-12 text-center text-2xl font-bold text-[#E0AAFF] sm:text-3xl">
-          Everything you need to stay organized
-        </h2>
+      <section className="relative px-4 py-24 sm:px-6 sm:py-32">
+        <div className="relative z-10 mx-auto max-w-5xl">
+          <h2 className="mb-12 text-center text-2xl font-bold text-[#E0AAFF] sm:text-3xl">
+            Everything you need to stay organized
+          </h2>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-          {features.map(({ icon: Icon, title, description }) => (
-            <div
-              key={title}
-              className="rounded-xl border border-[#3C096C] bg-[#240046] p-6 text-left"
-            >
-              <Icon className="mb-4 text-[#C77DFF]" size={24} strokeWidth={1.75} />
-              <h3 className="mb-2 text-lg font-bold text-[#E0AAFF]">{title}</h3>
-              <p className="text-sm leading-relaxed text-[#C77DFF]">{description}</p>
-            </div>
-          ))}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+            {features.map(({ icon: Icon, title, description }) => (
+              <div
+                key={title}
+                className="rounded-xl border border-[#3C096C] bg-[#240046]/90 p-6 text-left backdrop-blur-sm"
+              >
+                <Icon className="mb-4 text-[#C77DFF]" size={24} strokeWidth={1.75} />
+                <h3 className="mb-2 text-lg font-bold text-[#E0AAFF]">{title}</h3>
+                <p className="text-sm leading-relaxed text-[#C77DFF]">{description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
