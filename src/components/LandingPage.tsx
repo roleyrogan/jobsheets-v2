@@ -1,6 +1,7 @@
 import { ChevronDown, ClipboardList, Globe, RefreshCw, ShieldCheck } from 'lucide-react'
 import Grainient from './Grainient'
 import SplitText from './SplitText'
+import SpotlightCard from './SpotlightCard'
 import { Navigation5 } from '@/components/ui/navigation-5'
 
 type LandingPageProps = {
@@ -148,25 +149,28 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
             {features.map(({ icon: Icon, title, description }) => (
-              <div
+              <SpotlightCard
                 key={title}
                 className="rounded-xl border border-[#3C096C] bg-[#240046]/90 p-6 text-left backdrop-blur-sm"
+                spotlightColor="rgba(157, 78, 221, 0.35)"
               >
-                <Icon className="mb-4 text-[#C77DFF]" size={24} strokeWidth={1.75} />
-                <h3 className="mb-2 text-lg font-bold text-[#E0AAFF]">{title}</h3>
-                <p className="text-sm leading-relaxed text-[#C77DFF]">{description}</p>
-              </div>
+                <div className="relative z-10">
+                  <Icon className="mb-4 text-[#C77DFF]" size={24} strokeWidth={1.75} />
+                  <h3 className="mb-2 text-lg font-bold text-[#E0AAFF]">{title}</h3>
+                  <p className="text-sm leading-relaxed text-[#C77DFF]">{description}</p>
+                </div>
+              </SpotlightCard>
             ))}
           </div>
         </div>
       </section>
 
       {/* Bottom CTA */}
-      <section className="flex flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32">
+      <section className="flex min-h-svh flex-col items-center justify-center px-4 py-24 text-center sm:px-6 sm:py-32">
         <SplitText
           text="Ready to take control of your job search?"
           tag="h2"
-          className="max-w-xl text-2xl font-bold text-[#E0AAFF] sm:text-3xl"
+          className="max-w-3xl text-4xl font-bold leading-tight text-[#E0AAFF] sm:text-5xl"
           delay={30}
           duration={0.6}
           ease="power3.out"
@@ -180,24 +184,16 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
         <button
           type="button"
           onClick={onGetStarted}
-          className="mt-8 rounded-lg bg-[#7B2CBF] px-6 py-3 text-sm font-medium text-[#E0AAFF] transition-colors hover:bg-[#9D4EDD]"
+          className="mt-10 rounded-lg bg-[#7B2CBF] px-8 py-4 text-base font-medium text-[#E0AAFF] transition-colors hover:bg-[#9D4EDD] sm:text-lg"
         >
           Get Started
         </button>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#3C096C] px-4 py-8 text-center sm:px-6">
-        <p className="text-sm text-[#7B2CBF]">
-          Built by Ronan Gamboa ·{' '}
-          <a
-            href="https://github.com/roleyrogan"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline decoration-[#7B2CBF]/40 underline-offset-2 transition-colors hover:text-[#9D4EDD]"
-          >
-            GitHub
-          </a>
+      <footer className="border-t border-[#3C096C] bg-[#240046] px-4 py-8 text-center sm:px-6">
+        <p className="text-sm font-medium text-[#E0AAFF]">
+          © 2026 JobSheets
         </p>
       </footer>
     </div>
