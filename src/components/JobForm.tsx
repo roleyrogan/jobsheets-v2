@@ -5,6 +5,7 @@ import type { Application } from '../types'
 type JobFormProps = {
   userId: string
   onAdd: (application: Application) => void
+  onCancel: () => void
 }
 
 const STATUS_OPTIONS: Application['status'][] = ['Applied', 'Interview', 'Offer', 'Rejected']
@@ -20,7 +21,7 @@ function formatTodayUS(): string {
   return `${month}/${day}/${year}`
 }
 
-export default function JobForm({ userId, onAdd }: JobFormProps) {
+export default function JobForm({ userId, onAdd, onCancel }: JobFormProps) {
   const [company, setCompany] = useState('')
   const [role, setRole] = useState('')
   const [status, setStatus] = useState<Application['status']>('Applied')
@@ -195,6 +196,15 @@ export default function JobForm({ userId, onAdd }: JobFormProps) {
           className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg py-2 font-medium transition-colors disabled:opacity-50"
         >
           {loading ? 'Adding...' : 'Add Application'}
+        </button>
+
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={loading}
+          className="border border-[#7B2CBF] text-[#C77DFF] hover:bg-[#3C096C] rounded-lg py-2 font-medium transition-colors disabled:opacity-50"
+        >
+          Cancel
         </button>
       </form>
 

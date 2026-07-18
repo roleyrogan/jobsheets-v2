@@ -13,6 +13,7 @@ function App() {
   const [applications, setApplications] = useState<Application[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
   const [appsError, setAppsError] = useState('')
+  const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -59,6 +60,7 @@ function App() {
 
   function handleAdd(application: Application) {
     setApplications(prev => [application, ...prev])
+    setShowForm(false)
   }
 
   function handleDelete(id: string) {
@@ -92,31 +94,61 @@ function App() {
       <header className="border-b border-[#3C096C] bg-[#240046]">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-[#E0AAFF] text-2xl font-bold">JobSheets</h1>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="border border-[#7B2CBF] text-[#C77DFF] hover:bg-[#3C096C] rounded-lg px-4 py-2 text-sm font-medium transition-colors"
-          >
-            Log Out
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setShowForm(open => !open)}
+              className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+            >
+              {showForm ? 'Cancel' : 'Add Application'}
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="border border-[#7B2CBF] text-[#C77DFF] hover:bg-[#3C096C] rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+            >
+              Log Out
+            </button>
+          </div>
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8">
-        {!appsLoading && <Summary applications={applications} />}
-
-        <JobForm userId={session.user.id} onAdd={handleAdd} />
+        {showForm && (
+          <JobForm
+            userId={session.user.id}
+            onAdd={handleAdd}
+            onCancel={() => setShowForm(false)}
+          />
+        )}
 
         {appsLoading ? (
           <p className="text-[#C77DFF] text-sm text-center">Loading applications...</p>
         ) : appsError ? (
           <p className="text-red-400 text-sm text-center">{appsError}</p>
+        ) : applications.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 text-center py-12">
+            <p className="text-[#C77DFF] text-lg font-medium">No applications yet</p>
+            <p className="text-[#C77DFF] text-sm opacity-70">
+              Start tracking your job search by adding your first application
+            </p>
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg px-4 py-2 text-sm font-medium transition-colors mt-2"
+            >
+              Add Application
+            </button>
+          </div>
         ) : (
-          <JobList
-            applications={applications}
-            onDelete={handleDelete}
-            onStatusUpdate={handleStatusUpdate}
-          />
+          <>
+            <Summary applications={applications} />
+            <JobList
+              applications={applications}
+              onDelete={handleDelete}
+              onStatusUpdate={handleStatusUpdate}
+            />
+          </>
         )}
       </main>
     </div>

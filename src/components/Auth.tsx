@@ -28,7 +28,7 @@ export default function Auth() {
     <div className="min-h-screen bg-[#10002B] flex items-center justify-center">
       <div className="bg-[#240046] border border-[#3C096C] rounded-xl p-8 w-full max-w-md flex flex-col gap-4">
         <h1 className="text-[#E0AAFF] text-3xl font-bold text-center">JobSheets</h1>
-        <p className="text-[#C77DFF] text-center text-sm">Track your co-op and internship applications</p>
+        <p className="text-[#C77DFF] text-center text-sm">Track your job applications</p>
 
         {error && (
           <p className="text-red-400 text-sm text-center">{error}</p>
