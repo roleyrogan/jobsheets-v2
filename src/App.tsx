@@ -3,6 +3,7 @@ import type { Session } from '@supabase/supabase-js'
 import Auth from './components/Auth'
 import JobForm from './components/JobForm'
 import JobList from './components/JobList'
+import LandingPage from './components/LandingPage'
 import Summary from './components/Summary'
 import { supabase } from './supabase'
 import type { Application } from './types'
@@ -10,6 +11,7 @@ import type { Application } from './types'
 function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showAuth, setShowAuth] = useState(false)
   const [applications, setApplications] = useState<Application[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
   const [appsError, setAppsError] = useState('')
@@ -56,6 +58,7 @@ function App() {
 
   async function handleLogout() {
     await supabase.auth.signOut()
+    setShowAuth(false)
   }
 
   function handleAdd(application: Application) {
@@ -86,7 +89,10 @@ function App() {
   }
 
   if (!session) {
-    return <Auth />
+    if (showAuth) {
+      return <Auth />
+    }
+    return <LandingPage onGetStarted={() => setShowAuth(true)} />
   }
 
   return (
