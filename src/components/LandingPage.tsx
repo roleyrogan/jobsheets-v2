@@ -1,5 +1,7 @@
-import { ClipboardList, Globe, RefreshCw, ShieldCheck } from 'lucide-react'
+import { ChevronDown, ClipboardList, Globe, RefreshCw, ShieldCheck } from 'lucide-react'
 import Grainient from './Grainient'
+import SplitText from './SplitText'
+import { Navigation5 } from '@/components/ui/navigation-5'
 
 type LandingPageProps = {
   onGetStarted: () => void
@@ -34,7 +36,7 @@ const features = [
 
 export default function LandingPage({ onGetStarted }: LandingPageProps) {
   return (
-    <div className="relative isolate min-h-screen overflow-hidden bg-[#10002B] text-[#E0AAFF]">
+    <div id="top" className="relative isolate min-h-screen overflow-hidden bg-[#10002B] text-[#E0AAFF]">
       <div className="pointer-events-none fixed inset-0 -z-20">
         <Grainient
           color1="#10002B"
@@ -64,36 +66,32 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[#10002B]/35" />
 
       {/* Nav */}
-      <nav className="fixed top-0 inset-x-0 z-50 border-b border-[#3C096C] bg-[#10002B]/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
-          <span className="text-xl font-bold tracking-tight text-[#E0AAFF]">JobSheets</span>
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              onClick={onGetStarted}
-              className="rounded-lg border border-[#7B2CBF] px-4 py-2 text-sm font-medium text-[#C77DFF] transition-colors hover:bg-[#3C096C]"
-            >
-              Log In
-            </button>
-            <button
-              type="button"
-              onClick={onGetStarted}
-              className="rounded-lg bg-[#7B2CBF] px-4 py-2 text-sm font-medium text-[#E0AAFF] transition-colors hover:bg-[#9D4EDD]"
-            >
-              Get Started
-            </button>
-          </div>
-        </div>
-      </nav>
+      <header className="fixed top-0 inset-x-0 z-50 pt-4 sm:pt-6">
+        <Navigation5 onGetStarted={onGetStarted} />
+      </header>
 
       {/* Hero */}
       <section className="relative flex min-h-svh flex-col items-center justify-center px-4 pb-24 pt-28 text-center sm:px-6 sm:pb-32 sm:pt-32">
         <div className="relative z-10 flex flex-col items-center">
-          <h1 className="max-w-3xl text-5xl font-bold leading-[1.1] tracking-tight text-[#E0AAFF] sm:text-6xl">
-            Track every application.
-            <br />
-            Land the job.
-          </h1>
+          <div className="flex max-w-3xl flex-col items-center gap-1">
+            <SplitText
+              text="Track every application."
+              tag="h1"
+              className="text-5xl font-bold leading-[1.1] tracking-tight text-[#E0AAFF] sm:text-6xl"
+              delay={40}
+              duration={0.6}
+              ease="power3.out"
+              splitType="chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.1}
+              rootMargin="-100px"
+              textAlign="center"
+            />
+            <span className="block text-5xl font-bold leading-[1.1] tracking-tight text-[#E0AAFF] sm:text-6xl">
+              Land the job.
+            </span>
+          </div>
 
           <p className="mt-6 max-w-md text-base leading-relaxed text-[#C77DFF] sm:text-lg">
             The simplest way to manage your job search — add applications, track status, and never
@@ -117,14 +115,36 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             </button>
           </div>
         </div>
+
+        <a
+          href="#features"
+          className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1 text-[#C77DFF] transition-colors hover:text-[#E0AAFF] sm:bottom-10"
+          aria-label="Scroll to features"
+        >
+          <span className="text-xs font-medium tracking-wide uppercase">Scroll</span>
+          <ChevronDown className="size-5 animate-bounce" strokeWidth={1.75} />
+        </a>
       </section>
 
       {/* Features */}
-      <section className="relative px-4 py-24 sm:px-6 sm:py-32">
+      <section id="features" className="relative scroll-mt-28 px-4 py-24 sm:px-6 sm:py-32">
         <div className="relative z-10 mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-2xl font-bold text-[#E0AAFF] sm:text-3xl">
-            Everything you need to stay organized
-          </h2>
+          <div className="mb-12 text-center">
+            <SplitText
+              text="Everything you need to stay organized"
+              tag="h2"
+              className="text-2xl font-bold text-[#E0AAFF] sm:text-3xl"
+              delay={30}
+              duration={0.6}
+              ease="power3.out"
+              splitType="chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.2}
+              rootMargin="-40px"
+              textAlign="center"
+            />
+          </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
             {features.map(({ icon: Icon, title, description }) => (
@@ -143,9 +163,20 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
 
       {/* Bottom CTA */}
       <section className="flex flex-col items-center px-4 py-24 text-center sm:px-6 sm:py-32">
-        <h2 className="max-w-xl text-2xl font-bold text-[#E0AAFF] sm:text-3xl">
-          Ready to take control of your job search?
-        </h2>
+        <SplitText
+          text="Ready to take control of your job search?"
+          tag="h2"
+          className="max-w-xl text-2xl font-bold text-[#E0AAFF] sm:text-3xl"
+          delay={30}
+          duration={0.6}
+          ease="power3.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 40 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.2}
+          rootMargin="-40px"
+          textAlign="center"
+        />
         <button
           type="button"
           onClick={onGetStarted}
