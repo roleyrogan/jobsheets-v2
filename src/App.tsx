@@ -65,6 +65,16 @@ function App() {
     setApplications(prev => prev.filter(app => app.id !== id))
   }
 
+  function handleStatusUpdate(id: string, newStatus: string) {
+    setApplications(prev =>
+      prev.map(app =>
+        app.id === id
+          ? { ...app, status: newStatus as Application['status'] }
+          : app
+      )
+    )
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#10002B] flex items-center justify-center">
@@ -102,7 +112,11 @@ function App() {
         ) : appsError ? (
           <p className="text-red-400 text-sm text-center">{appsError}</p>
         ) : (
-          <JobList applications={applications} onDelete={handleDelete} />
+          <JobList
+            applications={applications}
+            onDelete={handleDelete}
+            onStatusUpdate={handleStatusUpdate}
+          />
         )}
       </main>
     </div>

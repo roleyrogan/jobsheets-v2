@@ -1,11 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 import { supabase } from '../supabase'
 import type { Application } from '../types'
 
 type JobCardProps = {
   application: Application
   onDelete: (id: string) => void
+  onStatusUpdate: (id: string, newStatus: string) => void
 }
+
+const STATUS_OPTIONS: Application['status'][] = ['Applied', 'Interview', 'Offer', 'Rejected']
 
 const STATUS_STYLES: Record<Application['status'], { bg: string; text: string }> = {
   Applied: { bg: '#1a3a5c', text: '#60a5fa' },
@@ -14,16 +17,46 @@ const STATUS_STYLES: Record<Application['status'], { bg: string; text: string }>
   Rejected: { bg: '#3a0a0a', text: '#f87171' },
 }
 
-export default function JobCard({ application, onDelete }: JobCardProps) {
-  const [loading, setLoading] = useState(false)
+export default function JobCard({ application, onDelete, onStatusUpdate }: JobCardProps) {
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [statusLoading, setStatusLoading] = useState(false)
+  const [status, setStatus] = useState<Application['status']>(application.status)
   const [error, setError] = useState('')
 
-  const statusStyle = STATUS_STYLES[application.status]
+  useEffect(() => {
+    setStatus(application.status)
+  }, [application.status])
+
+  const statusStyle = STATUS_STYLES[status]
+
+  async function handleStatusChange(e: ChangeEvent<HTMLSelectElement>) {
+    const previous = status
+    const newStatus = e.target.value as Application['status']
+
+    setStatus(newStatus)
+    setStatusLoading(true)
+    setError('')
+
+    const { error } = await supabase
+      .from('applications')
+      .update({ status: newStatus })
+      .eq('id', application.id)
+
+    if (error) {
+      setStatus(previous)
+      setError(error.message)
+      setStatusLoading(false)
+      return
+    }
+
+    onStatusUpdate(application.id, newStatus)
+    setStatusLoading(false)
+  }
 
   async function handleDelete() {
     if (!confirm('Delete this application?')) return
 
-    setLoading(true)
+    setDeleteLoading(true)
     setError('')
 
     const { error } = await supabase
@@ -33,7 +66,7 @@ export default function JobCard({ application, onDelete }: JobCardProps) {
 
     if (error) {
       setError(error.message)
-      setLoading(false)
+      setDeleteLoading(false)
       return
     }
 
@@ -82,20 +115,36 @@ export default function JobCard({ application, onDelete }: JobCardProps) {
       </div>
 
       <div className="flex flex-col items-end gap-3 shrink-0">
-        <span
-          className="rounded-full px-3 py-1 text-xs font-medium font-mono whitespace-nowrap"
-          style={{ backgroundColor: statusStyle.bg, color: statusStyle.text }}
+        <select
+          value={status}
+          onChange={handleStatusChange}
+          disabled={statusLoading}
+          aria-label="Application status"
+          className={`rounded-full px-3 py-1 text-xs font-medium font-mono whitespace-nowrap outline-none cursor-pointer appearance-none pr-6 disabled:opacity-50 disabled:cursor-not-allowed ${
+            statusLoading ? 'opacity-50' : ''
+          }`}
+          style={{
+            backgroundColor: statusStyle.bg,
+            color: statusStyle.text,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='${encodeURIComponent(statusStyle.text)}' d='M3 4.5L6 8l3-3.5'/%3E%3C/svg%3E")`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right 0.5rem center',
+          }}
         >
-          {application.status}
-        </span>
+          {STATUS_OPTIONS.map(option => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
 
         <button
           type="button"
           onClick={handleDelete}
-          disabled={loading}
+          disabled={deleteLoading}
           className="border border-[#7B2CBF] text-[#C77DFF] hover:bg-[#3C096C] rounded-lg px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50"
         >
-          {loading ? 'Deleting...' : 'Delete'}
+          {deleteLoading ? 'Deleting...' : 'Delete'}
         </button>
       </div>
     </div>

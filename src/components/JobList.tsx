@@ -5,13 +5,14 @@ import type { Application } from '../types'
 type JobListProps = {
   applications: Application[]
   onDelete: (id: string) => void
+  onStatusUpdate: (id: string, newStatus: string) => void
 }
 
 type FilterOption = 'All' | Application['status']
 
 const FILTERS: FilterOption[] = ['All', 'Applied', 'Interview', 'Offer', 'Rejected']
 
-export default function JobList({ applications, onDelete }: JobListProps) {
+export default function JobList({ applications, onDelete, onStatusUpdate }: JobListProps) {
   const [filter, setFilter] = useState<FilterOption>('All')
 
   if (applications.length === 0) {
@@ -60,6 +61,7 @@ export default function JobList({ applications, onDelete }: JobListProps) {
               key={application.id}
               application={application}
               onDelete={onDelete}
+              onStatusUpdate={onStatusUpdate}
             />
           ))}
         </div>
