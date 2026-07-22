@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { Button } from '@heroui/react'
+import { useState, type FormEvent, type Key } from 'react'
+import { Button, ListBox, Select } from '@heroui/react'
 import { filledButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import type { Application } from '../types'
@@ -117,18 +117,39 @@ export default function JobForm({ userId, onAdd }: JobFormProps) {
           <label htmlFor="status" className="text-[#C77DFF] text-sm">
             Status <span className="text-[#7B2CBF]">*</span>
           </label>
-          <select
-            id="status"
+          <Select
+            aria-label="Status"
+            fullWidth
             value={status}
-            onChange={e => setStatus(e.target.value as Application['status'])}
-            className={inputClassName}
+            onChange={(key: Key | Key[] | null) => {
+              if (typeof key === 'string') {
+                setStatus(key as Application['status'])
+              }
+            }}
           >
-            {STATUS_OPTIONS.map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+            <Select.Trigger
+              id="status"
+              className="w-full bg-[#10002B] border border-[#3C096C] rounded-lg px-4 py-2 text-[#E0AAFF] outline-none data-[focus-visible=true]:border-[#7B2CBF] data-[hovered=true]:border-[#7B2CBF]"
+            >
+              <Select.Value className="text-[#E0AAFF]" />
+              <Select.Indicator className="text-[#C77DFF]" />
+            </Select.Trigger>
+            <Select.Popover className="bg-[#240046] border border-[#3C096C] rounded-lg overflow-hidden">
+              <ListBox className="bg-[#240046] p-1 outline-none">
+                {STATUS_OPTIONS.map(option => (
+                  <ListBox.Item
+                    key={option}
+                    id={option}
+                    textValue={option}
+                    className="rounded-md px-3 py-2 text-sm text-[#E0AAFF] outline-none cursor-pointer data-[focused=true]:bg-[#3C096C] data-[selected=true]:bg-[#7B2CBF] data-[selected=true]:text-[#E0AAFF]"
+                  >
+                    {option}
+                    <ListBox.ItemIndicator />
+                  </ListBox.Item>
+                ))}
+              </ListBox>
+            </Select.Popover>
+          </Select>
         </div>
 
         <div className="flex flex-col gap-1">

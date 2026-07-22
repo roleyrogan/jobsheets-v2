@@ -1,5 +1,5 @@
-import { useEffect, useState, type ChangeEvent } from 'react'
-import { Button } from '@heroui/react'
+import { useEffect, useState, type Key } from 'react'
+import { Button, ListBox, Select } from '@heroui/react'
 import { outlineButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import type { Application } from '../types'
@@ -31,9 +31,11 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
 
   const statusStyle = STATUS_STYLES[status]
 
-  async function handleStatusChange(e: ChangeEvent<HTMLSelectElement>) {
+  async function handleStatusChange(key: Key | Key[] | null) {
+    if (typeof key !== 'string' || key === status) return
+
     const previous = status
-    const newStatus = e.target.value as Application['status']
+    const newStatus = key as Application['status']
 
     setStatus(newStatus)
     setStatusLoading(true)
@@ -110,35 +112,47 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
       </div>
 
       <div className="flex flex-col items-end gap-3 shrink-0">
-        <select
+        <Select
+          aria-label="Application status"
           value={status}
           onChange={handleStatusChange}
-          disabled={statusLoading}
-          aria-label="Application status"
-          className={`rounded-full px-3 py-1 text-xs font-medium font-mono whitespace-nowrap outline-none cursor-pointer appearance-none pr-6 disabled:opacity-50 disabled:cursor-not-allowed ${
-            statusLoading ? 'opacity-50' : ''
-          }`}
-          style={{
-            backgroundColor: statusStyle.bg,
-            color: statusStyle.text,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='${encodeURIComponent(statusStyle.text)}' d='M3 4.5L6 8l3-3.5'/%3E%3C/svg%3E")`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right 0.5rem center',
-          }}
+          isDisabled={statusLoading}
         >
-          {STATUS_OPTIONS.map(option => (
-            <option
-              key={option}
-              value={option}
-              style={{
-                backgroundColor: STATUS_STYLES[option].bg,
-                color: STATUS_STYLES[option].text,
-              }}
-            >
-              {option}
-            </option>
-          ))}
-        </select>
+          <Select.Trigger
+            className={`relative inline-flex items-center gap-2 rounded-full pl-3 pr-8 py-1.5 text-xs font-medium font-mono whitespace-nowrap outline-none h-auto min-h-0 min-w-[7.5rem] ${
+              statusLoading ? 'opacity-50' : ''
+            }`}
+            style={{
+              backgroundColor: statusStyle.bg,
+              color: statusStyle.text,
+            }}
+          >
+            <Select.Value className="flex-1 text-left" />
+            <Select.Indicator
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 size-3.5 shrink-0"
+              style={{ color: statusStyle.text }}
+            />
+          </Select.Trigger>
+          <Select.Popover className="bg-[#240046] border border-[#3C096C] rounded-lg overflow-hidden min-w-[10rem]">
+            <ListBox className="bg-[#240046] p-1 outline-none">
+              {STATUS_OPTIONS.map(option => (
+                <ListBox.Item
+                  key={option}
+                  id={option}
+                  textValue={option}
+                  className="rounded-full px-3 py-1.5 text-xs font-medium font-mono outline-none cursor-pointer my-0.5"
+                  style={{
+                    backgroundColor: STATUS_STYLES[option].bg,
+                    color: STATUS_STYLES[option].text,
+                  }}
+                >
+                  {option}
+                  <ListBox.ItemIndicator />
+                </ListBox.Item>
+              ))}
+            </ListBox>
+          </Select.Popover>
+        </Select>
 
         <Button
           type="button"

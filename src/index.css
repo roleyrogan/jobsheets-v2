@@ -8,6 +8,10 @@
 @import "@heroui/styles/components/button.css" layer(components);
 @import "@heroui/styles/components/close-button.css" layer(components);
 @import "@heroui/styles/components/modal.css" layer(components);
+@import "@heroui/styles/components/select.css" layer(components);
+@import "@heroui/styles/components/list-box.css" layer(components);
+@import "@heroui/styles/components/list-box-item.css" layer(components);
+@import "@heroui/styles/components/popover.css" layer(components);
 
 @custom-variant dark (&:is(.dark *));
 
