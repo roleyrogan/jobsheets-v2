@@ -7,6 +7,5 @@ export type Application = {
     date: string
     application_url?: string
     location?: string
-    deadline?: string
     notes?: string
   }

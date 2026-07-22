@@ -1,13 +1,12 @@
 import { useState, type FormEvent } from 'react'
 import { Button } from '@heroui/react'
-import { filledButtonClass, outlineButtonClass } from '../lib/heroui-button'
+import { filledButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import type { Application } from '../types'
 
 type JobFormProps = {
   userId: string
   onAdd: (application: Application) => void
-  onCancel: () => void
 }
 
 const STATUS_OPTIONS: Application['status'][] = ['Applied', 'Interview', 'Offer', 'Rejected']
@@ -23,13 +22,12 @@ function formatTodayUS(): string {
   return `${month}/${day}/${year}`
 }
 
-export default function JobForm({ userId, onAdd, onCancel }: JobFormProps) {
+export default function JobForm({ userId, onAdd }: JobFormProps) {
   const [company, setCompany] = useState('')
   const [role, setRole] = useState('')
   const [status, setStatus] = useState<Application['status']>('Applied')
   const [applicationUrl, setApplicationUrl] = useState('')
   const [location, setLocation] = useState('')
-  const [deadline, setDeadline] = useState('')
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
   const [validationError, setValidationError] = useState('')
@@ -41,7 +39,6 @@ export default function JobForm({ userId, onAdd, onCancel }: JobFormProps) {
     setStatus('Applied')
     setApplicationUrl('')
     setLocation('')
-    setDeadline('')
     setNotes('')
   }
 
@@ -67,7 +64,6 @@ export default function JobForm({ userId, onAdd, onCancel }: JobFormProps) {
         date: formatTodayUS(),
         application_url: applicationUrl.trim() || null,
         location: location.trim() || null,
-        deadline: deadline || null,
         notes: notes.trim() || null,
       })
       .select()
@@ -163,19 +159,6 @@ export default function JobForm({ userId, onAdd, onCancel }: JobFormProps) {
         </div>
 
         <div className="flex flex-col gap-1">
-          <label htmlFor="deadline" className="text-[#C77DFF] text-sm">
-            Deadline
-          </label>
-          <input
-            id="deadline"
-            type="date"
-            value={deadline}
-            onChange={e => setDeadline(e.target.value)}
-            className={inputClassName}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
           <label htmlFor="notes" className="text-[#C77DFF] text-sm">
             Notes
           </label>
@@ -199,17 +182,6 @@ export default function JobForm({ userId, onAdd, onCancel }: JobFormProps) {
           className={filledButtonClass}
         >
           {loading ? 'Adding...' : 'Add Application'}
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          fullWidth
-          isDisabled={loading}
-          onPress={onCancel}
-          className={outlineButtonClass}
-        >
-          Cancel
         </Button>
       </form>
 

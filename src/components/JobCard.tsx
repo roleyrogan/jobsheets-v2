@@ -100,13 +100,6 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
           </div>
         )}
 
-        {application.deadline && (
-          <div className="flex flex-col gap-0.5">
-            <span className="text-[#7B2CBF] text-xs">Deadline</span>
-            <span className="text-[#C77DFF] text-sm font-mono">{application.deadline}</span>
-          </div>
-        )}
-
         {application.notes && (
           <p className="text-[#9D4EDD] text-sm mt-1">{application.notes}</p>
         )}

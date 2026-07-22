@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import { Button } from '@heroui/react'
+import { Button, CloseButton, Modal, useOverlayState } from '@heroui/react'
 import Auth from './components/Auth'
 import Grainient from './components/Grainient'
 import JobForm from './components/JobForm'
@@ -18,7 +18,7 @@ function App() {
   const [applications, setApplications] = useState<Application[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
   const [appsError, setAppsError] = useState('')
-  const [showForm, setShowForm] = useState(false)
+  const formModal = useOverlayState()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -66,7 +66,7 @@ function App() {
 
   function handleAdd(application: Application) {
     setApplications(prev => [application, ...prev])
-    setShowForm(false)
+    formModal.close()
   }
 
   function handleDelete(id: string) {
@@ -146,10 +146,10 @@ function App() {
           <div className="flex items-center gap-3">
             <Button
               type="button"
-              onPress={() => setShowForm(open => !open)}
+              onPress={formModal.toggle}
               className={filledButtonClass}
             >
-              {showForm ? 'Cancel' : 'Add Application'}
+              {formModal.isOpen ? 'Cancel' : 'Add Application'}
             </Button>
             <Button
               type="button"
@@ -164,14 +164,6 @@ function App() {
       </header>
 
       <main className="relative z-10 max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8 min-h-screen">
-        {showForm && (
-          <JobForm
-            userId={session.user.id}
-            onAdd={handleAdd}
-            onCancel={() => setShowForm(false)}
-          />
-        )}
-
         {appsLoading ? (
           <p className="text-[#C77DFF] text-sm text-center">Loading applications...</p>
         ) : appsError ? (
@@ -184,7 +176,7 @@ function App() {
             </p>
             <Button
               type="button"
-              onPress={() => setShowForm(true)}
+              onPress={formModal.open}
               className={`${filledButtonClass} mt-2`}
             >
               Add Application
@@ -201,6 +193,30 @@ function App() {
           </>
         )}
       </main>
+
+      <Modal state={formModal}>
+        <Modal.Backdrop
+          isDismissable
+          variant="blur"
+          className="bg-black/60 backdrop-blur-sm"
+        >
+          <Modal.Container size="md" scroll="outside" placement="center">
+            <Modal.Dialog className="relative bg-transparent p-0 shadow-none outline-none">
+              <CloseButton
+                slot="close"
+                aria-label="Close"
+                className="absolute top-3 right-3 z-10 bg-transparent text-[#C77DFF] hover:bg-[#3C096C] hover:text-[#E0AAFF] data-[hovered=true]:bg-[#3C096C] data-[hovered=true]:text-[#E0AAFF]"
+              />
+              <Modal.Body className="p-0">
+                <JobForm
+                  userId={session.user.id}
+                  onAdd={handleAdd}
+                />
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
     </div>
   )
 }
