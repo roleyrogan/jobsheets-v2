@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { Button } from '@heroui/react'
 import Auth from './components/Auth'
+import Grainient from './components/Grainient'
 import JobForm from './components/JobForm'
 import JobList from './components/JobList'
 import LandingPage from './components/LandingPage'
@@ -110,8 +111,36 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#10002B]">
-      <header className="border-b border-[#3C096C] bg-[#240046]">
+    <div className="relative isolate min-h-screen overflow-hidden bg-[#10002B] text-[#E0AAFF]">
+      <div className="pointer-events-none fixed inset-0 -z-20">
+        <Grainient
+          color1="#10002B"
+          color2="#7B2CBF"
+          color3="#E0AAFF"
+          timeSpeed={0.25}
+          colorBalance={0.0}
+          warpStrength={1.0}
+          warpFrequency={5.0}
+          warpSpeed={2.0}
+          warpAmplitude={50.0}
+          blendAngle={0.0}
+          blendSoftness={0.05}
+          rotationAmount={500.0}
+          noiseScale={2.0}
+          grainAmount={0.1}
+          grainScale={2.0}
+          grainAnimated={false}
+          contrast={1.5}
+          gamma={1.0}
+          saturation={1.0}
+          centerX={0.0}
+          centerY={0.0}
+          zoom={0.9}
+        />
+      </div>
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[#10002B]/35" />
+
+      <header className="relative z-10 border-b border-[#3C096C] bg-[#240046]/90 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-[#E0AAFF] text-2xl font-bold">JobSheets</h1>
           <div className="flex items-center gap-3">
@@ -134,7 +163,7 @@ function App() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8">
+      <main className="relative z-10 max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8 min-h-screen">
         {showForm && (
           <JobForm
             userId={session.user.id}
