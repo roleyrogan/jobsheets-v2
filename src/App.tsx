@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { Button } from '@heroui/react'
 import Auth from './components/Auth'
 import JobForm from './components/JobForm'
 import JobList from './components/JobList'
 import LandingPage from './components/LandingPage'
 import Summary from './components/Summary'
+import { filledButtonClass, ghostButtonClass, outlineButtonClass } from './lib/heroui-button'
 import { supabase } from './supabase'
 import type { Application } from './types'
 
@@ -92,13 +94,14 @@ function App() {
     if (showAuth) {
       return (
         <div className="relative">
-          <button
+          <Button
             type="button"
-            onClick={() => setShowAuth(false)}
-            className="absolute top-0 left-0 z-10 p-4 text-[#C77DFF] hover:text-[#E0AAFF] transition-colors bg-transparent border-none"
+            variant="ghost"
+            onPress={() => setShowAuth(false)}
+            className={`absolute top-0 left-0 z-10 p-4 ${ghostButtonClass}`}
           >
             ← Back
-          </button>
+          </Button>
           <Auth />
         </div>
       )
@@ -112,20 +115,21 @@ function App() {
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-[#E0AAFF] text-2xl font-bold">JobSheets</h1>
           <div className="flex items-center gap-3">
-            <button
+            <Button
               type="button"
-              onClick={() => setShowForm(open => !open)}
-              className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              onPress={() => setShowForm(open => !open)}
+              className={filledButtonClass}
             >
               {showForm ? 'Cancel' : 'Add Application'}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              onClick={handleLogout}
-              className="border border-[#7B2CBF] text-[#C77DFF] hover:bg-[#3C096C] rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+              variant="outline"
+              onPress={handleLogout}
+              className={outlineButtonClass}
             >
               Log Out
-            </button>
+            </Button>
           </div>
         </div>
       </header>
@@ -149,13 +153,13 @@ function App() {
             <p className="text-[#C77DFF] text-sm opacity-70">
               Start tracking your job search by adding your first application
             </p>
-            <button
+            <Button
               type="button"
-              onClick={() => setShowForm(true)}
-              className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg px-4 py-2 text-sm font-medium transition-colors mt-2"
+              onPress={() => setShowForm(true)}
+              className={`${filledButtonClass} mt-2`}
             >
               Add Application
-            </button>
+            </Button>
           </div>
         ) : (
           <>

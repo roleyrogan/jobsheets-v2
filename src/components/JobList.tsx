@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Button } from '@heroui/react'
 import JobCard from './JobCard'
 import type { Application } from '../types'
 
@@ -14,7 +15,10 @@ const FILTERS: FilterOption[] = ['All', 'Applied', 'Interview', 'Offer', 'Reject
 const PAGE_SIZE = 20
 
 const inactiveButtonClass =
-  'rounded-full px-4 py-1.5 text-sm font-medium transition-colors bg-transparent border border-[#3C096C] text-[#C77DFF] hover:border-[#7B2CBF] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-[#3C096C]'
+  'rounded-full bg-transparent border border-[#3C096C] text-[#C77DFF] hover:border-[#7B2CBF] data-[hovered=true]:border-[#7B2CBF]'
+
+const activeButtonClass =
+  'rounded-full bg-[#7B2CBF] text-[#E0AAFF] border border-[#7B2CBF]'
 
 export default function JobList({ applications, onDelete, onStatusUpdate }: JobListProps) {
   const [filter, setFilter] = useState<FilterOption>('All')
@@ -49,18 +53,16 @@ export default function JobList({ applications, onDelete, onStatusUpdate }: JobL
         {FILTERS.map(option => {
           const active = filter === option
           return (
-            <button
+            <Button
               key={option}
               type="button"
-              onClick={() => handleFilterChange(option)}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
-                active
-                  ? 'bg-[#7B2CBF] text-[#E0AAFF]'
-                  : 'bg-transparent border border-[#3C096C] text-[#C77DFF] hover:border-[#7B2CBF]'
-              }`}
+              size="sm"
+              variant={active ? 'primary' : 'outline'}
+              onPress={() => handleFilterChange(option)}
+              className={active ? activeButtonClass : inactiveButtonClass}
             >
               {option}
-            </button>
+            </Button>
           )
         })}
       </div>
@@ -83,27 +85,31 @@ export default function JobList({ applications, onDelete, onStatusUpdate }: JobL
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <button
+            <Button
               type="button"
-              onClick={() => setPage(currentPage - 1)}
-              disabled={currentPage <= 1}
+              size="sm"
+              variant="outline"
+              onPress={() => setPage(currentPage - 1)}
+              isDisabled={currentPage <= 1}
               className={inactiveButtonClass}
             >
               Previous
-            </button>
+            </Button>
 
             <p className="text-[#C77DFF] text-sm font-mono">
               Page {currentPage} of {totalPages}
             </p>
 
-            <button
+            <Button
               type="button"
-              onClick={() => setPage(currentPage + 1)}
-              disabled={currentPage >= totalPages}
+              size="sm"
+              variant="outline"
+              onPress={() => setPage(currentPage + 1)}
+              isDisabled={currentPage >= totalPages}
               className={inactiveButtonClass}
             >
               Next
-            </button>
+            </Button>
           </div>
         </>
       )}

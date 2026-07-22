@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@heroui/react'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import {
   NavigationMenu,
@@ -7,6 +7,7 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu'
 import { Menu } from 'lucide-react'
+import { filledButtonClass, ghostButtonClass } from '@/lib/heroui-button'
 
 type Navigation5Props = {
   onGetStarted?: () => void
@@ -42,15 +43,15 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={onGetStarted}
-                className="rounded-full px-3 text-[#C77DFF] hover:bg-[#3C096C] hover:text-[#E0AAFF]"
+                onPress={onGetStarted}
+                className={`rounded-full ${ghostButtonClass}`}
               >
                 Log In
               </Button>
               <Button
                 type="button"
-                onClick={onGetStarted}
-                className="rounded-full bg-[#7B2CBF] px-4 text-[#E0AAFF] hover:bg-[#9D4EDD]"
+                onPress={onGetStarted}
+                className={`rounded-full ${filledButtonClass}`}
               >
                 Sign In
               </Button>
@@ -62,22 +63,20 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
             <Button
               type="button"
               variant="ghost"
-              onClick={onGetStarted}
-              className="rounded-full px-3 text-[#C77DFF] hover:bg-[#3C096C] hover:text-[#E0AAFF]"
+              onPress={onGetStarted}
+              className={`rounded-full ${ghostButtonClass}`}
             >
               Log In
             </Button>
             <Sheet>
               <SheetTrigger asChild>
-                <Button
+                <button
                   type="button"
-                  variant="ghost"
-                  size="icon"
                   aria-label="Open menu"
-                  className="rounded-full text-[#C77DFF] hover:bg-[#3C096C] hover:text-[#E0AAFF]"
+                  className="inline-flex size-9 items-center justify-center rounded-full text-[#C77DFF] hover:bg-[#3C096C] hover:text-[#E0AAFF]"
                 >
                   <Menu className="size-5" />
-                </Button>
+                </button>
               </SheetTrigger>
               <SheetContent
                 side="right"
@@ -92,20 +91,22 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
                   >
                     Features
                   </a>
-                  <button
+                  <Button
                     type="button"
-                    onClick={onGetStarted}
-                    className="text-left text-base font-medium text-[#C77DFF] transition-colors hover:text-[#E0AAFF]"
+                    variant="ghost"
+                    onPress={onGetStarted}
+                    className={`justify-start px-0 ${ghostButtonClass}`}
                   >
                     Log In
-                  </button>
+                  </Button>
                 </div>
 
                 <div className="mt-auto">
                   <Button
                     type="button"
-                    onClick={onGetStarted}
-                    className="w-full rounded-full bg-[#7B2CBF] text-[#E0AAFF] hover:bg-[#9D4EDD]"
+                    fullWidth
+                    onPress={onGetStarted}
+                    className={`rounded-full ${filledButtonClass}`}
                   >
                     Sign In
                   </Button>

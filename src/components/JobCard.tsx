@@ -1,4 +1,6 @@
 import { useEffect, useState, type ChangeEvent } from 'react'
+import { Button } from '@heroui/react'
+import { outlineButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import type { Application } from '../types'
 
@@ -145,14 +147,16 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
           ))}
         </select>
 
-        <button
+        <Button
           type="button"
-          onClick={handleDelete}
-          disabled={deleteLoading}
-          className="border border-[#7B2CBF] text-[#C77DFF] hover:bg-[#3C096C] rounded-lg px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-50"
+          variant="outline"
+          size="sm"
+          onPress={handleDelete}
+          isDisabled={deleteLoading}
+          className={outlineButtonClass}
         >
           {deleteLoading ? 'Deleting...' : 'Delete'}
-        </button>
+        </Button>
       </div>
     </div>
   )

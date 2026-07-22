@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react'
+import { Button } from '@heroui/react'
+import { filledButtonClass, outlineButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import type { Application } from '../types'
 
@@ -190,22 +192,25 @@ export default function JobForm({ userId, onAdd, onCancel }: JobFormProps) {
           <p className="text-red-400 text-sm">{validationError}</p>
         )}
 
-        <button
+        <Button
           type="submit"
-          disabled={loading}
-          className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg py-2 font-medium transition-colors disabled:opacity-50"
+          fullWidth
+          isDisabled={loading}
+          className={filledButtonClass}
         >
           {loading ? 'Adding...' : 'Add Application'}
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
-          onClick={onCancel}
-          disabled={loading}
-          className="border border-[#7B2CBF] text-[#C77DFF] hover:bg-[#3C096C] rounded-lg py-2 font-medium transition-colors disabled:opacity-50"
+          variant="outline"
+          fullWidth
+          isDisabled={loading}
+          onPress={onCancel}
+          className={outlineButtonClass}
         >
           Cancel
-        </button>
+        </Button>
       </form>
 
       {supabaseError && (

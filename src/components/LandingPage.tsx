@@ -1,8 +1,10 @@
 import { ChevronDown, ClipboardList, Globe, RefreshCw, ShieldCheck } from 'lucide-react'
+import { Button } from '@heroui/react'
 import Grainient from './Grainient'
 import SplitText from './SplitText'
 import SpotlightCard from './SpotlightCard'
 import { Navigation5 } from '@/components/ui/navigation-5'
+import { filledButtonClass } from '../lib/heroui-button'
 
 type LandingPageProps = {
   onGetStarted: () => void
@@ -100,22 +102,23 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
           </p>
 
           <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
-            <button
+            <Button
               type="button"
-              onClick={onGetStarted}
-              className="rounded-lg bg-[#7B2CBF] px-6 py-3 text-sm font-medium text-[#E0AAFF] transition-colors hover:bg-[#9D4EDD]"
+              onPress={onGetStarted}
+              className={filledButtonClass}
             >
               Get Started
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
-              onClick={() =>
+              variant="outline"
+              onPress={() =>
                 document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
               }
-              className="rounded-lg border border-[#7B2CBF] bg-transparent px-6 py-3 text-sm font-medium text-[#E0AAFF] transition-colors hover:bg-[#3C096C]"
+              className="border border-[#7B2CBF] bg-transparent text-[#E0AAFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
             >
               Learn More
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -192,13 +195,13 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
               rootMargin="-40px"
               textAlign="center"
             />
-            <button
+            <Button
               type="button"
-              onClick={onGetStarted}
-              className="mt-6 rounded-lg bg-[#7B2CBF] px-8 py-3 text-base font-medium text-[#E0AAFF] transition-colors hover:bg-[#9D4EDD]"
+              onPress={onGetStarted}
+              className={`${filledButtonClass} mt-6`}
             >
               Get Started
-            </button>
+            </Button>
           </div>
         </SpotlightCard>
       </section>

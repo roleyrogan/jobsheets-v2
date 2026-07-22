@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from 'react'
+import { Button } from '@heroui/react'
 import { Eye, EyeOff } from 'lucide-react'
+import { filledButtonClass, textLinkButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import Grainient from './Grainient'
 
@@ -129,23 +131,27 @@ export default function Auth() {
                     required
                     className={inputClassName}
                   />
-                  <button
+                  <Button
                     type="button"
-                    onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#C77DFF] hover:text-[#E0AAFF] transition-colors"
+                    isIconOnly
+                    variant="ghost"
+                    size="sm"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onPress={() => setShowPassword(v => !v)}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 min-w-8 text-[#C77DFF] hover:text-[#E0AAFF] bg-transparent"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
+                  </Button>
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  disabled={loading}
-                  className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg py-2 font-medium transition-colors disabled:opacity-50"
+                  fullWidth
+                  isDisabled={loading}
+                  className={filledButtonClass}
                 >
                   {loading ? 'Loading...' : 'Sign In'}
-                </button>
+                </Button>
               </form>
 
               {success && (
@@ -157,13 +163,14 @@ export default function Auth() {
 
               <p className="text-[#C77DFF] text-sm text-center">
                 Don&apos;t have an account?{' '}
-                <button
+                <Button
                   type="button"
-                  onClick={() => switchMode('register')}
-                  className="text-[#C77DFF] font-medium underline underline-offset-2 hover:text-[#E0AAFF] transition-colors"
+                  variant="ghost"
+                  onPress={() => switchMode('register')}
+                  className={textLinkButtonClass}
                 >
                   Register now
-                </button>
+                </Button>
               </p>
             </>
           ) : (
@@ -194,14 +201,17 @@ export default function Auth() {
                     required
                     className={inputClassName}
                   />
-                  <button
+                  <Button
                     type="button"
-                    onClick={() => setShowPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#C77DFF] hover:text-[#E0AAFF] transition-colors"
+                    isIconOnly
+                    variant="ghost"
+                    size="sm"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onPress={() => setShowPassword(v => !v)}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 min-w-8 text-[#C77DFF] hover:text-[#E0AAFF] bg-transparent"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
+                  </Button>
                 </div>
 
                 <div className="relative">
@@ -213,23 +223,27 @@ export default function Auth() {
                     required
                     className={inputClassName}
                   />
-                  <button
+                  <Button
                     type="button"
-                    onClick={() => setShowConfirmPassword(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#C77DFF] hover:text-[#E0AAFF] transition-colors"
+                    isIconOnly
+                    variant="ghost"
+                    size="sm"
                     aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    onPress={() => setShowConfirmPassword(v => !v)}
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 min-w-8 text-[#C77DFF] hover:text-[#E0AAFF] bg-transparent"
                   >
                     {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
+                  </Button>
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  disabled={loading}
-                  className="bg-[#7B2CBF] hover:bg-[#9D4EDD] text-[#E0AAFF] rounded-lg py-2 font-medium transition-colors disabled:opacity-50"
+                  fullWidth
+                  isDisabled={loading}
+                  className={filledButtonClass}
                 >
                   {loading ? 'Loading...' : 'Create Account'}
-                </button>
+                </Button>
               </form>
 
               {error && (
@@ -238,13 +252,14 @@ export default function Auth() {
 
               <p className="text-[#C77DFF] text-sm text-center">
                 Already have an account?{' '}
-                <button
+                <Button
                   type="button"
-                  onClick={() => switchMode('login')}
-                  className="text-[#C77DFF] font-medium underline underline-offset-2 hover:text-[#E0AAFF] transition-colors"
+                  variant="ghost"
+                  onPress={() => switchMode('login')}
+                  className={textLinkButtonClass}
                 >
                   Sign in
-                </button>
+                </Button>
               </p>
             </>
           )}
