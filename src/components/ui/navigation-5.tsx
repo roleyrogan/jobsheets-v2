@@ -52,7 +52,7 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
                 onClick={onGetStarted}
                 className="rounded-full bg-[#7B2CBF] px-4 text-[#E0AAFF] hover:bg-[#9D4EDD]"
               >
-                Get Started
+                Sign In
               </Button>
             </div>
           </div>
@@ -107,7 +107,7 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
                     onClick={onGetStarted}
                     className="w-full rounded-full bg-[#7B2CBF] text-[#E0AAFF] hover:bg-[#9D4EDD]"
                   >
-                    Get Started
+                    Sign In
                   </Button>
                 </div>
               </SheetContent>

@@ -109,10 +109,12 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             </button>
             <button
               type="button"
-              onClick={onGetStarted}
-              className="rounded-lg border border-[#7B2CBF] px-6 py-3 text-sm font-medium text-[#C77DFF] transition-colors hover:bg-[#3C096C]"
+              onClick={() =>
+                document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+              }
+              className="rounded-lg border border-[#7B2CBF] bg-transparent px-6 py-3 text-sm font-medium text-[#E0AAFF] transition-colors hover:bg-[#3C096C]"
             >
-              Log In
+              Learn More
             </button>
           </div>
         </div>
@@ -123,7 +125,11 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
           aria-label="Scroll to features"
         >
           <span className="text-xs font-medium tracking-wide uppercase">Scroll</span>
-          <ChevronDown className="size-5 animate-bounce" strokeWidth={1.75} />
+          <ChevronDown
+            className="size-5 animate-bounce"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
         </a>
       </section>
 
@@ -151,11 +157,11 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
             {features.map(({ icon: Icon, title, description }) => (
               <SpotlightCard
                 key={title}
-                className="rounded-xl border border-[#3C096C] bg-[#240046]/90 p-6 text-left backdrop-blur-sm"
+                className="!rounded-xl !border !border-[#3C096C] !bg-[#240046] p-6 text-left"
                 spotlightColor="rgba(157, 78, 221, 0.35)"
               >
                 <div className="relative z-10">
-                  <Icon className="mb-4 text-[#C77DFF]" size={24} strokeWidth={1.75} />
+                  <Icon className="mb-4 text-[#C77DFF]" size={28} strokeWidth={1.75} />
                   <h3 className="mb-2 text-lg font-bold text-[#E0AAFF]">{title}</h3>
                   <p className="text-sm leading-relaxed text-[#C77DFF]">{description}</p>
                 </div>
@@ -166,28 +172,35 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Bottom CTA */}
-      <section className="flex min-h-svh flex-col items-center justify-center px-4 py-24 text-center sm:px-6 sm:py-32">
-        <SplitText
-          text="Ready to take control of your job search?"
-          tag="h2"
-          className="max-w-3xl text-4xl font-bold leading-tight text-[#E0AAFF] sm:text-5xl"
-          delay={30}
-          duration={0.6}
-          ease="power3.out"
-          splitType="chars"
-          from={{ opacity: 0, y: 40 }}
-          to={{ opacity: 1, y: 0 }}
-          threshold={0.2}
-          rootMargin="-40px"
-          textAlign="center"
-        />
-        <button
-          type="button"
-          onClick={onGetStarted}
-          className="mt-10 rounded-lg bg-[#7B2CBF] px-8 py-4 text-base font-medium text-[#E0AAFF] transition-colors hover:bg-[#9D4EDD] sm:text-lg"
+      <section className="flex flex-col items-center justify-center px-4 py-12 text-center sm:px-6 sm:py-16">
+        <SpotlightCard
+          className="w-full max-w-2xl !rounded-xl !border !border-[#3C096C] !bg-[#240046] px-8 py-10 text-center sm:px-12 sm:py-12"
+          spotlightColor="rgba(157, 78, 221, 0.35)"
         >
-          Get Started
-        </button>
+          <div className="relative z-10">
+            <SplitText
+              text="Ready to take control of your job search?"
+              tag="h2"
+              className="text-2xl font-bold leading-tight text-[#E0AAFF] sm:text-3xl"
+              delay={30}
+              duration={0.6}
+              ease="power3.out"
+              splitType="chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.2}
+              rootMargin="-40px"
+              textAlign="center"
+            />
+            <button
+              type="button"
+              onClick={onGetStarted}
+              className="mt-6 rounded-lg bg-[#7B2CBF] px-8 py-3 text-base font-medium text-[#E0AAFF] transition-colors hover:bg-[#9D4EDD]"
+            >
+              Get Started
+            </button>
+          </div>
+        </SpotlightCard>
       </section>
 
       {/* Footer */}

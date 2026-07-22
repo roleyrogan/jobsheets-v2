@@ -90,7 +90,18 @@ function App() {
 
   if (!session) {
     if (showAuth) {
-      return <Auth />
+      return (
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setShowAuth(false)}
+            className="absolute top-0 left-0 z-10 p-4 text-[#C77DFF] hover:text-[#E0AAFF] transition-colors bg-transparent border-none"
+          >
+            ← Back
+          </button>
+          <Auth />
+        </div>
+      )
     }
     return <LandingPage onGetStarted={() => setShowAuth(true)} />
   }
