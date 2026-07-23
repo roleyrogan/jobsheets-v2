@@ -18,6 +18,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [showAuth, setShowAuth] = useState(false)
   const [showPrivacy, setShowPrivacy] = useState(false)
+  const [showLanding, setShowLanding] = useState(false)
   const [scrollToFeatures, setScrollToFeatures] = useState(false)
   const [applications, setApplications] = useState<Application[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
@@ -64,7 +65,15 @@ function App() {
   }, [session])
 
   useEffect(() => {
-    if (!scrollToFeatures || showAuth || showPrivacy || session) return
+    if (session && showAuth) {
+      setShowAuth(false)
+      setShowLanding(false)
+    }
+  }, [session, showAuth])
+
+  useEffect(() => {
+    if (!scrollToFeatures || showAuth || showPrivacy) return
+    if (session && !showLanding) return
 
     const frame = requestAnimationFrame(() => {
       document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
@@ -72,11 +81,12 @@ function App() {
     })
 
     return () => cancelAnimationFrame(frame)
-  }, [scrollToFeatures, showAuth, showPrivacy, session])
+  }, [scrollToFeatures, showAuth, showPrivacy, session, showLanding])
 
   async function handleLogout() {
     await supabase.auth.signOut()
     setShowAuth(false)
+    setShowLanding(false)
   }
 
   function handleAdd(application: Application) {
@@ -98,27 +108,49 @@ function App() {
     )
   }
 
+  function scrollToTop() {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+    })
+  }
+
   function goHome() {
     setShowPrivacy(false)
     setShowAuth(false)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setShowLanding(true)
+    setScrollToFeatures(false)
+    scrollToTop()
+  }
+
+  function goBackFromPrivacy() {
+    setShowPrivacy(false)
+    setShowAuth(false)
+    setShowLanding(false)
+    setScrollToFeatures(false)
+    scrollToTop()
   }
 
   function goFeatures() {
-    if (session) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      return
-    }
-
     setShowPrivacy(false)
     setShowAuth(false)
+    setShowLanding(true)
     setScrollToFeatures(true)
   }
 
   function goPrivacy() {
     setShowAuth(false)
+    setShowLanding(false)
     setShowPrivacy(true)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollToTop()
+  }
+
+  function handleGetStarted() {
+    if (session) {
+      setShowLanding(false)
+      return
+    }
+    setShowAuth(true)
   }
 
   if (loading) {
@@ -132,7 +164,7 @@ function App() {
   if (showPrivacy) {
     return (
       <PrivacyPolicy
-        onBack={() => setShowPrivacy(false)}
+        onBack={goBackFromPrivacy}
         onHome={goHome}
         onFeatures={goFeatures}
         onPrivacyPolicy={goPrivacy}
@@ -140,15 +172,15 @@ function App() {
     )
   }
 
-  if (!session) {
-    if (showAuth) {
+  if (!session || showLanding) {
+    if (showAuth && !session) {
       return (
         <div className="relative flex min-h-screen flex-col bg-[#10002B]">
           <div className="relative flex-1">
             <Button
               type="button"
               variant="ghost"
-              onPress={() => setShowAuth(false)}
+              onPress={goHome}
               className={`absolute top-0 left-0 z-10 p-4 ${ghostButtonClass}`}
             >
               ← Back
@@ -165,7 +197,9 @@ function App() {
     }
     return (
       <LandingPage
-        onGetStarted={() => setShowAuth(true)}
+        onGetStarted={handleGetStarted}
+        onHome={goHome}
+        onFeatures={goFeatures}
         onPrivacyPolicy={goPrivacy}
       />
     )

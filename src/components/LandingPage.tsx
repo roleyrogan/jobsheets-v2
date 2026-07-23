@@ -9,6 +9,8 @@ import { filledButtonClass } from '../lib/heroui-button'
 
 type LandingPageProps = {
   onGetStarted: () => void
+  onHome: () => void
+  onFeatures: () => void
   onPrivacyPolicy: () => void
 }
 
@@ -39,7 +41,12 @@ const features = [
   },
 ]
 
-export default function LandingPage({ onGetStarted, onPrivacyPolicy }: LandingPageProps) {
+export default function LandingPage({
+  onGetStarted,
+  onHome,
+  onFeatures,
+  onPrivacyPolicy,
+}: LandingPageProps) {
   return (
     <div id="top" className="relative isolate min-h-screen overflow-hidden bg-[#10002B] text-[#E0AAFF]">
       <div className="pointer-events-none fixed inset-0 -z-20">
@@ -209,7 +216,11 @@ export default function LandingPage({ onGetStarted, onPrivacyPolicy }: LandingPa
       </section>
 
       {/* Footer */}
-      <SiteFooter onPrivacyPolicy={onPrivacyPolicy} />
+      <SiteFooter
+        onHome={onHome}
+        onFeatures={onFeatures}
+        onPrivacyPolicy={onPrivacyPolicy}
+      />
     </div>
   )
 }
