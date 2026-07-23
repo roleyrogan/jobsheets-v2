@@ -6,6 +6,8 @@ import Grainient from './components/Grainient'
 import JobForm from './components/JobForm'
 import JobList from './components/JobList'
 import LandingPage from './components/LandingPage'
+import PrivacyPolicy from './components/PrivacyPolicy'
+import SiteFooter from './components/SiteFooter'
 import Summary from './components/Summary'
 import { filledButtonClass, ghostButtonClass } from './lib/heroui-button'
 import { supabase } from './supabase'
@@ -15,6 +17,8 @@ function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const [showAuth, setShowAuth] = useState(false)
+  const [showPrivacy, setShowPrivacy] = useState(false)
+  const [scrollToFeatures, setScrollToFeatures] = useState(false)
   const [applications, setApplications] = useState<Application[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
   const [appsError, setAppsError] = useState('')
@@ -59,6 +63,17 @@ function App() {
     fetchApplications()
   }, [session])
 
+  useEffect(() => {
+    if (!scrollToFeatures || showAuth || showPrivacy || session) return
+
+    const frame = requestAnimationFrame(() => {
+      document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })
+      setScrollToFeatures(false)
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [scrollToFeatures, showAuth, showPrivacy, session])
+
   async function handleLogout() {
     await supabase.auth.signOut()
     setShowAuth(false)
@@ -83,6 +98,29 @@ function App() {
     )
   }
 
+  function goHome() {
+    setShowPrivacy(false)
+    setShowAuth(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  function goFeatures() {
+    if (session) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
+    setShowPrivacy(false)
+    setShowAuth(false)
+    setScrollToFeatures(true)
+  }
+
+  function goPrivacy() {
+    setShowAuth(false)
+    setShowPrivacy(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#10002B] flex items-center justify-center">
@@ -91,27 +129,50 @@ function App() {
     )
   }
 
+  if (showPrivacy) {
+    return (
+      <PrivacyPolicy
+        onBack={() => setShowPrivacy(false)}
+        onHome={goHome}
+        onFeatures={goFeatures}
+        onPrivacyPolicy={goPrivacy}
+      />
+    )
+  }
+
   if (!session) {
     if (showAuth) {
       return (
-        <div className="relative">
-          <Button
-            type="button"
-            variant="ghost"
-            onPress={() => setShowAuth(false)}
-            className={`absolute top-0 left-0 z-10 p-4 ${ghostButtonClass}`}
-          >
-            ← Back
-          </Button>
-          <Auth />
+        <div className="relative flex min-h-screen flex-col bg-[#10002B]">
+          <div className="relative flex-1">
+            <Button
+              type="button"
+              variant="ghost"
+              onPress={() => setShowAuth(false)}
+              className={`absolute top-0 left-0 z-10 p-4 ${ghostButtonClass}`}
+            >
+              ← Back
+            </Button>
+            <Auth />
+          </div>
+          <SiteFooter
+            onHome={goHome}
+            onFeatures={goFeatures}
+            onPrivacyPolicy={goPrivacy}
+          />
         </div>
       )
     }
-    return <LandingPage onGetStarted={() => setShowAuth(true)} />
+    return (
+      <LandingPage
+        onGetStarted={() => setShowAuth(true)}
+        onPrivacyPolicy={goPrivacy}
+      />
+    )
   }
 
   return (
-    <div className="relative isolate min-h-screen overflow-hidden bg-[#10002B] text-[#E0AAFF]">
+    <div className="relative isolate flex min-h-screen flex-col overflow-hidden bg-[#10002B] text-[#E0AAFF]">
       <div className="pointer-events-none fixed inset-0 -z-20">
         <Grainient
           color1="#10002B"
@@ -167,7 +228,7 @@ function App() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-3xl mx-auto px-4 pb-8 pt-28 sm:pt-32 flex flex-col gap-8 min-h-screen">
+      <main className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 pb-8 pt-28 sm:pt-32">
         {appsLoading ? (
           <p className="text-[#C77DFF] text-sm text-center">Loading applications...</p>
         ) : appsError ? (
@@ -197,6 +258,12 @@ function App() {
           </>
         )}
       </main>
+
+      <SiteFooter
+        onHome={goHome}
+        onFeatures={goFeatures}
+        onPrivacyPolicy={goPrivacy}
+      />
 
       <Modal state={formModal}>
         <Modal.Backdrop

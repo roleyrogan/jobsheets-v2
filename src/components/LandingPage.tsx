@@ -1,6 +1,7 @@
 import { ChevronDown, ClipboardList, Globe, RefreshCw, ShieldCheck } from 'lucide-react'
 import { Button } from '@heroui/react'
 import Grainient from './Grainient'
+import SiteFooter from './SiteFooter'
 import SplitText from './SplitText'
 import SpotlightCard from './SpotlightCard'
 import { Navigation5 } from '@/components/ui/navigation-5'
@@ -8,6 +9,7 @@ import { filledButtonClass } from '../lib/heroui-button'
 
 type LandingPageProps = {
   onGetStarted: () => void
+  onPrivacyPolicy: () => void
 }
 
 const features = [
@@ -37,7 +39,7 @@ const features = [
   },
 ]
 
-export default function LandingPage({ onGetStarted }: LandingPageProps) {
+export default function LandingPage({ onGetStarted, onPrivacyPolicy }: LandingPageProps) {
   return (
     <div id="top" className="relative isolate min-h-screen overflow-hidden bg-[#10002B] text-[#E0AAFF]">
       <div className="pointer-events-none fixed inset-0 -z-20">
@@ -207,11 +209,7 @@ export default function LandingPage({ onGetStarted }: LandingPageProps) {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-[#3C096C] bg-[#240046] px-4 py-8 text-center sm:px-6">
-        <p className="text-sm font-medium text-[#E0AAFF]">
-          © 2026 JobSheets
-        </p>
-      </footer>
+      <SiteFooter onPrivacyPolicy={onPrivacyPolicy} />
     </div>
   )
 }
