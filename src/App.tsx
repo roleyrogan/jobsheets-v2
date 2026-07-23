@@ -206,7 +206,7 @@ function App() {
   }
 
   return (
-    <div className="relative isolate flex min-h-screen flex-col overflow-hidden bg-[#10002B] text-[#E0AAFF]">
+    <div className="relative isolate flex min-h-screen flex-col bg-[#10002B] text-[#E0AAFF]">
       <div className="pointer-events-none fixed inset-0 -z-20">
         <Grainient
           color1="#10002B"
@@ -262,7 +262,7 @@ function App() {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto flex w-full max-w-3xl flex-1 flex-col gap-8 px-4 pb-8 pt-28 sm:pt-32">
+      <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-3xl flex-1 flex-col gap-8 px-4 pb-8 pt-28 sm:pt-32">
         {appsLoading ? (
           <p className="text-[#C77DFF] text-sm text-center">Loading applications...</p>
         ) : appsError ? (
