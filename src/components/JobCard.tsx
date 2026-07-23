@@ -21,6 +21,7 @@ const STATUS_STYLES: Record<Application['status'], { bg: string; text: string }>
 
 export default function JobCard({ application, onDelete, onStatusUpdate }: JobCardProps) {
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [statusLoading, setStatusLoading] = useState(false)
   const [status, setStatus] = useState<Application['status']>(application.status)
   const [error, setError] = useState('')
@@ -58,8 +59,6 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
   }
 
   async function handleDelete() {
-    if (!confirm('Delete this application?')) return
-
     setDeleteLoading(true)
     setError('')
 
@@ -154,16 +153,41 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
           </Select.Popover>
         </Select>
 
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onPress={handleDelete}
-          isDisabled={deleteLoading}
-          className={outlineButtonClass}
-        >
-          {deleteLoading ? 'Deleting...' : 'Delete'}
-        </Button>
+        {confirmingDelete ? (
+          <div className="flex flex-col items-end gap-2">
+            <p className="text-[#C77DFF] text-sm">Delete this application?</p>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                onPress={handleDelete}
+                isDisabled={deleteLoading}
+                className="rounded-lg text-sm bg-[#3a0a0a] text-[#f87171]"
+              >
+                {deleteLoading ? 'Deleting...' : 'Yes, delete'}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                onPress={() => setConfirmingDelete(false)}
+                isDisabled={deleteLoading}
+                className="rounded-lg text-sm bg-transparent border border-[#3C096C] text-[#C77DFF]"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onPress={() => setConfirmingDelete(true)}
+            className={outlineButtonClass}
+          >
+            Delete
+          </Button>
+        )}
       </div>
     </div>
   )

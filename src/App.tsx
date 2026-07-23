@@ -7,7 +7,7 @@ import JobForm from './components/JobForm'
 import JobList from './components/JobList'
 import LandingPage from './components/LandingPage'
 import Summary from './components/Summary'
-import { filledButtonClass, ghostButtonClass, outlineButtonClass } from './lib/heroui-button'
+import { filledButtonClass, ghostButtonClass } from './lib/heroui-button'
 import { supabase } from './supabase'
 import type { Application } from './types'
 
@@ -140,30 +140,34 @@ function App() {
       </div>
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[#10002B]/35" />
 
-      <header className="relative z-10 border-b border-[#3C096C] bg-[#240046]/90 backdrop-blur-sm">
-        <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-[#E0AAFF] text-2xl font-bold">JobSheets</h1>
-          <div className="flex items-center gap-3">
-            <Button
-              type="button"
-              onPress={formModal.toggle}
-              className={filledButtonClass}
-            >
-              {formModal.isOpen ? 'Cancel' : 'Add Application'}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onPress={handleLogout}
-              className={outlineButtonClass}
-            >
-              Log Out
-            </Button>
+      <header className="fixed top-0 inset-x-0 z-50 pt-4 sm:pt-6">
+        <div className="relative w-full">
+          <div className="mx-auto flex max-w-7xl items-center justify-center px-4 sm:px-6">
+            <div className="flex h-14 w-full max-w-2xl items-center justify-between gap-2 rounded-full border border-[#3C096C] bg-[#240046] px-3 shadow-lg backdrop-blur-md sm:h-16 sm:px-4">
+              <h1 className="text-lg font-bold tracking-tight text-[#E0AAFF]">JobSheets</h1>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  onPress={formModal.toggle}
+                  className={`rounded-full ${filledButtonClass}`}
+                >
+                  {formModal.isOpen ? 'Cancel' : 'Add Application'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onPress={handleLogout}
+                  className="rounded-full border border-[#3C096C] bg-transparent text-[#C77DFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
+                >
+                  Log Out
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 max-w-3xl mx-auto px-4 py-8 flex flex-col gap-8 min-h-screen">
+      <main className="relative z-10 max-w-3xl mx-auto px-4 pb-8 pt-28 sm:pt-32 flex flex-col gap-8 min-h-screen">
         {appsLoading ? (
           <p className="text-[#C77DFF] text-sm text-center">Loading applications...</p>
         ) : appsError ? (
