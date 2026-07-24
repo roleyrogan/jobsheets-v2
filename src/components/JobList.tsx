@@ -2,10 +2,14 @@ import { useState, type Key } from 'react'
 import { Button, ListBox, Select } from '@heroui/react'
 import { AnimatedItem } from './AnimatedList'
 import JobCard from './JobCard'
+import type { ToastType } from './Toast'
+import { filledButtonClass } from '../lib/heroui-button'
 import type { Application } from '../types'
 
 type JobListProps = {
   applications: Application[]
+  exportToCSV: (applications: Application[]) => void
+  showToast: (message: string, type: ToastType) => void
   onDelete: (id: string) => void
   onEdit: (application: Application) => void
   onStatusUpdate: (id: string, newStatus: string) => void
@@ -59,7 +63,14 @@ function sortApplications(apps: Application[], sort: SortOption): Application[] 
   }
 }
 
-export default function JobList({ applications, onDelete, onEdit, onStatusUpdate }: JobListProps) {
+export default function JobList({
+  applications,
+  exportToCSV,
+  showToast,
+  onDelete,
+  onEdit,
+  onStatusUpdate,
+}: JobListProps) {
   const [filter, setFilter] = useState<FilterOption>('All')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<SortOption>('newest')
@@ -111,6 +122,16 @@ export default function JobList({ applications, onDelete, onEdit, onStatusUpdate
     if (typeof key !== 'string') return
     setSort(key as SortOption)
     setPage(1)
+  }
+
+  function handleExportCSV() {
+    if (applications.length === 0) {
+      showToast('No applications to export', 'error')
+      return
+    }
+
+    exportToCSV(applications)
+    showToast('Applications exported successfully', 'success')
   }
 
   return (
@@ -191,6 +212,13 @@ export default function JobList({ applications, onDelete, onEdit, onStatusUpdate
               </ListBox>
             </Select.Popover>
           </Select>
+          <Button
+            type="button"
+            onPress={handleExportCSV}
+            className={`h-auto min-h-0 rounded-lg px-3 py-2.5 text-sm ${filledButtonClass}`}
+          >
+            Export CSV
+          </Button>
         </div>
       </div>
 

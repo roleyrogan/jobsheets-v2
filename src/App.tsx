@@ -136,16 +136,6 @@ function App() {
     showToast('Status updated', 'success')
   }
 
-  function handleExportCSV() {
-    if (applications.length === 0) {
-      showToast('No applications to export', 'error')
-      return
-    }
-
-    exportToCSV(applications)
-    showToast('Applications exported successfully', 'success')
-  }
-
   function scrollToTop() {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -281,18 +271,10 @@ function App() {
               <div className="flex items-center gap-2">
                 <Button
                   type="button"
-                  variant="outline"
-                  onPress={handleExportCSV}
-                  className="max-sm:hidden rounded-full border border-[#3C096C] bg-transparent text-[#C77DFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
-                >
-                  Export CSV
-                </Button>
-                <Button
-                  type="button"
                   onPress={formModal.toggle}
                   className={`rounded-full ${filledButtonClass}`}
                 >
-                  {formModal.isOpen ? 'Cancel' : 'Add Application'}
+                  Add Application
                 </Button>
                 <Button
                   type="button"
@@ -332,6 +314,8 @@ function App() {
             <Summary applications={applications} />
             <JobList
               applications={applications}
+              exportToCSV={exportToCSV}
+              showToast={showToast}
               onDelete={handleDelete}
               onEdit={handleEdit}
               onStatusUpdate={handleStatusUpdate}
