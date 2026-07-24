@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Button } from '@heroui/react'
 import { Eye, EyeOff } from 'lucide-react'
+import { motion } from 'motion/react'
 import { filledButtonClass, textLinkButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import Grainient from './Grainient'
@@ -99,7 +100,12 @@ export default function Auth() {
       </div>
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[#10002B]/35" />
 
-      <div className="relative z-10 w-full max-w-sm">
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        className="relative z-10 w-full max-w-sm"
+      >
         <p className="text-[#E0AAFF] text-sm font-bold text-center mb-4 tracking-tight">
           JobSheets
         </p>
@@ -264,7 +270,7 @@ export default function Auth() {
             </>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

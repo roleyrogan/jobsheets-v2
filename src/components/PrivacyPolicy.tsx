@@ -1,5 +1,7 @@
+import { Button } from '@heroui/react'
 import Grainient from './Grainient'
 import SiteFooter from './SiteFooter'
+import { ghostButtonClass } from '../lib/heroui-button'
 
 type PrivacyPolicyProps = {
   onBack: () => void
@@ -44,15 +46,16 @@ export default function PrivacyPolicy({
       </div>
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[#10002B]/35" />
 
-      <div className="relative z-10 mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
-        <button
-          type="button"
-          onClick={onBack}
-          className="mb-10 text-sm text-[#C77DFF] transition-colors hover:text-[#E0AAFF]"
-        >
-          ← Back to JobSheets
-        </button>
+      <Button
+        type="button"
+        variant="ghost"
+        onPress={onBack}
+        className={`absolute top-0 left-0 z-10 p-4 ${ghostButtonClass}`}
+      >
+        ← Back to JobSheets
+      </Button>
 
+      <div className="relative z-10 mx-auto w-full max-w-2xl flex-1 px-4 py-10 pt-16 sm:px-6 sm:py-14 sm:pt-20">
         <article>
           <h1 className="mb-2 text-3xl font-bold text-[#E0AAFF]">Privacy Policy</h1>
           <p className="mb-10 text-sm text-[#C77DFF]">Last updated: July 2026</p>

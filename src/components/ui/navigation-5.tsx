@@ -20,9 +20,16 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
         {/* Floating Navbar Pill */}
         <div className="flex h-14 w-full max-w-2xl items-center justify-between gap-2 rounded-full border border-[#3C096C] bg-[#240046]/85 px-3 shadow-lg backdrop-blur-md sm:h-16 sm:px-4">
           {/* Logo */}
-          <a href="#top" className="flex items-center gap-2 pr-2">
-            <span className="text-lg font-bold tracking-tight text-[#E0AAFF]">JobSheets</span>
-          </a>
+          <button
+            type="button"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+              document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' })
+            }}
+            className="flex items-center gap-2 pr-2 text-lg font-bold tracking-tight text-[#E0AAFF] transition-colors hover:text-[#E0AAFF]/80"
+          >
+            JobSheets
+          </button>
 
           {/* Desktop Navigation */}
           <div className="hidden items-center gap-0.5 md:flex">

@@ -10,6 +10,7 @@ import JobList from './components/JobList'
 import LandingPage from './components/LandingPage'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import SiteFooter from './components/SiteFooter'
+import SkeletonCard from './components/SkeletonCard'
 import Summary from './components/Summary'
 import Toast from './components/Toast'
 import { useToast } from './hooks/useToast'
@@ -274,7 +275,13 @@ function App() {
         <div className="relative w-full">
           <div className="mx-auto flex max-w-7xl items-center justify-center px-4 sm:px-6">
             <div className="flex h-14 w-full max-w-2xl items-center justify-between gap-2 rounded-full border border-[#3C096C] bg-[#240046] px-3 shadow-lg backdrop-blur-md sm:h-16 sm:px-4">
-              <h1 className="text-lg font-bold tracking-tight text-[#E0AAFF]">JobSheets</h1>
+              <button
+                type="button"
+                onClick={scrollToTop}
+                className="text-lg font-bold tracking-tight text-[#E0AAFF] transition-colors hover:text-[#E0AAFF]/80"
+              >
+                JobSheets
+              </button>
               <div className="flex items-center gap-2">
                 <Button
                   type="button"
@@ -297,7 +304,12 @@ function App() {
 
       <main className="relative z-10 mx-auto flex min-h-screen w-full max-w-3xl flex-1 flex-col gap-8 px-4 pb-8 pt-28 sm:pt-32">
         {appsLoading ? (
-          <p className="text-[#C77DFF] text-sm text-center">Loading applications...</p>
+          <div className="flex flex-col gap-4">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
         ) : appsError ? (
           <p className="text-red-400 text-sm text-center">{appsError}</p>
         ) : applications.length === 0 ? (
