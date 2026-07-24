@@ -10,6 +10,8 @@ import LandingPage from './components/LandingPage'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import SiteFooter from './components/SiteFooter'
 import Summary from './components/Summary'
+import Toast from './components/Toast'
+import { useToast } from './hooks/useToast'
 import { filledButtonClass, ghostButtonClass } from './lib/heroui-button'
 import { supabase } from './supabase'
 import type { Application } from './types'
@@ -27,6 +29,7 @@ function App() {
   const [editingApplication, setEditingApplication] = useState<Application | null>(null)
   const formModal = useOverlayState()
   const editModal = useOverlayState()
+  const { toast, showToast, hideToast } = useToast()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -57,6 +60,7 @@ function App() {
 
       if (error) {
         setAppsError(error.message)
+        showToast('Something went wrong', 'error')
       } else {
         setApplications((data as Application[]) ?? [])
       }
@@ -65,7 +69,7 @@ function App() {
     }
 
     fetchApplications()
-  }, [session])
+  }, [session, showToast])
 
   useEffect(() => {
     if (session && showAuth) {
@@ -95,10 +99,12 @@ function App() {
   function handleAdd(application: Application) {
     setApplications(prev => [application, ...prev])
     formModal.close()
+    showToast('Application added successfully', 'success')
   }
 
   function handleDelete(id: string) {
     setApplications(prev => prev.filter(app => app.id !== id))
+    showToast('Application deleted', 'error')
   }
 
   function handleEdit(application: Application) {
@@ -110,6 +116,7 @@ function App() {
     setApplications(prev =>
       prev.map(app => (app.id === application.id ? application : app))
     )
+    showToast('Application updated', 'success')
   }
 
   function handleCloseEdit() {
@@ -125,6 +132,7 @@ function App() {
           : app
       )
     )
+    showToast('Status updated', 'success')
   }
 
   function scrollToTop() {
@@ -376,6 +384,14 @@ function App() {
           </Modal.Container>
         </Modal.Backdrop>
       </Modal>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={hideToast}
+        />
+      )}
     </div>
   )
 }
