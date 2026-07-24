@@ -1,6 +1,7 @@
 import { ChevronDown, ClipboardList, Globe, RefreshCw, ShieldCheck } from 'lucide-react'
 import { Button } from '@heroui/react'
 import Grainient from './Grainient'
+import BlurText from './BlurText'
 import SiteFooter from './SiteFooter'
 import SplitText from './SplitText'
 import SpotlightCard from './SpotlightCard'
@@ -228,19 +229,14 @@ export default function LandingPage({
           spotlightColor="rgba(157, 78, 221, 0.35)"
         >
           <div className="relative z-10">
-            <SplitText
+            <BlurText
               text="Ready to take control of your job search?"
-              tag="h2"
-              className="text-2xl font-bold leading-tight text-[#E0AAFF] sm:text-3xl"
-              delay={30}
-              duration={0.6}
-              ease="power3.out"
-              splitType="chars"
-              from={{ opacity: 0, y: 40 }}
-              to={{ opacity: 1, y: 0 }}
+              delay={100}
+              animateBy="words"
+              direction="top"
+              className="justify-center text-2xl font-bold leading-tight text-[#E0AAFF] sm:text-3xl"
               threshold={0.2}
               rootMargin="-40px"
-              textAlign="center"
             />
             <Button
               type="button"

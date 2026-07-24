@@ -1,5 +1,6 @@
 import { useState, type Key } from 'react'
 import { Button, ListBox, Select } from '@heroui/react'
+import { AnimatedItem } from './AnimatedList'
 import JobCard from './JobCard'
 import type { Application } from '../types'
 
@@ -225,15 +226,16 @@ export default function JobList({ applications, onDelete, onEdit, onStatusUpdate
         </p>
       ) : (
         <>
-          <div className="flex flex-col gap-4">
-            {paginated.map(application => (
-              <JobCard
-                key={application.id}
-                application={application}
-                onDelete={onDelete}
-                onEdit={onEdit}
-                onStatusUpdate={onStatusUpdate}
-              />
+          <div className="flex flex-col">
+            {paginated.map((application, index) => (
+              <AnimatedItem key={application.id} index={index} delay={0.05}>
+                <JobCard
+                  application={application}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                  onStatusUpdate={onStatusUpdate}
+                />
+              </AnimatedItem>
             ))}
           </div>
 
