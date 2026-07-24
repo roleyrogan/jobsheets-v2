@@ -7,7 +7,6 @@ import SplitText from './SplitText'
 import SpotlightCard from './SpotlightCard'
 import { Navigation5 } from '@/components/ui/navigation-5'
 import { filledButtonClass } from '../lib/heroui-button'
-import dashboardScreenshot from '../assets/dashboard-screenshot.png'
 
 type LandingPageProps = {
   onGetStarted: () => void
@@ -125,7 +124,7 @@ export default function LandingPage({
       </header>
 
       {/* Hero */}
-      <section className="relative flex min-h-svh flex-col items-center justify-center px-4 pb-24 pt-28 text-center sm:px-6 sm:pb-32 sm:pt-32">
+      <section className="relative flex min-h-svh flex-col items-center justify-center px-4 pb-0 pt-28 text-center sm:px-6 sm:pt-32">
         <div className="relative z-10 flex flex-col items-center">
           <div className="flex max-w-3xl flex-col items-center gap-1">
             <SplitText
@@ -171,36 +170,29 @@ export default function LandingPage({
               Learn More
             </Button>
           </div>
-        </div>
 
-        <a
-          href="#features"
-          className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-1 text-[#C77DFF] transition-colors hover:text-[#E0AAFF] sm:bottom-10"
-          aria-label="Scroll to features"
-        >
-          <span className="text-xs font-medium tracking-wide uppercase">Scroll</span>
-          <ChevronDown
-            className="size-5 animate-bounce"
-            strokeWidth={1.75}
-            aria-hidden="true"
-          />
-        </a>
-      </section>
-
-      {/* Product screenshot */}
-      <section className="relative z-10 px-4 py-24 sm:px-6 sm:py-32">
-        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <h2 className="text-2xl font-bold text-[#E0AAFF]">See it in action</h2>
-          <p className="mt-3 text-sm text-[#C77DFF]">
-            A clean, minimal dashboard for your entire job search
-          </p>
-          <div className="mt-10 w-full max-w-4xl overflow-hidden rounded-2xl border border-[#3C096C] shadow-2xl">
+          <div
+            className="mx-auto mt-12 w-full max-w-5xl overflow-hidden rounded-2xl border border-[#3C096C] shadow-[0_0_60px_rgba(123,44,191,0.3)] transition-transform duration-300 hover:scale-[1.02]"
+          >
             <img
-              src={dashboardScreenshot}
+              src="/screenshot.png"
               alt="JobSheets dashboard showing application tracking"
-              className="mx-auto w-full max-w-4xl transition-transform duration-300 hover:scale-105"
+              className="w-full"
             />
           </div>
+
+          <a
+            href="#features"
+            className="mt-8 z-10 flex flex-col items-center gap-1 text-[#C77DFF] transition-colors hover:text-[#E0AAFF] sm:mt-10"
+            aria-label="Scroll to features"
+          >
+            <span className="text-xs font-medium tracking-wide uppercase">Scroll</span>
+            <ChevronDown
+              className="size-5 animate-bounce"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
+          </a>
         </div>
       </section>
 
