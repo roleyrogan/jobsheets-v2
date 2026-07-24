@@ -1,9 +1,10 @@
 import { useState, type Key } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 import { Button, ListBox, Select } from '@heroui/react'
 import { AnimatedItem } from './AnimatedList'
 import JobCard from './JobCard'
 import type { ToastType } from './Toast'
-import { filledButtonClass } from '../lib/heroui-button'
+import { filledButtonClass, outlineButtonClass } from '../lib/heroui-button'
 import type { Application } from '../types'
 
 type JobListProps = {
@@ -36,11 +37,9 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: 'status', label: 'Status' },
 ]
 
-const inactiveButtonClass =
-  'rounded-full bg-transparent border border-[#3C096C] text-[#C77DFF] hover:border-[#7B2CBF] data-[hovered=true]:border-[#7B2CBF]'
+const inactiveButtonClass = `rounded-full ${outlineButtonClass}`
 
-const activeButtonClass =
-  'rounded-full bg-[#7B2CBF] text-[#E0AAFF] border border-[#7B2CBF]'
+const activeButtonClass = `rounded-full ${filledButtonClass}`
 
 function sortApplications(apps: Application[], sort: SortOption): Application[] {
   const sorted = [...apps]
@@ -240,62 +239,73 @@ export default function JobList({
         })}
       </div>
 
-      {isFiltered && (
-        <p className="text-sm text-[#C77DFF]">
-          Showing {filtered.length} of {applications.length} applications
-        </p>
-      )}
-
-      {filtered.length === 0 ? (
-        <p className="text-[#C77DFF] text-sm text-center py-4">
-          {query
-            ? `No results for '${search.trim()}' — try a different search`
-            : 'No applications with this status'}
-        </p>
-      ) : (
-        <>
-          <div className="flex flex-col">
-            {paginated.map((application, index) => (
-              <AnimatedItem key={application.id} index={index} delay={0.05}>
-                <JobCard
-                  application={application}
-                  onDelete={onDelete}
-                  onEdit={onEdit}
-                  onStatusUpdate={onStatusUpdate}
-                />
-              </AnimatedItem>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              onPress={() => setPage(currentPage - 1)}
-              isDisabled={currentPage <= 1}
-              className={inactiveButtonClass}
-            >
-              Previous
-            </Button>
-
-            <p className="text-[#C77DFF] text-sm font-mono">
-              Page {currentPage} of {totalPages}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={filter}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2, ease: 'easeOut' }}
+          className="flex flex-col gap-4"
+        >
+          {isFiltered && (
+            <p className="text-sm text-[#C77DFF]">
+              Showing {filtered.length} of {applications.length} applications
             </p>
+          )}
 
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              onPress={() => setPage(currentPage + 1)}
-              isDisabled={currentPage >= totalPages}
-              className={inactiveButtonClass}
-            >
-              Next
-            </Button>
-          </div>
-        </>
-      )}
+          {filtered.length === 0 ? (
+            <p className="text-[#C77DFF] text-sm text-center py-4">
+              {query
+                ? `No results for '${search.trim()}' — try a different search`
+                : 'No applications with this status'}
+            </p>
+          ) : (
+            <>
+              <div className="flex flex-col">
+                {paginated.map((application, index) => (
+                  <AnimatedItem key={application.id} index={index} delay={0.05}>
+                    <JobCard
+                      application={application}
+                      onDelete={onDelete}
+                      onEdit={onEdit}
+                      onStatusUpdate={onStatusUpdate}
+                    />
+                  </AnimatedItem>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onPress={() => setPage(currentPage - 1)}
+                  isDisabled={currentPage <= 1}
+                  className={inactiveButtonClass}
+                >
+                  Previous
+                </Button>
+
+                <p className="text-[#C77DFF] text-sm font-mono">
+                  Page {currentPage} of {totalPages}
+                </p>
+
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onPress={() => setPage(currentPage + 1)}
+                  isDisabled={currentPage >= totalPages}
+                  className={inactiveButtonClass}
+                >
+                  Next
+                </Button>
+              </div>
+            </>
+          )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   )
 }
