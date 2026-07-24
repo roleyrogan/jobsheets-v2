@@ -283,17 +283,10 @@ function App() {
                 >
                   Add Application
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onPress={handleLogout}
-                  className="rounded-full border border-[#3C096C] bg-transparent text-[#C77DFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
-                >
-                  Log Out
-                </Button>
                 <AccountMenu
                   session={session}
                   showToast={showToast}
+                  onLogout={handleLogout}
                   onAccountDeleted={handleAccountDeleted}
                 />
               </div>

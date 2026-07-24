@@ -8,17 +8,22 @@ import { supabase } from '../supabase'
 type AccountMenuProps = {
   session: Session
   showToast: (message: string, type: ToastType) => void
+  onLogout: () => void | Promise<void>
   onAccountDeleted: () => void
 }
+
+type MenuView = 'menu' | 'logout' | 'delete'
 
 export default function AccountMenu({
   session,
   showToast,
+  onLogout,
   onAccountDeleted,
 }: AccountMenuProps) {
   const [open, setOpen] = useState(false)
-  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [view, setView] = useState<MenuView>('menu')
   const [deleting, setDeleting] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
   const email = session.user.email ?? ''
@@ -30,7 +35,7 @@ export default function AccountMenu({
     function handlePointerDown(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setOpen(false)
-        setConfirmingDelete(false)
+        setView('menu')
       }
     }
 
@@ -40,7 +45,18 @@ export default function AccountMenu({
 
   function handleToggle() {
     setOpen(prev => !prev)
-    setConfirmingDelete(false)
+    setView('menu')
+  }
+
+  async function handleConfirmLogout() {
+    setLoggingOut(true)
+    try {
+      await onLogout()
+      setOpen(false)
+      setView('menu')
+    } finally {
+      setLoggingOut(false)
+    }
   }
 
   async function handleConfirmDelete() {
@@ -60,7 +76,7 @@ export default function AccountMenu({
     await supabase.auth.signOut()
     setDeleting(false)
     setOpen(false)
-    setConfirmingDelete(false)
+    setView('menu')
     onAccountDeleted()
   }
 
@@ -85,7 +101,32 @@ export default function AccountMenu({
             transition={{ duration: 0.18, ease: 'easeOut' }}
             className="absolute right-0 top-full z-50 mt-2 w-64 origin-top-right rounded-xl border border-[#3C096C] bg-[#240046] p-3 shadow-lg"
           >
-            {confirmingDelete ? (
+            {view === 'logout' ? (
+              <div className="flex flex-col gap-3">
+                <p className="text-xs leading-relaxed text-[#C77DFF]">
+                  Are you sure you want to log out?
+                </p>
+                <Button
+                  type="button"
+                  size="sm"
+                  onPress={handleConfirmLogout}
+                  isDisabled={loggingOut}
+                  className="w-full rounded-lg border border-[#7B2CBF] bg-[#7B2CBF] text-sm text-[#E0AAFF] hover:bg-[#9D4EDD] data-[hovered=true]:bg-[#9D4EDD]"
+                >
+                  {loggingOut ? 'Logging out...' : 'Yes, log out'}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onPress={() => setView('menu')}
+                  isDisabled={loggingOut}
+                  className="w-full rounded-lg border border-[#3C096C] bg-transparent text-sm text-[#C77DFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
+                >
+                  Cancel
+                </Button>
+              </div>
+            ) : view === 'delete' ? (
               <div className="flex flex-col gap-3">
                 <p className="text-xs leading-relaxed text-[#f87171]">
                   This will permanently delete your account and all your applications.
@@ -104,7 +145,7 @@ export default function AccountMenu({
                   type="button"
                   size="sm"
                   variant="outline"
-                  onPress={() => setConfirmingDelete(false)}
+                  onPress={() => setView('menu')}
                   isDisabled={deleting}
                   className="w-full rounded-lg border border-[#3C096C] bg-transparent text-sm text-[#C77DFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
                 >
@@ -119,7 +160,14 @@ export default function AccountMenu({
                 <div className="border-t border-[#3C096C]" />
                 <button
                   type="button"
-                  onClick={() => setConfirmingDelete(true)}
+                  onClick={() => setView('logout')}
+                  className="w-full rounded-lg px-3 py-2 text-left text-sm text-[#C77DFF] transition-colors hover:bg-[#3C096C] hover:text-[#E0AAFF]"
+                >
+                  Log Out
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView('delete')}
                   className="w-full rounded-lg px-3 py-2 text-left text-sm text-[#f87171] transition-colors hover:bg-[#3a0a0a]"
                 >
                   Delete Account
