@@ -23,6 +23,7 @@ function App() {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
   const [showAuth, setShowAuth] = useState(false)
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login')
   const [showPrivacy, setShowPrivacy] = useState(false)
   const [showLanding, setShowLanding] = useState(false)
   const [scrollToFeatures, setScrollToFeatures] = useState(false)
@@ -186,6 +187,25 @@ function App() {
       setShowLanding(false)
       return
     }
+    setAuthMode('register')
+    setShowAuth(true)
+  }
+
+  function handleLogIn() {
+    if (session) {
+      setShowLanding(false)
+      return
+    }
+    setAuthMode('login')
+    setShowAuth(true)
+  }
+
+  function handleSignUp() {
+    if (session) {
+      setShowLanding(false)
+      return
+    }
+    setAuthMode('register')
     setShowAuth(true)
   }
 
@@ -221,7 +241,7 @@ function App() {
             >
               ← Back
             </Button>
-            <Auth />
+            <Auth initialMode={authMode} />
           </div>
           <SiteFooter
             onHome={goHome}
@@ -234,6 +254,8 @@ function App() {
     return (
       <LandingPage
         onGetStarted={handleGetStarted}
+        onLogIn={handleLogIn}
+        onSignUp={handleSignUp}
         onHome={goHome}
         onFeatures={goFeatures}
         onPrivacyPolicy={goPrivacy}

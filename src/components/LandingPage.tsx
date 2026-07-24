@@ -10,6 +10,8 @@ import { filledButtonClass } from '../lib/heroui-button'
 
 type LandingPageProps = {
   onGetStarted: () => void
+  onLogIn: () => void
+  onSignUp: () => void
   onHome: () => void
   onFeatures: () => void
   onPrivacyPolicy: () => void
@@ -84,6 +86,8 @@ function FeatureCard({
 
 export default function LandingPage({
   onGetStarted,
+  onLogIn,
+  onSignUp,
   onHome,
   onFeatures,
   onPrivacyPolicy,
@@ -120,7 +124,7 @@ export default function LandingPage({
 
       {/* Nav */}
       <header className="fixed top-0 inset-x-0 z-50 pt-4 sm:pt-6">
-        <Navigation5 onGetStarted={onGetStarted} />
+        <Navigation5 onLogIn={onLogIn} onSignUp={onSignUp} />
       </header>
 
       {/* Hero */}

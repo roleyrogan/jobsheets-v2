@@ -11,8 +11,8 @@ type Mode = 'login' | 'register' | 'forgot'
 const inputClassName =
   'bg-[#10002B] border border-[#3C096C] rounded-lg px-4 py-2 pr-11 text-[#E0AAFF] placeholder-[#7B2CBF] outline-none focus:border-[#7B2CBF] w-full'
 
-export default function Auth() {
-  const [mode, setMode] = useState<Mode>('login')
+export default function Auth({ initialMode = 'login' }: { initialMode?: 'login' | 'register' }) {
+  const [mode, setMode] = useState<Mode>(initialMode)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')

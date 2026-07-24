@@ -10,10 +10,11 @@ import { Menu } from 'lucide-react'
 import { filledButtonClass, ghostButtonClass } from '@/lib/heroui-button'
 
 type Navigation5Props = {
-  onGetStarted?: () => void
+  onLogIn?: () => void
+  onSignUp?: () => void
 }
 
-export function Navigation5({ onGetStarted }: Navigation5Props) {
+export function Navigation5({ onLogIn, onSignUp }: Navigation5Props) {
   return (
     <div className="relative w-full">
       <div className="mx-auto flex max-w-7xl items-center justify-center px-4 sm:px-6">
@@ -50,17 +51,17 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
               <Button
                 type="button"
                 variant="ghost"
-                onPress={onGetStarted}
+                onPress={onLogIn}
                 className={`rounded-full ${ghostButtonClass}`}
               >
                 Log In
               </Button>
               <Button
                 type="button"
-                onPress={onGetStarted}
+                onPress={onSignUp}
                 className={`rounded-full ${filledButtonClass}`}
               >
-                Sign In
+                Sign Up
               </Button>
             </div>
           </div>
@@ -70,7 +71,7 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
             <Button
               type="button"
               variant="ghost"
-              onPress={onGetStarted}
+              onPress={onLogIn}
               className={`rounded-full ${ghostButtonClass}`}
             >
               Log In
@@ -101,7 +102,7 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
                   <Button
                     type="button"
                     variant="ghost"
-                    onPress={onGetStarted}
+                    onPress={onLogIn}
                     className={`justify-start px-0 ${ghostButtonClass}`}
                   >
                     Log In
@@ -112,10 +113,10 @@ export function Navigation5({ onGetStarted }: Navigation5Props) {
                   <Button
                     type="button"
                     fullWidth
-                    onPress={onGetStarted}
+                    onPress={onSignUp}
                     className={`rounded-full ${filledButtonClass}`}
                   >
-                    Sign In
+                    Sign Up
                   </Button>
                 </div>
               </SheetContent>
