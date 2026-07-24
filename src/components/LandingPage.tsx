@@ -7,6 +7,7 @@ import SplitText from './SplitText'
 import SpotlightCard from './SpotlightCard'
 import { Navigation5 } from '@/components/ui/navigation-5'
 import { filledButtonClass } from '../lib/heroui-button'
+import dashboardScreenshot from '../assets/dashboard-screenshot.png'
 
 type LandingPageProps = {
   onGetStarted: () => void
@@ -184,6 +185,23 @@ export default function LandingPage({
             aria-hidden="true"
           />
         </a>
+      </section>
+
+      {/* Product screenshot */}
+      <section className="relative z-10 px-4 py-24 sm:px-6 sm:py-32">
+        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
+          <h2 className="text-2xl font-bold text-[#E0AAFF]">See it in action</h2>
+          <p className="mt-3 text-sm text-[#C77DFF]">
+            A clean, minimal dashboard for your entire job search
+          </p>
+          <div className="mt-10 w-full max-w-4xl overflow-hidden rounded-2xl border border-[#3C096C] shadow-2xl">
+            <img
+              src={dashboardScreenshot}
+              alt="JobSheets dashboard showing application tracking"
+              className="mx-auto w-full max-w-4xl transition-transform duration-300 hover:scale-105"
+            />
+          </div>
+        </div>
       </section>
 
       {/* Features */}
