@@ -8,6 +8,7 @@ import SpotlightCard from './SpotlightCard'
 type JobCardProps = {
   application: Application
   onDelete: (id: string) => void
+  onEdit: (application: Application) => void
   onStatusUpdate: (id: string, newStatus: string) => void
 }
 
@@ -20,7 +21,7 @@ const STATUS_STYLES: Record<Application['status'], { bg: string; text: string }>
   Rejected: { bg: '#3a0a0a', text: '#f87171' },
 }
 
-export default function JobCard({ application, onDelete, onStatusUpdate }: JobCardProps) {
+export default function JobCard({ application, onDelete, onEdit, onStatusUpdate }: JobCardProps) {
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [notesExpanded, setNotesExpanded] = useState(false)
@@ -209,15 +210,26 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
               </div>
             </div>
           ) : (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onPress={() => setConfirmingDelete(true)}
-              className={outlineButtonClass}
-            >
-              Delete
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onPress={() => onEdit(application)}
+                className="border border-[#3C096C] bg-transparent text-[#C77DFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
+              >
+                Edit
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onPress={() => setConfirmingDelete(true)}
+                className={outlineButtonClass}
+              >
+                Delete
+              </Button>
+            </div>
           )}
         </div>
       </div>

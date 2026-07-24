@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { Button, CloseButton, Modal, useOverlayState } from '@heroui/react'
 import Auth from './components/Auth'
+import EditForm from './components/EditForm'
 import Grainient from './components/Grainient'
 import JobForm from './components/JobForm'
 import JobList from './components/JobList'
@@ -23,7 +24,9 @@ function App() {
   const [applications, setApplications] = useState<Application[]>([])
   const [appsLoading, setAppsLoading] = useState(false)
   const [appsError, setAppsError] = useState('')
+  const [editingApplication, setEditingApplication] = useState<Application | null>(null)
   const formModal = useOverlayState()
+  const editModal = useOverlayState()
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -96,6 +99,22 @@ function App() {
 
   function handleDelete(id: string) {
     setApplications(prev => prev.filter(app => app.id !== id))
+  }
+
+  function handleEdit(application: Application) {
+    setEditingApplication(application)
+    editModal.open()
+  }
+
+  function handleSave(application: Application) {
+    setApplications(prev =>
+      prev.map(app => (app.id === application.id ? application : app))
+    )
+  }
+
+  function handleCloseEdit() {
+    setEditingApplication(null)
+    editModal.close()
   }
 
   function handleStatusUpdate(id: string, newStatus: string) {
@@ -287,6 +306,7 @@ function App() {
             <JobList
               applications={applications}
               onDelete={handleDelete}
+              onEdit={handleEdit}
               onStatusUpdate={handleStatusUpdate}
             />
           </>
@@ -317,6 +337,40 @@ function App() {
                   userId={session.user.id}
                   onAdd={handleAdd}
                 />
+              </Modal.Body>
+            </Modal.Dialog>
+          </Modal.Container>
+        </Modal.Backdrop>
+      </Modal>
+
+      <Modal
+        state={editModal}
+        onOpenChange={isOpen => {
+          if (!isOpen) {
+            setEditingApplication(null)
+          }
+        }}
+      >
+        <Modal.Backdrop
+          isDismissable
+          variant="blur"
+          className="bg-black/60 backdrop-blur-sm"
+        >
+          <Modal.Container size="md" scroll="outside" placement="center">
+            <Modal.Dialog className="relative bg-transparent p-0 shadow-none outline-none">
+              <CloseButton
+                slot="close"
+                aria-label="Close"
+                className="absolute top-3 right-3 z-10 bg-transparent text-[#C77DFF] hover:bg-[#3C096C] hover:text-[#E0AAFF] data-[hovered=true]:bg-[#3C096C] data-[hovered=true]:text-[#E0AAFF]"
+              />
+              <Modal.Body className="p-0">
+                {editingApplication && (
+                  <EditForm
+                    application={editingApplication}
+                    onSave={handleSave}
+                    onClose={handleCloseEdit}
+                  />
+                )}
               </Modal.Body>
             </Modal.Dialog>
           </Modal.Container>

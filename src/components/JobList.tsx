@@ -6,6 +6,7 @@ import type { Application } from '../types'
 type JobListProps = {
   applications: Application[]
   onDelete: (id: string) => void
+  onEdit: (application: Application) => void
   onStatusUpdate: (id: string, newStatus: string) => void
 }
 
@@ -57,7 +58,7 @@ function sortApplications(apps: Application[], sort: SortOption): Application[] 
   }
 }
 
-export default function JobList({ applications, onDelete, onStatusUpdate }: JobListProps) {
+export default function JobList({ applications, onDelete, onEdit, onStatusUpdate }: JobListProps) {
   const [filter, setFilter] = useState<FilterOption>('All')
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<SortOption>('newest')
@@ -230,6 +231,7 @@ export default function JobList({ applications, onDelete, onStatusUpdate }: JobL
                 key={application.id}
                 application={application}
                 onDelete={onDelete}
+                onEdit={onEdit}
                 onStatusUpdate={onStatusUpdate}
               />
             ))}
