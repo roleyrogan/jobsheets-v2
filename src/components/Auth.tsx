@@ -6,7 +6,7 @@ import { filledButtonClass, textLinkButtonClass } from '../lib/heroui-button'
 import { supabase } from '../supabase'
 import Grainient from './Grainient'
 
-type Mode = 'login' | 'register'
+type Mode = 'login' | 'register' | 'forgot'
 
 const inputClassName =
   'bg-[#10002B] border border-[#3C096C] rounded-lg px-4 py-2 pr-11 text-[#E0AAFF] placeholder-[#7B2CBF] outline-none focus:border-[#7B2CBF] w-full'
@@ -70,6 +70,25 @@ export default function Auth() {
     setLoading(false)
   }
 
+  async function handleForgotPassword(e: FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setSuccess('')
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    })
+
+    if (error) {
+      setError(error.message)
+    } else {
+      setSuccess('Check your email for a password reset link')
+    }
+
+    setLoading(false)
+  }
+
   return (
     <div className="relative isolate min-h-screen overflow-hidden bg-[#10002B] flex items-center justify-center px-4">
       <div className="pointer-events-none fixed inset-0 -z-20">
@@ -128,26 +147,36 @@ export default function Auth() {
                   className={inputClassName}
                 />
 
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                    className={inputClassName}
-                  />
-                  <Button
+                <div className="flex flex-col gap-2">
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Password"
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      required
+                      className={inputClassName}
+                    />
+                    <Button
+                      type="button"
+                      isIconOnly
+                      variant="ghost"
+                      size="sm"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      onPress={() => setShowPassword(v => !v)}
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 min-w-8 text-[#C77DFF] hover:text-[#E0AAFF] bg-transparent"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </Button>
+                  </div>
+
+                  <button
                     type="button"
-                    isIconOnly
-                    variant="ghost"
-                    size="sm"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    onPress={() => setShowPassword(v => !v)}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 min-w-8 text-[#C77DFF] hover:text-[#E0AAFF] bg-transparent"
+                    onClick={() => switchMode('forgot')}
+                    className="self-end text-sm text-[#C77DFF] no-underline transition-colors hover:text-[#E0AAFF] hover:underline"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </Button>
+                    Forgot password?
+                  </button>
                 </div>
 
                 <Button
@@ -179,7 +208,7 @@ export default function Auth() {
                 </Button>
               </p>
             </>
-          ) : (
+          ) : mode === 'register' ? (
             <>
               <div className="text-center">
                 <h1 className="text-[#E0AAFF] text-2xl font-bold">Create your account</h1>
@@ -267,6 +296,50 @@ export default function Auth() {
                   Sign in
                 </Button>
               </p>
+            </>
+          ) : (
+            <>
+              <div className="text-center">
+                <h1 className="text-[#E0AAFF] text-2xl font-bold">Reset your password</h1>
+                <p className="text-[#C77DFF] text-sm mt-1">
+                  Enter your email and we&apos;ll send you a reset link
+                </p>
+              </div>
+
+              <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  className={inputClassName}
+                />
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  isDisabled={loading}
+                  className={filledButtonClass}
+                >
+                  {loading ? 'Loading...' : 'Send Reset Link'}
+                </Button>
+              </form>
+
+              {success && (
+                <p className="text-[#34d399] text-sm text-center">{success}</p>
+              )}
+              {error && (
+                <p className="text-red-400 text-sm text-center">{error}</p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => switchMode('login')}
+                className="self-center text-sm text-[#C77DFF] no-underline transition-colors hover:text-[#E0AAFF] hover:underline"
+              >
+                Back to login
+              </button>
             </>
           )}
         </div>
