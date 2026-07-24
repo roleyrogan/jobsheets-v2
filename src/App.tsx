@@ -15,6 +15,7 @@ import { useToast } from './hooks/useToast'
 import { filledButtonClass, ghostButtonClass } from './lib/heroui-button'
 import { supabase } from './supabase'
 import type { Application } from './types'
+import { exportToCSV } from './utils/exportCSV'
 
 function App() {
   const [session, setSession] = useState<Session | null>(null)
@@ -133,6 +134,16 @@ function App() {
       )
     )
     showToast('Status updated', 'success')
+  }
+
+  function handleExportCSV() {
+    if (applications.length === 0) {
+      showToast('No applications to export', 'error')
+      return
+    }
+
+    exportToCSV(applications)
+    showToast('Applications exported successfully', 'success')
   }
 
   function scrollToTop() {
@@ -268,6 +279,14 @@ function App() {
             <div className="flex h-14 w-full max-w-2xl items-center justify-between gap-2 rounded-full border border-[#3C096C] bg-[#240046] px-3 shadow-lg backdrop-blur-md sm:h-16 sm:px-4">
               <h1 className="text-lg font-bold tracking-tight text-[#E0AAFF]">JobSheets</h1>
               <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onPress={handleExportCSV}
+                  className="max-sm:hidden rounded-full border border-[#3C096C] bg-transparent text-[#C77DFF] hover:bg-[#3C096C] data-[hovered=true]:bg-[#3C096C]"
+                >
+                  Export CSV
+                </Button>
                 <Button
                   type="button"
                   onPress={formModal.toggle}
