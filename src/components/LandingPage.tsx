@@ -17,29 +17,69 @@ type LandingPageProps = {
 const features = [
   {
     icon: ClipboardList,
+    iconText: null as string | null,
     title: 'Track Applications',
     description:
       'Log every application in one place — company, role, date, and notes.',
   },
   {
     icon: RefreshCw,
+    iconText: null as string | null,
     title: 'Update Status',
     description:
       'Move applications through applied, interviewing, offer, and rejected with a single click.',
   },
   {
     icon: Globe,
+    iconText: null as string | null,
     title: 'Access Anywhere',
     description:
       'Your job search stays in sync across devices so you can update progress on the go.',
   },
   {
     icon: ShieldCheck,
+    iconText: null as string | null,
     title: 'Never Lose Progress',
     description:
       'Your data is saved securely in the cloud so nothing disappears between applications.',
   },
+  {
+    icon: null,
+    iconText: '↓',
+    title: 'Export Your Data',
+    description:
+      'Download all your applications as a CSV spreadsheet at any time — perfect for end of season review or sharing with a mentor.',
+  },
 ]
+
+function FeatureCard({
+  icon: Icon,
+  iconText,
+  title,
+  description,
+}: (typeof features)[number]) {
+  return (
+    <SpotlightCard
+      className="!rounded-xl !border !border-[#3C096C] !bg-[#240046] p-6 text-left"
+      spotlightColor="rgba(157, 78, 221, 0.35)"
+    >
+      <div className="relative z-10">
+        {Icon ? (
+          <Icon className="mb-4 text-[#C77DFF]" size={28} strokeWidth={1.75} />
+        ) : (
+          <span
+            className="mb-4 block text-[28px] leading-none text-[#C77DFF]"
+            aria-hidden="true"
+          >
+            {iconText}
+          </span>
+        )}
+        <h3 className="mb-2 text-lg font-bold text-[#E0AAFF]">{title}</h3>
+        <p className="text-sm leading-relaxed text-[#C77DFF]">{description}</p>
+      </div>
+    </SpotlightCard>
+  )
+}
 
 export default function LandingPage({
   onGetStarted,
@@ -165,20 +205,18 @@ export default function LandingPage({
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-            {features.map(({ icon: Icon, title, description }) => (
-              <SpotlightCard
-                key={title}
-                className="!rounded-xl !border !border-[#3C096C] !bg-[#240046] p-6 text-left"
-                spotlightColor="rgba(157, 78, 221, 0.35)"
-              >
-                <div className="relative z-10">
-                  <Icon className="mb-4 text-[#C77DFF]" size={28} strokeWidth={1.75} />
-                  <h3 className="mb-2 text-lg font-bold text-[#E0AAFF]">{title}</h3>
-                  <p className="text-sm leading-relaxed text-[#C77DFF]">{description}</p>
-                </div>
-              </SpotlightCard>
-            ))}
+          <div className="flex flex-col gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+              {features.slice(0, 3).map(feature => (
+                <FeatureCard key={feature.title} {...feature} />
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:mx-auto lg:w-full lg:max-w-[calc((100%-1.5rem)*2/3)]">
+              {features.slice(3).map(feature => (
+                <FeatureCard key={feature.title} {...feature} />
+              ))}
+            </div>
           </div>
         </div>
       </section>
