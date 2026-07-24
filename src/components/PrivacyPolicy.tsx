@@ -1,3 +1,4 @@
+import Grainient from './Grainient'
 import SiteFooter from './SiteFooter'
 
 type PrivacyPolicyProps = {
@@ -14,8 +15,36 @@ export default function PrivacyPolicy({
   onPrivacyPolicy,
 }: PrivacyPolicyProps) {
   return (
-    <div className="flex min-h-screen flex-col bg-[#10002B] text-[#E0AAFF]">
-      <div className="mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
+    <div className="relative isolate flex min-h-screen flex-col overflow-hidden bg-[#10002B] text-[#E0AAFF]">
+      <div className="pointer-events-none fixed inset-0 -z-20">
+        <Grainient
+          color1="#10002B"
+          color2="#7B2CBF"
+          color3="#E0AAFF"
+          timeSpeed={0.25}
+          colorBalance={0.0}
+          warpStrength={1.0}
+          warpFrequency={5.0}
+          warpSpeed={2.0}
+          warpAmplitude={50.0}
+          blendAngle={0.0}
+          blendSoftness={0.05}
+          rotationAmount={500.0}
+          noiseScale={2.0}
+          grainAmount={0.1}
+          grainScale={2.0}
+          grainAnimated={false}
+          contrast={1.5}
+          gamma={1.0}
+          saturation={1.0}
+          centerX={0.0}
+          centerY={0.0}
+          zoom={0.9}
+        />
+      </div>
+      <div className="pointer-events-none fixed inset-0 -z-10 bg-[#10002B]/35" />
+
+      <div className="relative z-10 mx-auto w-full max-w-2xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
         <button
           type="button"
           onClick={onBack}

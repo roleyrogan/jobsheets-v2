@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { CloseButton } from '@heroui/react'
 import { motion } from 'framer-motion'
 
 export type ToastType = 'success' | 'error'
@@ -53,15 +54,16 @@ export default function Toast({ message, type, onClose }: ToastProps) {
         {styles.prefix}
       </span>
       <p className="flex-1 text-sm leading-snug">{message}</p>
-      <button
-        type="button"
-        onClick={onClose}
+      <CloseButton
         aria-label="Dismiss notification"
-        className="flex size-5 shrink-0 items-center justify-center bg-transparent p-0 text-sm leading-none opacity-70 transition-opacity hover:opacity-100"
+        onPress={onClose}
+        className={`shrink-0 bg-transparent opacity-80 hover:opacity-100 data-[hovered=true]:opacity-100 ${
+          type === 'success'
+            ? 'hover:bg-[#34d399]/20 data-[hovered=true]:bg-[#34d399]/20'
+            : 'hover:bg-[#f87171]/20 data-[hovered=true]:bg-[#f87171]/20'
+        }`}
         style={{ color: styles.text }}
-      >
-        ✕
-      </button>
+      />
     </motion.div>
   )
 }
