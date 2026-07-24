@@ -87,6 +87,7 @@ export default function JobList({ applications, onDelete, onStatusUpdate }: JobL
     : statusFiltered
 
   const filtered = sortApplications(searchFiltered, sort)
+  const isFiltered = filter !== 'All' || query.length > 0
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const currentPage = Math.min(page, totalPages)
@@ -209,10 +210,16 @@ export default function JobList({ applications, onDelete, onStatusUpdate }: JobL
         })}
       </div>
 
+      {isFiltered && (
+        <p className="text-sm text-[#C77DFF]">
+          Showing {filtered.length} of {applications.length} applications
+        </p>
+      )}
+
       {filtered.length === 0 ? (
         <p className="text-[#C77DFF] text-sm text-center py-4">
           {query
-            ? 'No applications match your search'
+            ? `No results for '${search.trim()}' — try a different search`
             : 'No applications with this status'}
         </p>
       ) : (

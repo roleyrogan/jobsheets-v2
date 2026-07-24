@@ -23,6 +23,7 @@ const STATUS_STYLES: Record<Application['status'], { bg: string; text: string }>
 export default function JobCard({ application, onDelete, onStatusUpdate }: JobCardProps) {
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [notesExpanded, setNotesExpanded] = useState(false)
   const [statusLoading, setStatusLoading] = useState(false)
   const [status, setStatus] = useState<Application['status']>(application.status)
   const [error, setError] = useState('')
@@ -88,6 +89,35 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
           <p className="text-[#C77DFF] text-sm">{application.role}</p>
           <p className="text-[#7B2CBF] text-xs font-mono">{application.date}</p>
 
+          {application.notes && (
+            <div className="flex flex-col">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onPress={() => setNotesExpanded(prev => !prev)}
+                className={`w-fit ${outlineButtonClass}`}
+              >
+                {notesExpanded ? '▲ Notes' : '▼ Notes'}
+              </Button>
+              <div
+                className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+                  notesExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div
+                    className={`mt-2 rounded-lg border border-[#3C096C] bg-[#10002B] p-3 text-sm text-[#C77DFF] transition-opacity duration-200 ease-out ${
+                      notesExpanded ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    {application.notes}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {application.application_url && (
             <a
               href={application.application_url}
@@ -104,10 +134,6 @@ export default function JobCard({ application, onDelete, onStatusUpdate }: JobCa
               <span className="text-[#7B2CBF] text-xs">Location</span>
               <span className="text-[#C77DFF] text-sm">{application.location}</span>
             </div>
-          )}
-
-          {application.notes && (
-            <p className="text-[#9D4EDD] text-sm mt-1">{application.notes}</p>
           )}
 
           {error && (
