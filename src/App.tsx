@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { Button, CloseButton, Modal, useOverlayState } from '@heroui/react'
 import Auth from './components/Auth'
+import AccountMenu from './components/AccountMenu'
 import EditForm from './components/EditForm'
 import Grainient from './components/Grainient'
 import JobForm from './components/JobForm'
@@ -93,6 +94,12 @@ function App() {
 
   async function handleLogout() {
     await supabase.auth.signOut()
+    setShowAuth(false)
+    setShowLanding(false)
+  }
+
+  function handleAccountDeleted() {
+    setApplications([])
     setShowAuth(false)
     setShowLanding(false)
   }
@@ -284,6 +291,11 @@ function App() {
                 >
                   Log Out
                 </Button>
+                <AccountMenu
+                  session={session}
+                  showToast={showToast}
+                  onAccountDeleted={handleAccountDeleted}
+                />
               </div>
             </div>
           </div>
