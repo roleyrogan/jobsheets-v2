@@ -101,17 +101,10 @@ export default function PrivacyPolicy({
           <section className="mb-8">
             <h2 className="mb-3 text-lg font-semibold text-[#C77DFF]">Data Deletion</h2>
             <p className="text-sm leading-relaxed text-[#E0AAFF]">
-              Individual applications can be deleted in the app. For full account deletion,
-              contact via{' '}
-              <a
-                href="https://github.com/roleyrogan"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#9D4EDD] underline underline-offset-2 hover:text-[#E0AAFF]"
-              >
-                GitHub
-              </a>
-              .
+              You can delete individual applications at any time from within the app. To delete
+              your entire account and all associated data, go to the account menu in the top right
+              corner and select Delete Account. This will permanently remove all your applications
+              and your account from our systems and cannot be undone.
             </p>
           </section>
 
@@ -149,12 +142,12 @@ export default function PrivacyPolicy({
             <p className="text-sm leading-relaxed text-[#E0AAFF]">
               Questions about this policy? Reach out at{' '}
               <a
-                href="https://github.com/roleyrogan"
+                href="https://forms.gle/Gx9i1sxnRSF7RUrq5"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#9D4EDD] underline underline-offset-2 hover:text-[#E0AAFF]"
               >
-                https://github.com/roleyrogan
+                https://forms.gle/Gx9i1sxnRSF7RUrq5
               </a>
               .
             </p>

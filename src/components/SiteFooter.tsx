@@ -43,6 +43,14 @@ export default function SiteFooter({
             >
               Privacy Policy
             </button>
+            <a
+              href="https://forms.gle/Gx9i1sxnRSF7RUrq5"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-fit text-left text-sm text-[#C77DFF] transition-colors hover:text-[#E0AAFF]"
+            >
+              Contact
+            </a>
           </nav>
         </div>
       </div>
