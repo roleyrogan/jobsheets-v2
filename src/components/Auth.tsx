@@ -38,21 +38,8 @@ export default function Auth({ initialMode = 'login' }: { initialMode?: 'login' 
     setError('')
     setSuccess('')
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-      return
-    }
-
-    if (data.user && !data.user.email_confirmed_at) {
-      await supabase.auth.signOut()
-      setError(
-        'Please confirm your email address before logging in. Check your inbox for a confirmation link.'
-      )
-      setLoading(false)
-      return
-    }
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) setError(error.message)
 
     setLoading(false)
   }
@@ -76,11 +63,14 @@ export default function Auth({ initialMode = 'login' }: { initialMode?: 'login' 
       return
     }
 
-    setSuccess('Account created! Please check your email and click the confirmation link before logging in.')
-    setMode('login')
+    setSuccess('Account created successfully! You can now log in.')
     setPassword('')
     setConfirmPassword('')
     setLoading(false)
+
+    setTimeout(() => {
+      setMode('login')
+    }, 2000)
   }
 
   async function handleForgotPassword(e: FormEvent) {
@@ -294,6 +284,9 @@ export default function Auth({ initialMode = 'login' }: { initialMode?: 'login' 
                 </Button>
               </form>
 
+              {success && (
+                <p className="text-[#34d399] text-sm text-center">{success}</p>
+              )}
               {error && (
                 <p className="text-red-400 text-sm text-center">{error}</p>
               )}
