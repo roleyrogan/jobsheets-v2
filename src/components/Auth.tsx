@@ -38,8 +38,21 @@ export default function Auth({ initialMode = 'login' }: { initialMode?: 'login' 
     setError('')
     setSuccess('')
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) setError(error.message)
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+      return
+    }
+
+    if (data.user && !data.user.email_confirmed_at) {
+      await supabase.auth.signOut()
+      setError(
+        'Please confirm your email address before logging in. Check your inbox for a confirmation link.'
+      )
+      setLoading(false)
+      return
+    }
 
     setLoading(false)
   }
@@ -63,7 +76,7 @@ export default function Auth({ initialMode = 'login' }: { initialMode?: 'login' 
       return
     }
 
-    setSuccess('Account created! You can now sign in.')
+    setSuccess('Account created! Please check your email and click the confirmation link before logging in.')
     setMode('login')
     setPassword('')
     setConfirmPassword('')
@@ -190,7 +203,7 @@ export default function Auth({ initialMode = 'login' }: { initialMode?: 'login' 
               </form>
 
               {success && (
-                <p className="text-green-400 text-sm text-center">{success}</p>
+                <p className="text-[#34d399] text-sm text-center">{success}</p>
               )}
               {error && (
                 <p className="text-red-400 text-sm text-center">{error}</p>

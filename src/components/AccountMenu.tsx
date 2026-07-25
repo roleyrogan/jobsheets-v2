@@ -160,7 +160,7 @@ export default function AccountMenu({
       return
     }
 
-    setSuccess('Check your new email to confirm the change')
+    setSuccess('Check your new email address and click the confirmation link to complete the change.')
     setUpdating(false)
   }
 
@@ -200,7 +200,7 @@ export default function AccountMenu({
       return
     }
 
-    setSuccess('Password updated successfully')
+    setSuccess('Password updated successfully.')
     setUpdating(false)
 
     closeTimeoutRef.current = setTimeout(() => {
