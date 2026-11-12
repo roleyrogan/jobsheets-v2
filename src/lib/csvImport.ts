@@ -6,8 +6,10 @@ import {
   cell,
   duplicateKey,
   isBlankRecord,
+  lineNumberAt,
   mapHeaders,
   matchStatus,
+  papaRowToLine,
   parseImportDate,
 } from '@/lib/csvImportHelpers'
 import type { Application } from '@/types/index'
@@ -41,6 +43,32 @@ export function parseApplicationsCsv(
     header: true,
     skipEmptyLines: false,
   })
+
+  const quoteError = parsed.errors.find((error) => error.type === 'Quotes')
+  if (quoteError) {
+    const line =
+      typeof quoteError.index === 'number'
+        ? lineNumberAt(text, quoteError.index)
+        : papaRowToLine(quoteError.row)
+    return {
+      ready: [],
+      skipped: [
+        {
+          line,
+          reason:
+            'Unclosed quote near this line — fix the file and try again',
+        },
+      ],
+      warnings: [],
+    }
+  }
+
+  for (const error of parsed.errors) {
+    warnings.push({
+      line: papaRowToLine(error.row),
+      message: error.message,
+    })
+  }
 
   const fields = parsed.meta.fields ?? []
   const headerMap = mapHeaders(fields)

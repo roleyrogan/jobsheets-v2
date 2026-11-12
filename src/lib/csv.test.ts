@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { applicationsToCsv, parseApplicationsCsv } from '@/lib/csv'
+import { unguardCsvCell } from '@/lib/csvImportHelpers'
 import type { Application } from '@/types/index'
 
 function app(
@@ -204,5 +205,52 @@ describe('parseApplicationsCsv', () => {
     expect(result.skipped).toEqual([
       { line: 1, reason: 'File has more than 1,000 rows' },
     ])
+  })
+
+  it('round-trips injection-guarded company, role, and notes', () => {
+    const original = app({
+      id: 1,
+      company: '=Corp',
+      role: '+1 Engineer',
+      status: 'Applied',
+      notes: '- called recruiter\n- waiting',
+      created_at: '2026-01-01T12:00:00.000Z',
+    })
+    const result = parseApplicationsCsv(applicationsToCsv([original]), [])
+    expect(result.skipped).toEqual([])
+    expect(result.ready).toHaveLength(1)
+    expect(result.ready[0]?.company).toBe('=Corp')
+    expect(result.ready[0]?.role).toBe('+1 Engineer')
+    expect(result.ready[0]?.notes).toBe('- called recruiter\n- waiting')
+  })
+
+  it('leaves quote-plus-letter cells unchanged', () => {
+    expect(unguardCsvCell("'hello")).toBe("'hello")
+  })
+
+  it('rejects files with unclosed quotes and does not import partially', () => {
+    const csv = 'Company,Role\n"Acme,Dev\nShopify,Intern\nGoogle,SWE\n'
+    const result = parseApplicationsCsv(csv, [])
+    expect(result.ready).toEqual([])
+    expect(result.skipped).toEqual([
+      {
+        line: 2,
+        reason: 'Unclosed quote near this line — fix the file and try again',
+      },
+    ])
+  })
+
+  it('warns on a row with an extra column but still imports it', () => {
+    const csv = [
+      'Company,Role',
+      'Acme,Dev,extra',
+    ].join('\n')
+    const result = parseApplicationsCsv(csv, [])
+    expect(result.ready).toHaveLength(1)
+    expect(result.ready[0]?.company).toBe('Acme')
+    expect(result.ready[0]?.role).toBe('Dev')
+    expect(result.warnings.length).toBeGreaterThan(0)
+    expect(result.warnings[0]?.line).toBe(2)
+    expect(result.warnings[0]?.message.length).toBeGreaterThan(0)
   })
 })

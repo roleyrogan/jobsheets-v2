@@ -35,6 +35,21 @@ export function normalizeHeader(value: string): string {
   return value.trim().toLowerCase()
 }
 
+/** 1-based spreadsheet line for a character index in the CSV text. */
+export function lineNumberAt(text: string, index: number): number {
+  let line = 1
+  const end = Math.min(index, text.length)
+  for (let i = 0; i < end; i += 1) {
+    if (text[i] === '\n') line += 1
+  }
+  return line
+}
+
+/** Papa data-row index → spreadsheet line (header is line 1). */
+export function papaRowToLine(row: number | undefined): number {
+  return (row ?? 0) + 2
+}
+
 export function isBlankRecord(row: Record<string, unknown>): boolean {
   return Object.values(row).every((value) => {
     if (value == null) return true
@@ -128,6 +143,14 @@ export function mapHeaders(
   return map
 }
 
+/** Undo export injection guard: leading ' before = + - @ tab or CR. */
+export function unguardCsvCell(value: string): string {
+  if (/^'[=+\-@\t\r]/.test(value)) {
+    return value.slice(1)
+  }
+  return value
+}
+
 export function cell(
   row: Record<string, unknown>,
   header: string | undefined,
@@ -135,5 +158,5 @@ export function cell(
   if (!header) return ''
   const value = row[header]
   if (value == null) return ''
-  return String(value)
+  return unguardCsvCell(String(value))
 }
