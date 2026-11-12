@@ -12,8 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import type { Application } from '@/types/index'
 
-export function ApplicationsList() {
+type ApplicationsListProps = {
+  onAdd: () => void
+  onEdit: (application: Application) => void
+}
+
+export function ApplicationsList({ onAdd, onEdit }: ApplicationsListProps) {
   const { data, error, isPending, isError, refetch, isFetching } =
     useApplications()
 
@@ -52,11 +58,14 @@ export function ApplicationsList() {
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col gap-1">
-        <p className="font-medium">No applications yet</p>
-        <p className="text-sm text-muted-foreground">
-          When you add one, it will show up here.
-        </p>
+      <div className="flex flex-col items-start gap-3">
+        <div className="flex flex-col gap-1">
+          <p className="font-medium">No applications yet</p>
+          <p className="text-sm text-muted-foreground">
+            When you add one, it will show up here.
+          </p>
+        </div>
+        <Button onClick={onAdd}>Add your first application</Button>
       </div>
     )
   }
@@ -64,7 +73,7 @@ export function ApplicationsList() {
   return (
     <div className="flex flex-col gap-4">
       <ApplicationsSummary applications={data} />
-      <ApplicationsTable applications={data} />
+      <ApplicationsTable applications={data} onEdit={onEdit} />
     </div>
   )
 }
@@ -82,6 +91,9 @@ function ApplicationsTableSkeleton() {
             <TableHead>Added</TableHead>
             <TableHead>
               <span className="sr-only">Link</span>
+            </TableHead>
+            <TableHead>
+              <span className="sr-only">Actions</span>
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -102,6 +114,9 @@ function ApplicationsTableSkeleton() {
               </TableCell>
               <TableCell>
                 <Skeleton className="h-4 w-24" />
+              </TableCell>
+              <TableCell>
+                <Skeleton className="size-4" />
               </TableCell>
               <TableCell>
                 <Skeleton className="size-4" />

@@ -1,12 +1,7 @@
-import { ExternalLink } from 'lucide-react'
-
-import { formatDate } from '@/lib/dates'
-import { StatusBadge } from '@/features/applications/StatusBadge'
-import { Button } from '@/components/ui/button'
+import { ApplicationRow } from '@/features/applications/ApplicationRow'
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
@@ -15,9 +10,13 @@ import type { Application } from '@/types/index'
 
 type ApplicationsTableProps = {
   applications: Application[]
+  onEdit: (application: Application) => void
 }
 
-export function ApplicationsTable({ applications }: ApplicationsTableProps) {
+export function ApplicationsTable({
+  applications,
+  onEdit,
+}: ApplicationsTableProps) {
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -31,39 +30,18 @@ export function ApplicationsTable({ applications }: ApplicationsTableProps) {
             <TableHead>
               <span className="sr-only">Link</span>
             </TableHead>
+            <TableHead>
+              <span className="sr-only">Actions</span>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {applications.map((application) => (
-            <TableRow key={application.id}>
-              <TableCell className="font-medium">
-                {application.company}
-              </TableCell>
-              <TableCell>{application.role}</TableCell>
-              <TableCell>
-                <StatusBadge value={application.status} />
-              </TableCell>
-              <TableCell className="text-muted-foreground">
-                {application.location ?? '—'}
-              </TableCell>
-              <TableCell className="tabular-nums text-muted-foreground">
-                {formatDate(application.created_at)}
-              </TableCell>
-              <TableCell className="w-10">
-                {application.application_url ? (
-                  <Button variant="ghost" size="icon-sm" asChild>
-                    <a
-                      href={application.application_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`Open posting for ${application.company}`}
-                    >
-                      <ExternalLink />
-                    </a>
-                  </Button>
-                ) : null}
-              </TableCell>
-            </TableRow>
+            <ApplicationRow
+              key={application.id}
+              application={application}
+              onEdit={onEdit}
+            />
           ))}
         </TableBody>
       </Table>
