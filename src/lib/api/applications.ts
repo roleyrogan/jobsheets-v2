@@ -1,12 +1,11 @@
 import { supabase } from '@/lib/api/client'
-import { legacyDateString } from '@/lib/dates'
 import type { ImportRow } from '@/lib/csv'
-import type { Application } from '@/types/index'
+import type { Application, ApplicationEvent } from '@/types/index'
 import type { TablesInsert, TablesUpdate } from '@/types/database'
 
 export type CreateApplicationValues = Omit<
   TablesInsert<'applications'>,
-  'user_id' | 'date' | 'id' | 'created_at'
+  'user_id' | 'id' | 'created_at'
 >
 
 export type ApplicationUpdate = Omit<
@@ -27,6 +26,19 @@ export async function listApplications(
   return data ?? []
 }
 
+export async function listApplicationEvents(
+  userId: string,
+): Promise<ApplicationEvent[]> {
+  const { data, error } = await supabase
+    .from('application_events')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: true })
+
+  if (error) throw new Error(error.message)
+  return data ?? []
+}
+
 export async function createApplication(
   userId: string,
   values: CreateApplicationValues,
@@ -36,7 +48,6 @@ export async function createApplication(
     .insert({
       ...values,
       user_id: userId,
-      date: legacyDateString(),
     })
     .select()
     .single()
@@ -83,7 +94,6 @@ export async function createApplications(
       location: row.location,
       notes: row.notes,
       created_at: row.created_at,
-      date: legacyDateString(new Date(row.created_at)),
     }))
 
     const { error } = await supabase.from('applications').insert(chunk)

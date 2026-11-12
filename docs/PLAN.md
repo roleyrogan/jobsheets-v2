@@ -77,20 +77,18 @@ Port in this order, one Cursor prompt per step:
 ### Phase 2 — Status history
 The app currently overwrites `status`, so it can't know when things happened. This phase records every change.
 
-- [ ] Migration: `application_events (id, application_id, user_id, status, created_at)` with RLS matching `applications`
-- [ ] Trigger on `applications`: insert an event on create and whenever `status` changes
-- [ ] Backfill: one event per existing application using its `created_at` and current status (for non-Applied rows, also an Applied event at `created_at`)
-- [ ] Replace the string `date` column with `applied_on date` (backfill from `created_at`)
-- [ ] Decide final stages. Proposed: Applied, OA, Interview, Offer, Rejected, Withdrawn. Update the check constraint and `src/lib/status.ts` together.
-- [ ] Regenerate types
-- [ ] Add CHECK constraint on `status` with the final stage list
-- [ ] Add explicit `WITH CHECK (auth.uid() = user_id)` to the UPDATE policy
-- [ ] Decide on a `deadline` column (add it here or drop it from the plan)
-- [ ] `user_id`: add foreign key to `auth.users(id) on delete cascade` and default `auth.uid()`
-- [ ] Add an index on `applications(user_id)`
-- [ ] Use `(select auth.uid())` in policies instead of `auth.uid()` (Supabase's recommended form; evaluated once per query instead of once per row)
+**Decisions**
+- Stages stay: Applied, Interview, Offer, Rejected (no OA / Withdrawn).
+- No `deadline` column.
+- Legacy `date` text column: make nullable in `status_history`, then drop in a later migration (`drop_legacy_date`) only after the new frontend is deployed (the currently deployed app still writes it).
 
-**Done when:** changing a status in the UI creates an event row, existing data is backfilled, and types are regenerated.
+- [ ] Migration `status_history`: CHECK on `status`; `user_id` default `auth.uid()` + FK to `auth.users(id) on delete cascade`; index on `(user_id, created_at desc)`; `date` DROP NOT NULL; recreate application policies with `(select auth.uid())` (UPDATE has USING + WITH CHECK)
+- [ ] Same migration: `application_events` table (`timing_known` included), RLS SELECT-only for the owner, no client writes; trigger `log_application_event` (SECURITY DEFINER) on insert/status update; backfill existing rows
+- [ ] pgTAP tests in `supabase/tests/database/status_history.test.sql`
+- [ ] Regenerate types; stop writing `date` in create/import; add `listApplicationEvents` (no UI yet)
+- [ ] Later (do not push until new frontend is live): migration `drop_legacy_date` drops `applications.date`
+
+**Done when:** `supabase db reset` and `supabase test db` pass locally; lint/build/npm test pass with regenerated types; status changes create event rows.
 
 ### Phase 3 — Views
 Three views of the same data, each its own route:

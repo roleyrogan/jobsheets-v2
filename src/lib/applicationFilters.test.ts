@@ -16,7 +16,6 @@ function app(
 ): Application {
   return {
     user_id: 'user-1',
-    date: '01/01/2026',
     application_url: null,
     location: null,
     notes: null,

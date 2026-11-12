@@ -14,14 +14,6 @@ export function daysAgo(iso: string, now: Date = new Date()): number {
   return Math.floor(diffMs / (1000 * 60 * 60 * 24))
 }
 
-/** Legacy MM/DD/YYYY for the NOT NULL `date` text column. Written on create only. */
-export function legacyDateString(date: Date = new Date()): string {
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const year = String(date.getFullYear())
-  return `${month}/${day}/${year}`
-}
-
 /** Local calendar date as YYYY-MM-DD. */
 export function toLocalYmd(date: Date = new Date()): string {
   const month = String(date.getMonth() + 1).padStart(2, '0')
