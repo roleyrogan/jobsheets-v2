@@ -1,17 +1,16 @@
+import {
+  countByStatus,
+  filterAndSort,
+  searchApplications,
+} from '@/lib/applicationFilters'
 import { useApplications } from '@/features/applications/queries'
-import { ApplicationsSummary } from '@/features/applications/ApplicationsSummary'
+import { useApplicationFilters } from '@/features/applications/useApplicationFilters'
+import { ApplicationsToolbar } from '@/features/applications/ApplicationsToolbar'
 import { ApplicationsTable } from '@/features/applications/ApplicationsTable'
+import { ApplicationsTableSkeleton } from '@/features/applications/ApplicationsTableSkeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import type { Application } from '@/types/index'
 
 type ApplicationsListProps = {
@@ -22,6 +21,7 @@ type ApplicationsListProps = {
 export function ApplicationsList({ onAdd, onEdit }: ApplicationsListProps) {
   const { data, error, isPending, isError, refetch, isFetching } =
     useApplications()
+  const { filters, clear } = useApplicationFilters()
 
   if (isPending) {
     return (
@@ -70,61 +70,24 @@ export function ApplicationsList({ onAdd, onEdit }: ApplicationsListProps) {
     )
   }
 
+  const searched = searchApplications(data, filters.q)
+  const visible = filterAndSort(data, filters)
+  const counts = countByStatus(searched)
+
   return (
     <div className="flex flex-col gap-4">
-      <ApplicationsSummary applications={data} />
-      <ApplicationsTable applications={data} onEdit={onEdit} />
-    </div>
-  )
-}
+      <ApplicationsToolbar total={searched.length} counts={counts} />
 
-function ApplicationsTableSkeleton() {
-  return (
-    <div className="overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Company</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead>Added</TableHead>
-            <TableHead>
-              <span className="sr-only">Link</span>
-            </TableHead>
-            <TableHead>
-              <span className="sr-only">Actions</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 5 }, (_, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <Skeleton className="h-4 w-28" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-36" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-20" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-24" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-24" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="size-4" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="size-4" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {visible.length === 0 ? (
+        <div className="flex flex-col items-start gap-3">
+          <p className="font-medium">No applications match your filters</p>
+          <Button variant="outline" onClick={clear}>
+            Clear filters
+          </Button>
+        </div>
+      ) : (
+        <ApplicationsTable applications={visible} onEdit={onEdit} />
+      )}
     </div>
   )
 }
