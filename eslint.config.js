@@ -6,20 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores([
-    'dist',
-    // Edge function entry uses Deno triple-slash refs
-    'supabase/functions/**',
-    // Pre-rewrite app kept until Phase 1 step 9
-    'src/App.tsx',
-    'src/supabase.ts',
-    'src/types.ts',
-    'src/hooks/**',
-    'src/utils/**',
-    'src/lib/heroui-button.ts',
-    'src/components/*.tsx',
-    'src/components/*.d.ts',
-  ]),
+  globalIgnores(['dist', 'supabase/functions/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [

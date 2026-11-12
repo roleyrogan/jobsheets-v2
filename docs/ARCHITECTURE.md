@@ -14,7 +14,7 @@ How the frontend is organized and the rules that keep it that way. If code doesn
 | Validation | Zod | Form input and CSV import rows |
 | CSV parsing | PapaParse | Handles quoted fields, embedded commas/newlines, BOM |
 | Toasts | Sonner (shadcn's toast) | Replaces the custom `Toast` + `useToast` |
-| Animation | Motion (`motion` package) only | framer-motion, GSAP and OGL are removed |
+| Animation | Motion (`motion` package) — not installed yet; add only when there's a real need. | |
 | Icons | lucide-react | |
 | Backend | Supabase (Postgres, Auth, Edge Functions) | |
 | Tests | Vitest | For `src/lib/` pure functions |
