@@ -7,6 +7,8 @@ export type SessionContextValue = {
   session: Session | null
   user: User | null
   status: AuthStatus
+  isRecovery: boolean
+  clearRecovery: () => void
 }
 
 export const SessionContext = createContext<SessionContextValue | null>(null)

@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from 'react-router'
 import { useQueryClient } from '@tanstack/react-query'
 import type { Session, User } from '@supabase/supabase-js'
 
-import { onAuthStateChange } from '@/lib/api/auth'
+import { onAuthStateChange, openedFromRecoveryLink } from '@/lib/api/auth'
 import {
   SessionContext,
   type AuthStatus,
@@ -15,6 +15,11 @@ export function SessionProvider() {
   const [session, setSession] = useState<Session | null>(null)
   const [user, setUser] = useState<User | null>(null)
   const [status, setStatus] = useState<AuthStatus>('loading')
+  const [isRecovery, setIsRecovery] = useState(openedFromRecoveryLink)
+
+  function clearRecovery() {
+    setIsRecovery(false)
+  }
 
   useEffect(() => {
     const { subscription } = onAuthStateChange((event, nextSession) => {
@@ -23,10 +28,12 @@ export function SessionProvider() {
       setStatus(nextSession ? 'signedIn' : 'signedOut')
 
       if (event === 'PASSWORD_RECOVERY') {
+        setIsRecovery(true)
         navigate('/reset-password', { replace: true })
       }
 
       if (event === 'SIGNED_OUT') {
+        setIsRecovery(false)
         queryClient.clear()
       }
     })
@@ -37,7 +44,9 @@ export function SessionProvider() {
   }, [navigate, queryClient])
 
   return (
-    <SessionContext.Provider value={{ session, user, status }}>
+    <SessionContext.Provider
+      value={{ session, user, status, isRecovery, clearRecovery }}
+    >
       <Outlet />
     </SessionContext.Provider>
   )

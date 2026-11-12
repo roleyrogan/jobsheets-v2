@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import { z } from 'zod'
 import { toast } from 'sonner'
 
@@ -23,7 +23,7 @@ const schema = z
 type FieldErrors = Partial<Record<'password' | 'confirmPassword', string>>
 
 export function ResetPasswordForm() {
-  const { status } = useSession()
+  const { status, isRecovery, clearRecovery } = useSession()
   const navigate = useNavigate()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -55,6 +55,10 @@ export function ResetPasswordForm() {
     )
   }
 
+  if (!isRecovery) {
+    return <Navigate to="/app/settings" replace />
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setServerError(null)
@@ -76,6 +80,7 @@ export function ResetPasswordForm() {
     setPending(true)
     try {
       await updatePassword(parsed.data.password)
+      clearRecovery()
       toast.success('Password updated')
       navigate('/app', { replace: true })
     } catch (error) {

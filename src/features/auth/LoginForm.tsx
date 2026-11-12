@@ -14,6 +14,22 @@ const schema = z.object({
   password: z.string().min(1, 'Password is required'),
 })
 
+const locationStateSchema = z.object({
+  from: z.object({
+    pathname: z.string(),
+  }),
+})
+
+function redirectPathFromState(state: unknown): string {
+  const parsed = locationStateSchema.safeParse(state)
+  if (!parsed.success) return '/app'
+  const { pathname } = parsed.data.from
+  if (pathname === '/app' || pathname.startsWith('/app/')) {
+    return pathname
+  }
+  return '/app'
+}
+
 type FieldErrors = Partial<Record<'email' | 'password', string>>
 
 export function LoginForm() {
@@ -47,9 +63,7 @@ export function LoginForm() {
     try {
       await signIn(parsed.data.email, parsed.data.password)
       toast.success('Signed in')
-      const from = (location.state as { from?: { pathname?: string } } | null)
-        ?.from?.pathname
-      navigate(from && from !== '/login' ? from : '/app', { replace: true })
+      navigate(redirectPathFromState(location.state), { replace: true })
     } catch (error) {
       setServerError(
         error instanceof Error ? error.message : 'Sign in failed',

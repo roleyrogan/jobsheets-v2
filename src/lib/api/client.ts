@@ -11,4 +11,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
+// Capture before createClient — Supabase strips the hash during init.
+export const initialAuthHash =
+  typeof window !== 'undefined' ? window.location.hash : ''
+
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
