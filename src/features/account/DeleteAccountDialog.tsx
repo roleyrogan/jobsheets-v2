@@ -32,7 +32,9 @@ export function DeleteAccountDialog({
   const [confirmation, setConfirmation] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
-  const canDelete = confirmation === email && email !== ''
+  const canDelete =
+    email !== '' &&
+    confirmation.trim().toLowerCase() === email.toLowerCase()
 
   function handleOpenChange(next: boolean) {
     if (!next) {

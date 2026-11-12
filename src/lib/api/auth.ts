@@ -90,7 +90,16 @@ export async function verifyPassword(
     email,
     password,
   })
-  if (error) throw new Error('Current password is incorrect')
+  if (!error) return
+
+  const isInvalidCredentials =
+    error.code === 'invalid_credentials' ||
+    (error.code == null && error.status === 400)
+
+  if (isInvalidCredentials) {
+    throw new Error('Current password is incorrect')
+  }
+  throw new Error(error.message)
 }
 
 export async function changePassword(
