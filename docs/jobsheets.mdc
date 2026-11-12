@@ -1,0 +1,47 @@
+---
+description: JobSheets project rules — architecture, conventions, and limits
+alwaysApply: true
+---
+
+# JobSheets rules
+
+Read `docs/ARCHITECTURE.md` and `docs/PLAN.md` before making changes. They are the source of truth. If a request conflicts with them, say so before writing code.
+
+## Scope
+- Do only what the prompt asks. One feature or step per change. Don't refactor unrelated files.
+- Don't start work from a later phase in PLAN.md unless asked.
+- Keep diffs small enough to review. If a change touches more than ~6 files, stop and list the plan first.
+
+## Dependencies
+- Never add a package without asking first and giving the reason. The approved stack is the table in ARCHITECTURE.md.
+- Never add HeroUI, framer-motion, GSAP, OGL, or any copy-paste effect component (React Bits, Aceternity, Magic UI, etc.).
+- Add shadcn components with the shadcn CLI, then edit them in `src/components/ui/`.
+
+## Data
+- Only files in `src/lib/api/` import the Supabase client. Components and hooks never call `supabase.*` directly.
+- `lib/api` functions return data or throw `Error`. No React, no toasts inside them.
+- Use TanStack Query hooks in `src/features/*/` for all server data. Don't copy server data into `useState`.
+- Row types come from `src/types/database.ts` (generated). Never hand-edit it; never redefine row shapes by hand.
+- Status values, labels, order and colours come only from `src/lib/status.ts`.
+- Schema changes go in a new migration via `supabase migration new`. Every new table gets RLS and policies in the same migration.
+
+## Components
+- One component per file, ideally under 150 lines. Split anything over 200.
+- More than ~5 `useState` in a component means it should be split or use `useReducer`.
+- Real `<form>` elements, labelled inputs, Enter submits, inline validation messages. No `alert()` or `confirm()`.
+- Use Sonner for toasts.
+- Accessible by default: buttons are `<button>`, icon-only buttons have `aria-label`, focus is visible, dialogs trap focus (Radix does this).
+
+## Styling
+- Until Phase 4, use the default shadcn neutral theme. No gradients, glows, spotlight/hover-follow effects, glassmorphism, animated backgrounds, or text-reveal animations.
+- No hard-coded hex colours in components. Use Tailwind theme tokens / CSS variables.
+- Any motion must respect `prefers-reduced-motion`.
+
+## TypeScript
+- Strict mode. No `any`, no `as` casts to silence errors, no `// @ts-ignore`. If a type is wrong, fix the type.
+- No `.jsx`/`.js` files in `src/`.
+
+## Before finishing a change
+- `npm run lint` and `npm run build` must pass.
+- Summarize what changed, which files, and anything I should test by hand.
+- Explain any non-obvious code in 1–2 sentences so I understand it, not just run it.
