@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import {
   countByStatus,
   filterAndSort,
@@ -16,12 +18,40 @@ import type { Application } from '@/types/index'
 type ApplicationsListProps = {
   onAdd: () => void
   onEdit: (application: Application) => void
+  onVisibleChange: (applications: Application[]) => void
 }
 
-export function ApplicationsList({ onAdd, onEdit }: ApplicationsListProps) {
+export function ApplicationsList({
+  onAdd,
+  onEdit,
+  onVisibleChange,
+}: ApplicationsListProps) {
   const { data, error, isPending, isError, refetch, isFetching } =
     useApplications()
   const { filters, clear } = useApplicationFilters()
+
+  const visible =
+    data && data.length > 0 ? filterAndSort(data, filters) : []
+
+  useEffect(() => {
+    if (!data || data.length === 0) {
+      onVisibleChange([])
+      return
+    }
+    onVisibleChange(
+      filterAndSort(data, {
+        q: filters.q,
+        status: filters.status,
+        sort: filters.sort,
+      }),
+    )
+  }, [
+    data,
+    filters.q,
+    filters.status,
+    filters.sort,
+    onVisibleChange,
+  ])
 
   if (isPending) {
     return (
@@ -71,7 +101,6 @@ export function ApplicationsList({ onAdd, onEdit }: ApplicationsListProps) {
   }
 
   const searched = searchApplications(data, filters.q)
-  const visible = filterAndSort(data, filters)
   const counts = countByStatus(searched)
 
   return (

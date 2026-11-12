@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
   createApplication,
+  createApplications,
   deleteApplication,
   updateApplication,
 } from '@/lib/api/applications'
+import type { ImportRow } from '@/lib/csv'
 import { applicationKeys } from '@/features/applications/queries'
 import { useSession } from '@/features/auth/useSession'
 import type { ApplicationFormValues } from '@/features/applications/schema'
@@ -107,6 +109,24 @@ export function useDeleteApplication() {
       if (context?.key) {
         void queryClient.invalidateQueries({ queryKey: context.key })
       }
+    },
+  })
+}
+
+export function useImportApplications() {
+  const { user } = useSession()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (rows: ImportRow[]) => {
+      if (!user) throw new Error('Not signed in')
+      return createApplications(user.id, rows)
+    },
+    onSuccess: () => {
+      if (!user) return
+      void queryClient.invalidateQueries({
+        queryKey: applicationKeys.list(user.id),
+      })
     },
   })
 }

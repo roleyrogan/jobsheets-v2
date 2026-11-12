@@ -12,6 +12,7 @@ How the frontend is organized and the rules that keep it that way. If code doesn
 | Routing | React Router (library mode) | |
 | Server state | TanStack Query | Loading, errors, caching, optimistic updates |
 | Validation | Zod | Form input and CSV import rows |
+| CSV parsing | PapaParse | Handles quoted fields, embedded commas/newlines, BOM |
 | Toasts | Sonner (shadcn's toast) | Replaces the custom `Toast` + `useToast` |
 | Animation | Motion (`motion` package) only | framer-motion, GSAP and OGL are removed |
 | Icons | lucide-react | |
