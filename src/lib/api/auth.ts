@@ -4,7 +4,6 @@ import type {
   Subscription,
   User,
 } from '@supabase/supabase-js'
-import { toast } from 'sonner'
 
 import { initialAuthHash, supabase } from '@/lib/api/client'
 
@@ -14,12 +13,10 @@ const authHashParams = new URLSearchParams(
 
 export const openedFromRecoveryLink = authHashParams.get('type') === 'recovery'
 
-const authRedirectHadError =
+export const authRedirectHadError =
   authHashParams.has('error') || authHashParams.has('error_code')
 
-export function reportAuthRedirectError(): void {
-  if (!authRedirectHadError) return
-  toast.error('That link has expired or was already used.')
+export function clearAuthHash(): void {
   window.history.replaceState(
     null,
     '',
