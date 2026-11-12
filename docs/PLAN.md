@@ -86,6 +86,9 @@ The app currently overwrites `status`, so it can't know when things happened. Th
 - [ ] Add CHECK constraint on `status` with the final stage list
 - [ ] Add explicit `WITH CHECK (auth.uid() = user_id)` to the UPDATE policy
 - [ ] Decide on a `deadline` column (add it here or drop it from the plan)
+- [ ] `user_id`: add foreign key to `auth.users(id) on delete cascade` and default `auth.uid()`
+- [ ] Add an index on `applications(user_id)`
+- [ ] Use `(select auth.uid())` in policies instead of `auth.uid()` (Supabase's recommended form; evaluated once per query instead of once per row)
 
 **Done when:** changing a status in the UI creates an event row, existing data is backfilled, and types are regenerated.
 
