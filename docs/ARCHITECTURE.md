@@ -41,7 +41,7 @@ src/
     ApplicationsWorkspace.tsx  Shared heading, Add/Import, view tabs, <Outlet />
     SheetView.tsx          Dense table + filters + export
     BoardView.tsx          Kanban (lazy); composes features/board
-    OverviewView.tsx       Stats (lazy); placeholder until built
+    OverviewView.tsx       Stats (lazy); composes features/overview
     Settings.tsx
     RequireAuth.tsx        Redirects to /login when signed out
 
@@ -49,6 +49,7 @@ src/
     auth/                  useSession, auth forms
     applications/          list, row, form, filters, CSV import dialog, hooks
     board/                 Kanban columns, cards, dnd-kit (lazy chunk only)
+    overview/              Summary, funnel, heatmap, weekly bars, ghosted list
     account/               email / password / delete-account forms
 
   lib/

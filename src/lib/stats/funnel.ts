@@ -89,5 +89,5 @@ export function responseRate(
   for (const app of apps) {
     if (hasNonAppliedEvent(app, events)) responded += 1
   }
-  return responded / apps.length
+  return (responded / apps.length) * 100
 }

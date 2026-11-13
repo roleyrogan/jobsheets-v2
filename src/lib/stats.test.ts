@@ -220,7 +220,7 @@ describe('responseRate', () => {
         created_at: '2026-01-05T12:00:00.000Z',
       }),
     ]
-    expect(responseRate(apps, events)).toBe(0.5)
+    expect(responseRate(apps, events)).toBe(50)
 
     const allEvents = [
       ...events,
@@ -232,7 +232,7 @@ describe('responseRate', () => {
         created_at: '2026-01-06T12:00:00.000Z',
       }),
     ]
-    expect(responseRate(apps, allEvents)).toBe(1)
+    expect(responseRate(apps, allEvents)).toBe(100)
   })
 })
 
