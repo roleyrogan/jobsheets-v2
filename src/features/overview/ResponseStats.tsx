@@ -40,6 +40,9 @@ export function ResponseStats({
                   : `${timing.medianDays} days`}
               </p>
               <p className="text-sm text-muted-foreground">
+                median time until a response was logged
+              </p>
+              <p className="text-sm text-muted-foreground">
                 based on {timing.sampleSize} applications
                 {timing.excludedUnknownTiming > 0
                   ? ` · ${timing.excludedUnknownTiming} without known timing not counted`
@@ -50,7 +53,7 @@ export function ResponseStats({
             <>
               <p className="text-2xl font-medium">Not enough data yet</p>
               <p className="text-sm text-muted-foreground">
-                Median time to a logged response
+                median time until a response was logged
               </p>
             </>
           )}

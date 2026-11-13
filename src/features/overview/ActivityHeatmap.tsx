@@ -1,23 +1,37 @@
+import { useLayoutEffect, useRef } from 'react'
+
 import { dailyActivity } from '@/lib/stats'
 import {
   buildHeatmapWeeks,
   cellTitle,
   heatmapAriaLabel,
   heatmapOpacity,
+  monthLabels,
 } from '@/features/overview/heatmap'
-import { formatMonth } from '@/features/overview/format'
+import type { Application } from '@/types/index'
 
 type ActivityHeatmapProps = {
-  applications: Parameters<typeof dailyActivity>[0]
+  applications: Application[]
   now: Date
 }
 
 const ROW_LABELS = ['Mon', '', 'Wed', '', 'Fri', '', ''] as const
+const WEEK_COUNT = 26
+const GRID_MIN = `calc(${WEEK_COUNT} * 11px + ${WEEK_COUNT - 1} * 3px)`
+const GRID_MAX = `calc(${WEEK_COUNT} * 18px + ${WEEK_COUNT - 1} * 3px)`
 
 export function ActivityHeatmap({ applications, now }: ActivityHeatmapProps) {
-  const activity = dailyActivity(applications, now, 26 * 7)
-  const weeks = buildHeatmapWeeks(activity, now, 26)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const activity = dailyActivity(applications, now, WEEK_COUNT * 7)
+  const weeks = buildHeatmapWeeks(activity, now, WEEK_COUNT)
+  const labels = monthLabels(weeks)
   const ariaLabel = heatmapAriaLabel(weeks)
+
+  useLayoutEffect(() => {
+    const node = scrollRef.current
+    if (!node) return
+    node.scrollLeft = node.scrollWidth
+  }, [applications, now])
 
   return (
     <section
@@ -28,66 +42,30 @@ export function ActivityHeatmap({ applications, now }: ActivityHeatmapProps) {
         Activity
       </h2>
 
-      <div className="overflow-x-auto">
+      <div ref={scrollRef} className="overflow-x-auto">
         <div
           role="img"
           aria-label={ariaLabel}
-          className="inline-flex gap-2 pb-1"
+          className="grid w-full gap-[3px] pb-1"
+          style={{
+            gridTemplateColumns: `1.75rem repeat(${WEEK_COUNT}, minmax(0, 1fr))`,
+            minWidth: `calc(1.75rem + 3px + ${GRID_MIN})`,
+            maxWidth: `calc(1.75rem + 3px + ${GRID_MAX})`,
+          }}
         >
-          <div
-            className="grid grid-rows-7 gap-[3px] pt-4 text-[10px] leading-[11px] text-muted-foreground"
-            aria-hidden
-          >
-            {ROW_LABELS.map((label, index) => (
-              <span key={index} className="h-[11px]">
-                {label}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <div className="flex gap-[3px]">
-              {weeks.map((week, index) => {
-                const prev = weeks[index - 1]
-                const showMonth =
-                  index === 0 ||
-                  formatMonth(week.weekStart) !==
-                    (prev ? formatMonth(prev.weekStart) : '')
-                return (
-                  <div
-                    key={`m-${week.weekStart}`}
-                    className="w-[11px] text-[10px] text-muted-foreground"
-                  >
-                    {showMonth ? formatMonth(week.weekStart) : ''}
-                  </div>
-                )
-              })}
-            </div>
-
+          <div aria-hidden />
+          {labels.map((label, index) => (
             <div
-              className="grid grid-flow-col grid-rows-7 gap-[3px]"
-              style={{ gridAutoColumns: '11px' }}
+              key={`m-${weeks[index]?.weekStart ?? index}`}
+              className="text-[10px] leading-none text-muted-foreground"
             >
-              {weeks.flatMap((week) =>
-                week.cells.map((cell) => (
-                  <div
-                    key={cell.date}
-                    title={cellTitle(cell)}
-                    className={
-                      cell.future
-                        ? 'size-[11px] rounded-[2px] bg-transparent'
-                        : 'size-[11px] rounded-[2px] bg-foreground'
-                    }
-                    style={
-                      cell.future
-                        ? undefined
-                        : { opacity: heatmapOpacity(cell.count) }
-                    }
-                  />
-                )),
-              )}
+              {label ?? ''}
             </div>
-          </div>
+          ))}
+
+          {ROW_LABELS.map((label, row) => (
+            <DayRow key={row} label={label} weeks={weeks} row={row} />
+          ))}
         </div>
       </div>
 
@@ -104,5 +82,44 @@ export function ActivityHeatmap({ applications, now }: ActivityHeatmapProps) {
         More
       </p>
     </section>
+  )
+}
+
+function DayRow({
+  label,
+  weeks,
+  row,
+}: {
+  label: string
+  weeks: ReturnType<typeof buildHeatmapWeeks>
+  row: number
+}) {
+  return (
+    <>
+      <span
+        className="flex items-center justify-end pr-0.5 text-[10px] leading-none text-muted-foreground"
+        aria-hidden
+      >
+        {label}
+      </span>
+      {weeks.map((week) => {
+        const cell = week.cells[row]
+        if (!cell) return null
+        return (
+          <div
+            key={cell.date}
+            title={cellTitle(cell)}
+            className={
+              cell.future
+                ? 'aspect-square w-full rounded-[2px] bg-transparent'
+                : 'aspect-square w-full rounded-[2px] bg-foreground'
+            }
+            style={
+              cell.future ? undefined : { opacity: heatmapOpacity(cell.count) }
+            }
+          />
+        )
+      })}
+    </>
   )
 }

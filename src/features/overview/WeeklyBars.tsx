@@ -1,5 +1,6 @@
 import { weeklyCounts, type WeeklyCount } from '@/lib/stats'
 import { formatMonthDay } from '@/features/overview/format'
+import { useMediaQuery } from '@/features/overview/useMediaQuery'
 import { localYmd, mondayOfWeek } from '@/lib/stats/helpers'
 import type { Application } from '@/types/index'
 
@@ -16,7 +17,9 @@ function barHeight(count: number, max: number): number {
 }
 
 export function WeeklyBars({ applications, now }: WeeklyBarsProps) {
-  const weeks = weeklyCounts(applications, now, 12)
+  const isNarrow = useMediaQuery('(max-width: 639px)')
+  const weekCount = isNarrow ? 8 : 12
+  const weeks = weeklyCounts(applications, now, weekCount)
   const max = weeks.reduce((peak, week) => Math.max(peak, week.count), 0)
   const currentWeek = localYmd(mondayOfWeek(now))
 
@@ -29,7 +32,7 @@ export function WeeklyBars({ applications, now }: WeeklyBarsProps) {
         Weekly applications
       </h2>
 
-      <div className="flex items-end justify-between gap-1 overflow-x-auto pb-1">
+      <div className="flex w-full items-end gap-1">
         {weeks.map((week) => (
           <WeekBar
             key={week.weekStart}
@@ -58,8 +61,8 @@ function WeekBar({
     <div
       className={
         current
-          ? 'flex min-w-8 flex-1 flex-col items-center gap-1 text-foreground'
-          : 'flex min-w-8 flex-1 flex-col items-center gap-1 text-muted-foreground'
+          ? 'flex min-w-0 flex-1 flex-col items-center gap-1 text-foreground'
+          : 'flex min-w-0 flex-1 flex-col items-center gap-1 text-muted-foreground'
       }
     >
       <span className="text-xs tabular-nums">{week.count}</span>
@@ -67,14 +70,14 @@ function WeekBar({
         <div
           className={
             current
-              ? 'w-full max-w-6 rounded-sm bg-foreground'
-              : 'w-full max-w-6 rounded-sm bg-foreground/40'
+              ? 'w-full rounded-sm bg-foreground'
+              : 'w-full rounded-sm bg-foreground/40'
           }
           style={{ height: `${height}px` }}
           aria-hidden
         />
       </div>
-      <span className="text-[10px] whitespace-nowrap">
+      <span className="max-w-full truncate text-[10px]">
         {formatMonthDay(week.weekStart)}
       </span>
     </div>

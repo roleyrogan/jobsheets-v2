@@ -5,7 +5,11 @@ import {
   startOfLocalDay,
 } from '@/lib/stats/helpers'
 import type { DailyCount } from '@/lib/stats'
-import { applicationWord, formatMonthDayYear } from '@/features/overview/format'
+import {
+  applicationWord,
+  formatMonth,
+  formatMonthDayYear,
+} from '@/features/overview/format'
 
 export type HeatmapCell = {
   date: string
@@ -83,4 +87,36 @@ export function heatmapAriaLabel(weeks: HeatmapWeek[]): string {
 export function cellTitle(cell: HeatmapCell): string {
   if (cell.future) return `Future day ${formatMonthDayYear(cell.date)}`
   return `${cell.count} ${applicationWord(cell.count)} on ${formatMonthDayYear(cell.date)}`
+}
+
+/** Month label per week column; skips labels within 2 columns of the previous. */
+export function monthLabels(weeks: HeatmapWeek[]): Array<string | null> {
+  const starts: number[] = []
+  for (let i = 0; i < weeks.length; i += 1) {
+    const week = weeks[i]
+    if (!week) continue
+    const month = formatMonth(week.weekStart)
+    const prev = weeks[i - 1]
+    if (i === 0 || !prev || month !== formatMonth(prev.weekStart)) {
+      starts.push(i)
+    }
+  }
+
+  const labels: Array<string | null> = weeks.map(() => null)
+  let lastLabeled = Number.NEGATIVE_INFINITY
+
+  for (let s = 0; s < starts.length; s += 1) {
+    const index = starts[s]
+    if (index === undefined) continue
+    const next = starts[s + 1] ?? weeks.length
+    const span = next - index
+    if (index === 0 && span <= 2) continue
+    if (index - lastLabeled <= 2) continue
+    const week = weeks[index]
+    if (!week) continue
+    labels[index] = formatMonth(week.weekStart)
+    lastLabeled = index
+  }
+
+  return labels
 }
