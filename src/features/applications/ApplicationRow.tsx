@@ -1,22 +1,17 @@
-import { useState } from 'react'
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import { ExternalLink, MoreHorizontal } from 'lucide-react'
-import { toast } from 'sonner'
 
-import { formatDate } from '@/lib/dates'
+import { toLocalYmd } from '@/lib/dates'
 import { safeExternalUrl } from '@/lib/urls'
-import { STATUSES, isStatus, toStatus } from '@/lib/status'
-import { useUpdateStatus } from '@/features/applications/mutations'
-import { StatusBadge } from '@/features/applications/StatusBadge'
+import { ApplicationStatusCell } from '@/features/applications/ApplicationStatusCell'
 import { DeleteApplicationDialog } from '@/features/applications/DeleteApplicationDialog'
 import { Button } from '@/components/ui/button'
-import { TableCell, TableRow } from '@/components/ui/table'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,62 +20,92 @@ import {
 } from '@/components/ui/dropdown-menu'
 import type { Application } from '@/types/index'
 
+export type ApplicationRowHandle = {
+  openStatus: () => void
+  openDelete: () => void
+  focus: () => void
+}
+
 type ApplicationRowProps = {
   application: Application
+  rowNumber: number
+  selected: boolean
+  onSelect: () => void
   onEdit: (application: Application) => void
 }
 
-export function ApplicationRow({ application, onEdit }: ApplicationRowProps) {
-  const updateStatus = useUpdateStatus()
+export const ApplicationRow = forwardRef<
+  ApplicationRowHandle,
+  ApplicationRowProps
+>(function ApplicationRow(
+  { application, rowNumber, selected, onSelect, onEdit },
+  ref,
+) {
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const rowRef = useRef<HTMLTableRowElement>(null)
+  const statusTriggerRef = useRef<HTMLButtonElement>(null)
   const externalUrl = safeExternalUrl(application.application_url)
-  const status = toStatus(application.status)
+  const added = toLocalYmd(new Date(application.created_at))
+
+  useImperativeHandle(ref, () => ({
+    openStatus: () => statusTriggerRef.current?.click(),
+    openDelete: () => setDeleteOpen(true),
+    focus: () => rowRef.current?.focus(),
+  }))
+
+  useEffect(() => {
+    if (selected) rowRef.current?.focus()
+  }, [selected])
 
   return (
     <>
-      <TableRow>
-        <TableCell className="font-medium">{application.company}</TableCell>
-        <TableCell>{application.role}</TableCell>
-        <TableCell>
-          <Select
-            value={status}
-            onValueChange={(value) => {
-              if (!isStatus(value) || value === status) return
-              updateStatus.mutate(
-                { id: application.id, status: value },
-                {
-                  onError: () => {
-                    toast.error("Couldn't update status")
-                  },
-                },
-              )
-            }}
-          >
-            <SelectTrigger
-              size="sm"
-              className="h-auto border-0 bg-transparent px-1.5 py-1"
-              aria-label={`Status for ${application.company}`}
-            >
-              <SelectValue>
-                <StatusBadge value={status} />
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {STATUSES.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
-                  <StatusBadge value={item.value} />
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </TableCell>
-        <TableCell className="text-muted-foreground">
-          {application.location ?? '—'}
-        </TableCell>
-        <TableCell className="tabular-nums text-muted-foreground">
-          {formatDate(application.created_at)}
-        </TableCell>
-        <TableCell className="w-10">
+      <tr
+        ref={rowRef}
+        tabIndex={selected ? 0 : -1}
+        data-selected={selected ? 'true' : undefined}
+        onClick={onSelect}
+        onFocus={onSelect}
+        className={
+          selected
+            ? 'group/row h-9 border-b border-rule bg-fill outline-2 outline-offset-[-2px] outline-select'
+            : 'group/row h-9 border-b border-rule outline-none hover:bg-fill'
+        }
+      >
+        <td className="sticky left-0 z-10 w-10 border-r border-rule bg-fill px-2 text-right md:static">
+          <span className="figure text-ink-2">{rowNumber}</span>
+        </td>
+        <td
+          className={
+            selected
+              ? 'sticky left-10 z-10 max-w-[12rem] border-r border-rule bg-fill px-2 font-medium md:static'
+              : 'sticky left-10 z-10 max-w-[12rem] border-r border-rule bg-paper px-2 font-medium group-hover/row:bg-fill md:static'
+          }
+          title={application.company}
+        >
+          <span className="block truncate">{application.company}</span>
+        </td>
+        <td
+          className="max-w-[14rem] border-r border-rule px-2"
+          title={application.role}
+        >
+          <span className="block truncate">{application.role}</span>
+        </td>
+        <td className="border-r border-rule px-2">
+          <ApplicationStatusCell
+            application={application}
+            triggerRef={statusTriggerRef}
+          />
+        </td>
+        <td
+          className="max-w-[10rem] border-r border-rule px-2"
+          title={application.location ?? undefined}
+        >
+          <span className="block truncate">{application.location ?? '—'}</span>
+        </td>
+        <td className="border-r border-rule px-2 text-right">
+          <span className="figure">{added}</span>
+        </td>
+        <td className="border-r border-rule px-1">
           {externalUrl ? (
             <Button variant="ghost" size="icon-sm" asChild>
               <a
@@ -88,21 +113,23 @@ export function ApplicationRow({ application, onEdit }: ApplicationRowProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open posting for ${application.company}`}
+                className="text-ink-2 hover:text-ink [&_svg]:size-3.5"
               >
                 <ExternalLink />
               </a>
             </Button>
           ) : null}
-        </TableCell>
-        <TableCell className="w-10">
+        </td>
+        <td className="px-1">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
                 size="icon-sm"
                 aria-label={`Actions for ${application.company}`}
+                className="text-ink-2 hover:text-ink"
               >
-                <MoreHorizontal />
+                <MoreHorizontal className="size-3.5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -117,8 +144,8 @@ export function ApplicationRow({ application, onEdit }: ApplicationRowProps) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </TableCell>
-      </TableRow>
+        </td>
+      </tr>
 
       <DeleteApplicationDialog
         application={application}
@@ -127,4 +154,4 @@ export function ApplicationRow({ application, onEdit }: ApplicationRowProps) {
       />
     </>
   )
-}
+})

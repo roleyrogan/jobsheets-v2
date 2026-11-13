@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   countByStatus,
+  DEFAULT_SORT,
   filterAndSort,
   filtersToParams,
   parseFilters,
@@ -63,31 +64,51 @@ const sample: Application[] = [
 ]
 
 describe('parseFilters', () => {
-  it('parses valid params', () => {
+  it('parses sort key and dir', () => {
     const params = new URLSearchParams(
-      'q=shop&status=Interview&sort=company',
+      'q=shop&status=Interview&sort=company&dir=desc',
     )
     expect(parseFilters(params)).toEqual({
       q: 'shop',
       status: 'Interview',
-      sort: 'company',
+      sort: { key: 'company', dir: 'desc' },
+    })
+  })
+
+  it('maps legacy sort values', () => {
+    expect(parseFilters(new URLSearchParams('sort=newest')).sort).toEqual({
+      key: 'added',
+      dir: 'desc',
+    })
+    expect(parseFilters(new URLSearchParams('sort=oldest')).sort).toEqual({
+      key: 'added',
+      dir: 'asc',
+    })
+    expect(parseFilters(new URLSearchParams('sort=company')).sort).toEqual({
+      key: 'company',
+      dir: 'asc',
+    })
+    expect(parseFilters(new URLSearchParams('sort=status')).sort).toEqual({
+      key: 'status',
+      dir: 'asc',
     })
   })
 
   it('falls back on junk values', () => {
-    const params = new URLSearchParams('status=banana&sort=nope')
-    expect(parseFilters(params)).toEqual({
-      q: '',
-      status: 'all',
-      sort: 'newest',
-    })
+    expect(parseFilters(new URLSearchParams('status=banana&sort=nope'))).toEqual(
+      {
+        q: '',
+        status: 'all',
+        sort: DEFAULT_SORT,
+      },
+    )
   })
 
   it('uses defaults when params are missing', () => {
     expect(parseFilters(new URLSearchParams())).toEqual({
       q: '',
       status: 'all',
-      sort: 'newest',
+      sort: DEFAULT_SORT,
     })
   })
 })
@@ -97,7 +118,7 @@ describe('filtersToParams', () => {
     const params = filtersToParams({
       q: '',
       status: 'all',
-      sort: 'newest',
+      sort: DEFAULT_SORT,
     })
     expect(params.toString()).toBe('')
   })
@@ -106,7 +127,7 @@ describe('filtersToParams', () => {
     const filters: ApplicationFilters = {
       q: 'shop',
       status: 'Interview',
-      sort: 'oldest',
+      sort: { key: 'role', dir: 'asc' },
     }
     expect(parseFilters(filtersToParams(filters))).toEqual(filters)
   })
@@ -132,56 +153,66 @@ describe('searchApplications', () => {
 describe('filterAndSort', () => {
   it('does not mutate the input array', () => {
     const original = [...sample]
-    const snapshot = sample.map((item) => item.id)
     filterAndSort(sample, {
       q: 'a',
       status: 'Applied',
-      sort: 'company',
+      sort: { key: 'company', dir: 'asc' },
     })
     expect(sample).toEqual(original)
-    expect(sample.map((item) => item.id)).toEqual(snapshot)
   })
 
   it('filters by status', () => {
     const result = filterAndSort(sample, {
       q: '',
       status: 'Interview',
-      sort: 'newest',
+      sort: DEFAULT_SORT,
     })
     expect(result.map((a) => a.id)).toEqual([1])
   })
 
-  it('sorts by newest and oldest', () => {
+  it('sorts added desc and asc', () => {
     const newest = filterAndSort(sample, {
       q: '',
       status: 'all',
-      sort: 'newest',
+      sort: { key: 'added', dir: 'desc' },
     })
     expect(newest.map((a) => a.id)).toEqual([4, 1, 2, 3])
 
     const oldest = filterAndSort(sample, {
       q: '',
       status: 'all',
-      sort: 'oldest',
+      sort: { key: 'added', dir: 'asc' },
     })
     expect(oldest.map((a) => a.id)).toEqual([3, 2, 1, 4])
   })
 
-  it('sorts by company A–Z', () => {
-    const result = filterAndSort(sample, {
+  it('sorts by company and role in both directions', () => {
+    const companyAsc = filterAndSort(sample, {
       q: '',
       status: 'all',
-      sort: 'company',
+      sort: { key: 'company', dir: 'asc' },
     })
-    expect(result.map((a) => a.company)).toEqual([
+    expect(companyAsc.map((a) => a.company)).toEqual([
       'Amazon',
       'Google',
       'Meta',
       'Shopify',
     ])
+
+    const roleDesc = filterAndSort(sample, {
+      q: '',
+      status: 'all',
+      sort: { key: 'role', dir: 'desc' },
+    })
+    expect(roleDesc.map((a) => a.role)).toEqual([
+      'SWE',
+      'SDE',
+      'PM',
+      'Frontend',
+    ])
   })
 
-  it('sorts by status order then newest within each', () => {
+  it('sorts by status order with added desc ties', () => {
     const withExtra = [
       ...sample,
       app({
@@ -195,9 +226,30 @@ describe('filterAndSort', () => {
     const result = filterAndSort(withExtra, {
       q: '',
       status: 'all',
-      sort: 'status',
+      sort: { key: 'status', dir: 'asc' },
     })
     expect(result.map((a) => a.id)).toEqual([5, 2, 1, 3, 4])
+  })
+
+  it('keeps empty locations last in both directions', () => {
+    const asc = filterAndSort(sample, {
+      q: '',
+      status: 'all',
+      sort: { key: 'location', dir: 'asc' },
+    })
+    expect(asc.map((a) => a.id)).toEqual([4, 2, 1, 3])
+
+    const desc = filterAndSort(sample, {
+      q: '',
+      status: 'all',
+      sort: { key: 'location', dir: 'desc' },
+    })
+    expect(desc[desc.length - 1]?.id).toBe(3)
+    expect(desc.slice(0, 3).map((a) => a.location)).toEqual([
+      'Toronto',
+      'Seattle',
+      'Remote',
+    ])
   })
 })
 

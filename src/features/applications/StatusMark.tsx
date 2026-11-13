@@ -8,8 +8,8 @@ type StatusMarkProps = {
 export function StatusMark({ mark, color }: StatusMarkProps) {
   return (
     <svg
-      width="8"
-      height="8"
+      width="10"
+      height="10"
       viewBox="0 0 8 8"
       aria-hidden
       className="shrink-0"

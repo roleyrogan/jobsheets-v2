@@ -1,4 +1,7 @@
+import type { ReactNode } from 'react'
+
 import { STATUSES, type Status } from '@/lib/status'
+import { StatusMark } from '@/features/applications/StatusMark'
 
 type StatusFilterTogglesProps = {
   total: number
@@ -15,35 +18,46 @@ export function StatusFilterToggles({
 }: StatusFilterTogglesProps) {
   return (
     <div
-      className="flex flex-wrap gap-1"
+      className="flex flex-wrap"
       role="group"
       aria-label="Filter by status"
     >
       <StatusToggle
-        label={`All ${total}`}
         pressed={selected === 'all'}
         onClick={() => onSelect('all')}
-      />
-      {STATUSES.map((status) => (
+        first
+      >
+        <span>All</span>
+        <span className="figure">{total}</span>
+      </StatusToggle>
+      {STATUSES.map((status, index) => (
         <StatusToggle
           key={status.value}
-          label={`${status.label} ${counts[status.value]}`}
           pressed={selected === status.value}
           onClick={() => onSelect(status.value)}
-        />
+          last={index === STATUSES.length - 1}
+        >
+          <StatusMark mark={status.mark} color={status.color} />
+          <span>{status.label}</span>
+          <span className="figure">{counts[status.value]}</span>
+        </StatusToggle>
       ))}
     </div>
   )
 }
 
 function StatusToggle({
-  label,
   pressed,
   onClick,
+  children,
+  first = false,
+  last = false,
 }: {
-  label: string
   pressed: boolean
   onClick: () => void
+  children: ReactNode
+  first?: boolean
+  last?: boolean
 }) {
   return (
     <button
@@ -52,11 +66,11 @@ function StatusToggle({
       onClick={onClick}
       className={
         pressed
-          ? 'rounded-md bg-muted px-2.5 py-1 text-sm font-medium text-foreground'
-          : 'rounded-md px-2.5 py-1 text-sm text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+          ? `inline-flex h-8 items-center gap-1.5 border border-ink bg-ink px-2.5 text-[13px] font-medium text-paper ${first ? '' : '-ml-px'} ${last ? '' : ''}`
+          : `inline-flex h-8 items-center gap-1.5 border border-rule bg-paper px-2.5 text-[13px] text-ink hover:border-ink ${first ? '' : '-ml-px'}`
       }
     >
-      {label}
+      {children}
     </button>
   )
 }

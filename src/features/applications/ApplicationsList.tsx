@@ -12,19 +12,22 @@ import { ApplicationsTable } from '@/features/applications/ApplicationsTable'
 import { ApplicationsTableSkeleton } from '@/features/applications/ApplicationsTableSkeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
 import type { Application } from '@/types/index'
 
 type ApplicationsListProps = {
   onAdd: () => void
   onEdit: (application: Application) => void
   onVisibleChange: (applications: Application[]) => void
+  onExport: () => void
+  exportCount: number
 }
 
 export function ApplicationsList({
   onAdd,
   onEdit,
   onVisibleChange,
+  onExport,
+  exportCount,
 }: ApplicationsListProps) {
   const { data, error, isPending, isError, refetch, isFetching } =
     useApplications()
@@ -56,7 +59,6 @@ export function ApplicationsList({
   if (isPending) {
     return (
       <div className="flex flex-col gap-4">
-        <Skeleton className="h-4 w-72" />
         <ApplicationsTableSkeleton />
       </div>
     )
@@ -88,13 +90,8 @@ export function ApplicationsList({
 
   if (!data || data.length === 0) {
     return (
-      <div className="flex flex-col items-start gap-3">
-        <div className="flex flex-col gap-1">
-          <p className="font-medium">No applications yet</p>
-          <p className="text-sm text-muted-foreground">
-            When you add one, it will show up here.
-          </p>
-        </div>
+      <div className="flex min-h-48 flex-col items-center justify-center gap-3 border border-rule">
+        <p className="text-sm">No applications yet</p>
         <Button onClick={onAdd}>Add your first application</Button>
       </div>
     )
@@ -105,11 +102,16 @@ export function ApplicationsList({
 
   return (
     <div className="flex flex-col gap-4">
-      <ApplicationsToolbar total={searched.length} counts={counts} />
+      <ApplicationsToolbar
+        total={searched.length}
+        counts={counts}
+        exportCount={exportCount}
+        onExport={onExport}
+      />
 
       {visible.length === 0 ? (
-        <div className="flex flex-col items-start gap-3">
-          <p className="font-medium">No applications match your filters</p>
+        <div className="flex min-h-48 flex-col items-center justify-center gap-3 border border-rule">
+          <p className="text-sm">No applications match your filters</p>
           <Button variant="outline" onClick={clear}>
             Clear filters
           </Button>

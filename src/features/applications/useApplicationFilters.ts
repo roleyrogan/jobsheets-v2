@@ -1,10 +1,11 @@
 import { useSearchParams } from 'react-router'
 
 import {
+  DEFAULT_SORT,
   filtersToParams,
   parseFilters,
   type ApplicationFilters,
-  type SortKey,
+  type SortColumn,
 } from '@/lib/applicationFilters'
 import type { Status } from '@/lib/status'
 
@@ -24,11 +25,30 @@ export function useApplicationFilters() {
     setStatus: (status: Status | 'all') => {
       write({ ...filters, status }, false)
     },
-    setSort: (sort: SortKey) => {
-      write({ ...filters, sort }, false)
+    toggleSort: (key: SortColumn) => {
+      if (filters.sort.key === key) {
+        write(
+          {
+            ...filters,
+            sort: {
+              key,
+              dir: filters.sort.dir === 'asc' ? 'desc' : 'asc',
+            },
+          },
+          false,
+        )
+        return
+      }
+      write(
+        {
+          ...filters,
+          sort: { key, dir: key === 'added' ? 'desc' : 'asc' },
+        },
+        false,
+      )
     },
     clear: () => {
-      write({ q: '', status: 'all', sort: 'newest' }, true)
+      write({ q: '', status: 'all', sort: DEFAULT_SORT }, true)
     },
   }
 }

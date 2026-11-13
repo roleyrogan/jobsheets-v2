@@ -1,49 +1,74 @@
-import { z } from 'zod'
-
-import { STATUSES, isStatus, toStatus, type Status } from '@/lib/status'
+import { isStatus, toStatus, type Status } from '@/lib/status'
+import { sortApplications } from '@/lib/applicationSort'
 import type { Application } from '@/types/index'
 
-export type SortKey = 'newest' | 'oldest' | 'company' | 'status'
+export type SortColumn =
+  | 'company'
+  | 'role'
+  | 'status'
+  | 'location'
+  | 'added'
+
+export type SortDir = 'asc' | 'desc'
+
+export type ApplicationSort = {
+  key: SortColumn
+  dir: SortDir
+}
 
 export type ApplicationFilters = {
   q: string
   status: Status | 'all'
-  sort: SortKey
+  sort: ApplicationSort
 }
 
-const SORT_KEYS: readonly SortKey[] = [
-  'newest',
-  'oldest',
+const SORT_COLUMNS: readonly SortColumn[] = [
   'company',
+  'role',
   'status',
+  'location',
+  'added',
 ]
 
-const [firstSort, ...restSorts] = SORT_KEYS
-if (firstSort === undefined) {
-  throw new Error('SORT_KEYS must not be empty')
+export const DEFAULT_SORT: ApplicationSort = {
+  key: 'added',
+  dir: 'desc',
 }
 
-const sortSchema = z.enum([firstSort, ...restSorts]).catch('newest')
+function isSortColumn(value: string): value is SortColumn {
+  return SORT_COLUMNS.some((column) => column === value)
+}
 
-const filtersSchema = z.object({
-  q: z.string().catch(''),
-  status: z
-    .string()
-    .catch('all')
-    .transform((value): Status | 'all' => {
-      if (value === 'all') return 'all'
-      if (isStatus(value)) return value
-      return 'all'
-    }),
-  sort: sortSchema,
-})
+function isSortDir(value: string): value is SortDir {
+  return value === 'asc' || value === 'desc'
+}
+
+function parseSort(params: URLSearchParams): ApplicationSort {
+  const raw = params.get('sort') ?? ''
+  const dirRaw = params.get('dir')
+
+  if (raw === 'newest' || raw === '') return DEFAULT_SORT
+  if (raw === 'oldest') return { key: 'added', dir: 'asc' }
+  if (!isSortColumn(raw)) return DEFAULT_SORT
+
+  if (dirRaw !== null && isSortDir(dirRaw)) {
+    return { key: raw, dir: dirRaw }
+  }
+
+  if (raw === 'added') return { key: 'added', dir: 'desc' }
+  return { key: raw, dir: 'asc' }
+}
 
 export function parseFilters(params: URLSearchParams): ApplicationFilters {
-  return filtersSchema.parse({
+  const statusRaw = params.get('status') ?? 'all'
+  const status: Status | 'all' =
+    statusRaw === 'all' ? 'all' : isStatus(statusRaw) ? statusRaw : 'all'
+
+  return {
     q: params.get('q') ?? '',
-    status: params.get('status') ?? 'all',
-    sort: params.get('sort') ?? 'newest',
-  })
+    status,
+    sort: parseSort(params),
+  }
 }
 
 export function filtersToParams(
@@ -52,7 +77,13 @@ export function filtersToParams(
   const params = new URLSearchParams()
   if (filters.q !== '') params.set('q', filters.q)
   if (filters.status !== 'all') params.set('status', filters.status)
-  if (filters.sort !== 'newest') params.set('sort', filters.sort)
+  if (
+    filters.sort.key !== DEFAULT_SORT.key ||
+    filters.sort.dir !== DEFAULT_SORT.dir
+  ) {
+    params.set('sort', filters.sort.key)
+    params.set('dir', filters.sort.dir)
+  }
   return params
 }
 
@@ -72,36 +103,6 @@ export function searchApplications(
     ]
     return fields.some((field) => field.toLowerCase().includes(needle))
   })
-}
-
-function statusOrder(status: Status): number {
-  const index = STATUSES.findIndex((item) => item.value === status)
-  return index === -1 ? STATUSES.length : index
-}
-
-function sortApplications(
-  apps: Application[],
-  sort: SortKey,
-): Application[] {
-  const copy = [...apps]
-
-  switch (sort) {
-    case 'newest':
-      return copy.sort((a, b) => b.created_at.localeCompare(a.created_at))
-    case 'oldest':
-      return copy.sort((a, b) => a.created_at.localeCompare(b.created_at))
-    case 'company':
-      return copy.sort((a, b) =>
-        a.company.localeCompare(b.company, undefined, { sensitivity: 'base' }),
-      )
-    case 'status':
-      return copy.sort((a, b) => {
-        const byStatus =
-          statusOrder(toStatus(a.status)) - statusOrder(toStatus(b.status))
-        if (byStatus !== 0) return byStatus
-        return b.created_at.localeCompare(a.created_at)
-      })
-  }
 }
 
 export function filterAndSort(

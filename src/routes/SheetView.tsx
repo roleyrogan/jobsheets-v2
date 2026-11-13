@@ -5,7 +5,6 @@ import { toLocalYmd } from '@/lib/dates'
 import { downloadTextFile } from '@/lib/download'
 import { useApplicationDialogs } from '@/features/applications/useApplicationDialogs'
 import { ApplicationsList } from '@/features/applications/ApplicationsList'
-import { Button } from '@/components/ui/button'
 import type { Application } from '@/types/index'
 
 export function SheetView() {
@@ -25,22 +24,12 @@ export function SheetView() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
-        <Button
-          variant="outline"
-          onClick={handleExport}
-          disabled={visible.length === 0}
-        >
-          {visible.length === 0 ? 'Export' : `Export ${visible.length}`}
-        </Button>
-      </div>
-
-      <ApplicationsList
-        onAdd={openCreate}
-        onEdit={openEdit}
-        onVisibleChange={onVisibleChange}
-      />
-    </div>
+    <ApplicationsList
+      onAdd={openCreate}
+      onEdit={openEdit}
+      onVisibleChange={onVisibleChange}
+      onExport={handleExport}
+      exportCount={visible.length}
+    />
   )
 }
