@@ -122,7 +122,6 @@ export const ApplicationRow = forwardRef<
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Open posting for ${application.company}`}
-                className="text-ink-2 hover:text-ink [&_svg]:size-3.5"
               >
                 <ExternalLink />
               </a>
@@ -136,9 +135,8 @@ export const ApplicationRow = forwardRef<
                 variant="ghost"
                 size="icon-sm"
                 aria-label={`Actions for ${application.company}`}
-                className="text-ink-2 hover:text-ink"
               >
-                <MoreHorizontal className="size-3.5" />
+                <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

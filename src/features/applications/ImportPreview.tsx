@@ -62,21 +62,29 @@ export function ImportPreview({ result }: ImportPreviewProps) {
             </thead>
             <tbody>
               {preview.map((row) => (
-                <tr key={`${row.line}-${row.company}`}>
+                <tr key={`${row.line}-${row.company}`} className="h-9">
                   <td className="border-r border-b border-rule bg-fill px-2 text-right">
-                    <span className="figure text-ink-2">{row.line}</span>
+                    <span className="figure whitespace-nowrap text-ink-2">
+                      {row.line}
+                    </span>
                   </td>
-                  <td className="border-r border-b border-rule px-2 font-medium">
-                    {row.company}
+                  <td
+                    className="max-w-[10rem] border-r border-b border-rule px-2 font-medium"
+                    title={row.company}
+                  >
+                    <span className="block truncate">{row.company}</span>
                   </td>
-                  <td className="border-r border-b border-rule px-2">
-                    {row.role}
+                  <td
+                    className="max-w-[12rem] border-r border-b border-rule px-2"
+                    title={row.role}
+                  >
+                    <span className="block truncate">{row.role}</span>
                   </td>
-                  <td className="border-r border-b border-rule px-2">
+                  <td className="border-r border-b border-rule px-2 whitespace-nowrap">
                     <StatusBadge value={row.status} />
                   </td>
                   <td className="border-b border-rule px-2 text-right">
-                    <span className="figure">
+                    <span className="figure whitespace-nowrap">
                       {toLocalYmd(new Date(row.created_at))}
                     </span>
                   </td>

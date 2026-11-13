@@ -10,16 +10,18 @@ function BarRow({
   count,
   max,
   opacity,
+  conversion,
 }: {
   label: string
   count: number
   max: number
   opacity: number
+  conversion: string | null
 }) {
   const width = max === 0 ? 0 : (count / max) * 100
 
   return (
-    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)_3rem] items-center gap-3">
+    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)_3rem_4.5rem] items-center gap-3">
       <span className="text-sm">{label}</span>
       <div className="h-3 w-full bg-fill">
         <div
@@ -28,18 +30,9 @@ function BarRow({
         />
       </div>
       <span className="figure text-right text-sm">{count}</span>
-    </div>
-  )
-}
-
-function ConversionCell({ rate }: { rate: number | null }) {
-  return (
-    <div className="grid grid-cols-[5.5rem_minmax(0,1fr)_3rem] gap-3">
-      <span aria-hidden />
-      <span className="figure text-right text-sm text-ink-2">
-        {formatPercent(rate)}
+      <span className="figure text-right text-sm">
+        {conversion === null ? '' : conversion}
       </span>
-      <span aria-hidden />
     </div>
   )
 }
@@ -52,25 +45,35 @@ export function FunnelChart({ stats }: FunnelChartProps) {
     >
       <h2 id="overview-funnel-heading">Funnel</h2>
       <div className="flex flex-col gap-2">
+        <div
+          className="grid grid-cols-[5.5rem_minmax(0,1fr)_3rem_4.5rem] items-center gap-3"
+          aria-hidden
+        >
+          <span />
+          <span />
+          <span />
+          <span className="text-right text-xs font-medium">Conversion</span>
+        </div>
         <BarRow
           label="Applied"
           count={stats.applied}
           max={stats.applied}
           opacity={1}
+          conversion={null}
         />
-        <ConversionCell rate={stats.appliedToInterview} />
         <BarRow
           label="Interview"
           count={stats.interview}
           max={stats.applied}
           opacity={0.6}
+          conversion={formatPercent(stats.appliedToInterview)}
         />
-        <ConversionCell rate={stats.interviewToOffer} />
         <BarRow
           label="Offer"
           count={stats.offer}
           max={stats.applied}
           opacity={0.3}
+          conversion={formatPercent(stats.interviewToOffer)}
         />
       </div>
     </section>
