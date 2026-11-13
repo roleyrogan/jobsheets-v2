@@ -4,13 +4,15 @@ import { SessionProvider } from '@/features/auth/SessionProvider'
 import { RequireAuth } from '@/routes/RequireAuth'
 import { PublicOnly } from '@/routes/PublicOnly'
 import { AppLayout } from '@/routes/AppLayout'
+import { AppRedirect } from '@/routes/AppRedirect'
+import { ApplicationsWorkspace } from '@/routes/ApplicationsWorkspace'
+import { SheetView } from '@/routes/SheetView'
 import { Landing } from '@/routes/Landing'
 import { Login } from '@/routes/Login'
 import { Signup } from '@/routes/Signup'
 import { ForgotPassword } from '@/routes/ForgotPassword'
 import { ResetPassword } from '@/routes/ResetPassword'
 import { Privacy } from '@/routes/Privacy'
-import { Applications } from '@/routes/Applications'
 import { Settings } from '@/routes/Settings'
 import { NotFound } from '@/routes/NotFound'
 
@@ -36,7 +38,28 @@ export const router = createBrowserRouter([
           {
             element: <AppLayout />,
             children: [
-              { index: true, element: <Applications /> },
+              { index: true, element: <AppRedirect /> },
+              {
+                element: <ApplicationsWorkspace />,
+                children: [
+                  { path: 'sheet', element: <SheetView /> },
+                  {
+                    path: 'board',
+                    lazy: async () => {
+                      const { BoardView } = await import('@/routes/BoardView')
+                      return { Component: BoardView }
+                    },
+                  },
+                  {
+                    path: 'overview',
+                    lazy: async () => {
+                      const { OverviewView } =
+                        await import('@/routes/OverviewView')
+                      return { Component: OverviewView }
+                    },
+                  },
+                ],
+              },
               { path: 'settings', element: <Settings /> },
             ],
           },

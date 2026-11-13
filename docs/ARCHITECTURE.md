@@ -36,7 +36,11 @@ src/
     ResetPassword.tsx
     Privacy.tsx
     AppLayout.tsx          Signed-in shell: header, nav, <Outlet />
-    Applications.tsx       (Phase 3 splits into Sheet / Board / Overview)
+    AppRedirect.tsx        /app → last view (sheet|board|overview), keeps query
+    ApplicationsWorkspace.tsx  Shared heading, Add/Import, view tabs, <Outlet />
+    SheetView.tsx          Dense table + filters + export
+    BoardView.tsx          Kanban (lazy); placeholder until built
+    OverviewView.tsx       Stats (lazy); placeholder until built
     Settings.tsx
     RequireAuth.tsx        Redirects to /login when signed out
 
@@ -105,7 +109,10 @@ routes  →  features (components + hooks)  →  lib/api  →  Supabase
 | `/forgot-password` | Request reset email | public |
 | `/reset-password` | Set new password | recovery session |
 | `/privacy` | Privacy policy | public |
-| `/app` | Applications (Phase 3: redirects to `/app/sheet`) | required |
+| `/app` | Redirects to last view (`/app/sheet` by default), preserves query | required |
+| `/app/sheet` | Applications sheet (table, filters, export) | required |
+| `/app/board` | Board view (lazy) | required |
+| `/app/overview` | Overview / stats (lazy) | required |
 | `/app/settings` | Account settings | required |
 
 Filters, search and sort live in the URL query string (`?status=Interview&q=shopify&sort=newest`) so views can be linked and survive reloads.
