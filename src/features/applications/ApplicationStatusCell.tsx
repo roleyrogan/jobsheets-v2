@@ -1,4 +1,4 @@
-import type { Ref } from 'react'
+import { useState, type AnimationEvent, type Ref } from 'react'
 import { toast } from 'sonner'
 
 import { STATUSES, isStatus, toStatus } from '@/lib/status'
@@ -30,6 +30,12 @@ export function ApplicationStatusCell({
 }: ApplicationStatusCellProps) {
   const updateStatus = useUpdateStatus()
   const status = toStatus(application.status)
+  const [flashing, setFlashing] = useState(false)
+
+  function handleFlashEnd(event: AnimationEvent<HTMLSpanElement>) {
+    if (event.animationName !== 'status-flash') return
+    setFlashing(false)
+  }
 
   return (
     <Select
@@ -38,6 +44,7 @@ export function ApplicationStatusCell({
       onOpenChange={onOpenChange}
       onValueChange={(value) => {
         if (!isStatus(value) || value === status) return
+        setFlashing(true)
         updateStatus.mutate(
           { id: application.id, status: value },
           {
@@ -55,7 +62,12 @@ export function ApplicationStatusCell({
         className="h-auto w-auto border-0 bg-transparent px-0 py-0 [&_svg.lucide-chevron-down]:size-4 [&_svg.lucide-chevron-down]:shrink-0 [&_svg.lucide-chevron-down]:opacity-0 group-hover/row:[&_svg.lucide-chevron-down]:opacity-100 group-focus-within/row:[&_svg.lucide-chevron-down]:opacity-100 data-[state=open]:[&_svg.lucide-chevron-down]:opacity-100"
       >
         <SelectValue>
-          <StatusBadge value={status} />
+          <span
+            className={flashing ? 'status-flash inline-flex rounded-[3px]' : 'inline-flex'}
+            onAnimationEnd={handleFlashEnd}
+          >
+            <StatusBadge value={status} />
+          </span>
         </SelectValue>
       </SelectTrigger>
       <SelectContent onCloseAutoFocus={onCloseAutoFocus}>

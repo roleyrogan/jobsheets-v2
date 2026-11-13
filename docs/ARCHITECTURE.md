@@ -15,7 +15,7 @@ How the frontend is organized and the rules that keep it that way. If code doesn
 | Validation | Zod | Form input and CSV import rows |
 | CSV parsing | PapaParse | Handles quoted fields, embedded commas/newlines, BOM |
 | Toasts | Sonner (shadcn's toast) | Replaces the custom `Toast` + `useToast` |
-| Animation | Motion (`motion` package) — not installed yet; add only when there's a real need. | |
+| Animation | Motion (`motion` package) + tw-animate-css | App workspace only (`MotionConfig`); never imported from the landing page. |
 | Drag and drop | @dnd-kit/core | Pointer, touch and keyboard sensors; screen reader announcements. Board view only (lazy-loaded). |
 | Icons | lucide-react | |
 | Backend | Supabase (Postgres, Auth, Edge Functions) | |

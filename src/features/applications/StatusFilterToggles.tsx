@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react'
+import { motion } from 'motion/react'
 
 import { STATUSES, type Status } from '@/lib/status'
+import { layoutTransition } from '@/lib/motion'
 import { StatusMark } from '@/features/applications/StatusMark'
 
 type StatusFilterTogglesProps = {
@@ -51,7 +53,6 @@ function StatusToggle({
   onClick,
   children,
   first = false,
-  last = false,
 }: {
   pressed: boolean
   onClick: () => void
@@ -66,11 +67,20 @@ function StatusToggle({
       onClick={onClick}
       className={
         pressed
-          ? `inline-flex h-8 items-center gap-1.5 border border-ink bg-ink px-2.5 text-[13px] font-medium text-paper ${first ? '' : '-ml-px'} ${last ? '' : ''}`
-          : `inline-flex h-8 items-center gap-1.5 border border-rule bg-paper px-2.5 text-[13px] text-ink hover:border-ink ${first ? '' : '-ml-px'}`
+          ? `relative inline-flex h-8 items-center gap-1.5 border border-ink px-2.5 text-[13px] font-medium text-paper ${first ? '' : '-ml-px'}`
+          : `relative inline-flex h-8 items-center gap-1.5 border border-rule bg-paper px-2.5 text-[13px] text-ink transition-colors duration-[120ms] ease-[var(--ease)] hover:border-ink ${first ? '' : '-ml-px'}`
       }
     >
-      {children}
+      {pressed ? (
+        <motion.span
+          layoutId="status-filter-selected"
+          className="absolute inset-0 bg-ink"
+          transition={layoutTransition}
+        />
+      ) : null}
+      <span className="relative z-10 inline-flex items-center gap-1.5 transition-colors duration-[120ms] ease-[var(--ease)]">
+        {children}
+      </span>
     </button>
   )
 }

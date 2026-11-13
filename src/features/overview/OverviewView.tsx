@@ -15,6 +15,7 @@ import { useApplicationDialogs } from '@/features/applications/useApplicationDia
 import { ActivityHeatmap } from '@/features/overview/ActivityHeatmap'
 import { FunnelChart } from '@/features/overview/FunnelChart'
 import { GhostedList } from '@/features/overview/GhostedList'
+import { MotionFunnelBarFill } from '@/features/overview/MotionFunnelBarFill'
 import { OverviewSkeleton } from '@/features/overview/OverviewSkeleton'
 import { ResponseStats } from '@/features/overview/ResponseStats'
 import { SummaryRow } from '@/features/overview/SummaryRow'
@@ -97,7 +98,7 @@ export function OverviewView() {
       ) : null}
 
       <SummaryRow stats={stats.summary} />
-      <FunnelChart stats={stats.funnel} />
+      <FunnelChart stats={stats.funnel} BarFill={MotionFunnelBarFill} />
       <ResponseStats
         rate={stats.responseRate}
         timing={stats.timing}

@@ -1,10 +1,12 @@
 import { useEffect } from 'react'
+import { MotionConfig, motion } from 'motion/react'
 import { NavLink, Outlet, useLocation, useSearchParams } from 'react-router'
 
 import { ApplicationDialogsProvider } from '@/features/applications/ApplicationDialogsProvider'
 import { ApplicationsHeader } from '@/features/applications/ApplicationsHeader'
 import { useApplicationEvents } from '@/features/applications/queries'
 import { useApplicationDialogs } from '@/features/applications/useApplicationDialogs'
+import { layoutTransition } from '@/lib/motion'
 import { isAppView, setLastView } from '@/lib/lastView'
 
 const views = [
@@ -40,31 +42,47 @@ function WorkspaceChrome() {
     <div className="flex flex-col gap-6">
       <ApplicationsHeader onAdd={openCreate} onImport={openImport} />
 
-      <nav aria-label="Views" className="flex gap-4 border-b">
+      <nav aria-label="Views" className="flex gap-4 border-b border-b-rule">
         {views.map((view) => (
           <NavLink
             key={view.to}
             to={viewHref(view.to, q)}
+            viewTransition
             className={({ isActive }) =>
               isActive
-                ? '-mb-px border-b-2 border-foreground pb-2 text-sm text-foreground'
-                : '-mb-px border-b-2 border-transparent pb-2 text-sm text-muted-foreground transition-colors hover:text-foreground'
+                ? 'relative -mb-px pb-2 text-sm text-ink'
+                : 'relative -mb-px pb-2 text-sm text-ink-2 transition-colors duration-[120ms] ease-[var(--ease)] hover:text-ink'
             }
           >
-            {view.label}
+            {({ isActive }) => (
+              <>
+                {view.label}
+                {isActive ? (
+                  <motion.span
+                    layoutId="view-tab-underline"
+                    className="absolute inset-x-0 bottom-0 h-0.5 bg-ink"
+                    transition={layoutTransition}
+                  />
+                ) : null}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
 
-      <Outlet />
+      <div className="workspace-view">
+        <Outlet />
+      </div>
     </div>
   )
 }
 
 export function ApplicationsWorkspace() {
   return (
-    <ApplicationDialogsProvider>
-      <WorkspaceChrome />
-    </ApplicationDialogsProvider>
+    <MotionConfig reducedMotion="user">
+      <ApplicationDialogsProvider>
+        <WorkspaceChrome />
+      </ApplicationDialogsProvider>
+    </MotionConfig>
   )
 }

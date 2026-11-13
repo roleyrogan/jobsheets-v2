@@ -1,8 +1,15 @@
+import type { ComponentType } from 'react'
+
 import { formatPercent } from '@/features/overview/format'
+import {
+  StaticFunnelBarFill,
+  type FunnelBarFillProps,
+} from '@/features/overview/FunnelBarFill'
 import type { FunnelStats } from '@/lib/stats'
 
 type FunnelChartProps = {
   stats: FunnelStats
+  BarFill?: ComponentType<FunnelBarFillProps>
 }
 
 function BarRow({
@@ -11,23 +18,22 @@ function BarRow({
   max,
   opacity,
   conversion,
+  BarFill,
 }: {
   label: string
   count: number
   max: number
   opacity: number
   conversion: string | null
+  BarFill: ComponentType<FunnelBarFillProps>
 }) {
-  const width = max === 0 ? 0 : (count / max) * 100
+  const widthPercent = max === 0 ? 0 : (count / max) * 100
 
   return (
     <div className="grid grid-cols-[5.5rem_minmax(0,1fr)_3rem_4.5rem] items-center gap-3">
       <span className="text-sm">{label}</span>
       <div className="h-3 w-full bg-fill">
-        <div
-          className="h-full bg-ink"
-          style={{ width: `${width}%`, opacity }}
-        />
+        <BarFill widthPercent={widthPercent} opacity={opacity} />
       </div>
       <span className="figure text-right text-sm">{count}</span>
       <span className="figure text-right text-sm">
@@ -37,7 +43,10 @@ function BarRow({
   )
 }
 
-export function FunnelChart({ stats }: FunnelChartProps) {
+export function FunnelChart({
+  stats,
+  BarFill = StaticFunnelBarFill,
+}: FunnelChartProps) {
   return (
     <section
       aria-labelledby="overview-funnel-heading"
@@ -60,6 +69,7 @@ export function FunnelChart({ stats }: FunnelChartProps) {
           max={stats.applied}
           opacity={1}
           conversion={null}
+          BarFill={BarFill}
         />
         <BarRow
           label="Interview"
@@ -67,6 +77,7 @@ export function FunnelChart({ stats }: FunnelChartProps) {
           max={stats.applied}
           opacity={0.6}
           conversion={formatPercent(stats.appliedToInterview)}
+          BarFill={BarFill}
         />
         <BarRow
           label="Offer"
@@ -74,6 +85,7 @@ export function FunnelChart({ stats }: FunnelChartProps) {
           max={stats.applied}
           opacity={0.3}
           conversion={formatPercent(stats.interviewToOffer)}
+          BarFill={BarFill}
         />
       </div>
     </section>

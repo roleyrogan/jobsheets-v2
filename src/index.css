@@ -61,12 +61,15 @@
 :root {
   color-scheme: light dark;
 
+  --ease: cubic-bezier(0.2, 0, 0, 1);
   --paper: #ffffff;
   --ink: #000000;
   --ink-2: #5c5c5c;
   --rule: #e3e3e3;
   --fill: #f5f5f5;
   --select: #000000;
+  --flash: rgba(0, 0, 0, 0.14);
+  --flash-strong: rgba(0, 0, 0, 0.14);
 
   --background: var(--paper);
   --foreground: var(--ink);
@@ -116,6 +119,8 @@
     --rule: #2a2a2a;
     --fill: #121212;
     --select: #ffffff;
+    --flash: rgba(255, 255, 255, 0.18);
+    --flash-strong: rgba(255, 255, 255, 0.18);
 
     --status-applied: oklch(0.72 0.07 250);
     --status-interview: oklch(0.78 0.08 75);
@@ -169,8 +174,296 @@
     letter-spacing: -0.02em;
   }
 
+  .landing-hero-title {
+    font-size: 72px;
+    line-height: 72px;
+    font-weight: 600;
+    font-stretch: 82%;
+    letter-spacing: -0.025em;
+  }
+
   .figure {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
+  }
+
+  .workspace-view {
+    view-transition-name: workspace-view;
+  }
+
+  .status-flash {
+    animation: status-flash 600ms var(--ease);
+  }
+
+  .landing-press {
+    transition:
+      color 120ms var(--ease),
+      background-color 120ms var(--ease),
+      border-color 120ms var(--ease),
+      transform 120ms var(--ease);
+  }
+
+  .landing-press:active {
+    transform: scale(0.97);
+  }
+
+  .landing-header-in {
+    animation: landing-fade-in 600ms var(--ease) both;
+  }
+
+  .landing-hero-line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+
+  .landing-hero-line {
+    display: block;
+    animation: landing-line-up 900ms var(--ease) both;
+  }
+
+  .landing-hero-line-delay {
+    animation-delay: 110ms;
+  }
+
+  .landing-hero-fade {
+    animation: landing-fade-up 700ms var(--ease) both;
+  }
+
+  .landing-hero-fade-p {
+    animation-delay: 380ms;
+  }
+
+  .landing-hero-fade-btns {
+    animation-delay: 500ms;
+  }
+
+  .landing-hero-fade-preview {
+    animation: landing-fade-up 900ms var(--ease) both;
+    animation-delay: 640ms;
+  }
+
+  .landing-reveal-pending {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  .landing-reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 700ms var(--ease),
+      transform 700ms var(--ease);
+  }
+
+  .landing-reveal-pending .landing-reveal-child {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .landing-reveal-visible .landing-reveal-child {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 600ms var(--ease),
+      transform 600ms var(--ease);
+  }
+
+  .landing-reveal-visible .landing-reveal-child:nth-child(1) {
+    transition-delay: 0ms;
+  }
+  .landing-reveal-visible .landing-reveal-child:nth-child(2) {
+    transition-delay: 70ms;
+  }
+  .landing-reveal-visible .landing-reveal-child:nth-child(3) {
+    transition-delay: 140ms;
+  }
+  .landing-reveal-visible .landing-reveal-child:nth-child(4) {
+    transition-delay: 210ms;
+  }
+  .landing-reveal-visible .landing-reveal-child:nth-child(5) {
+    transition-delay: 280ms;
+  }
+  .landing-reveal-visible .landing-reveal-child:nth-child(6) {
+    transition-delay: 350ms;
+  }
+
+  .landing-rule-draw {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .landing-reveal-visible .landing-rule-draw {
+    transform: scaleX(1);
+    transition: transform 1100ms var(--ease) 120ms;
+  }
+
+  .landing-ambient-cell {
+    animation: landing-ambient 9s var(--ease) infinite;
+  }
+
+  .landing-row-flash-a {
+    animation: landing-row-flash-a 1000ms var(--ease);
+  }
+
+  .landing-row-flash-b {
+    animation: landing-row-flash-b 1000ms var(--ease);
+  }
+
+  .landing-funnel-grow {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  .landing-funnel-grow-active {
+    transform: scaleX(1);
+    transition: transform 700ms var(--ease);
+  }
+
+  .landing-cursor-cell {
+    transition: transform 140ms var(--ease);
+  }
+
+  .landing-hero-grid-bg {
+    background-image:
+      linear-gradient(to right, var(--rule) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--rule) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(
+      ellipse 75% 70% at 50% 20%,
+      #000 20%,
+      transparent 70%
+    );
+    -webkit-mask-image: radial-gradient(
+      ellipse 75% 70% at 50% 20%,
+      #000 20%,
+      transparent 70%
+    );
+  }
+}
+
+@media (max-width: 759px) {
+  .landing-hero-title {
+    font-size: 40px;
+    line-height: 42px;
+  }
+}
+
+@keyframes status-flash {
+  0% {
+    background-color: var(--fill);
+  }
+  40% {
+    background-color: color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes landing-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes landing-line-up {
+  from {
+    transform: translateY(108%);
+  }
+}
+
+@keyframes landing-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@keyframes landing-ambient {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.55;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes landing-row-flash-a {
+  from {
+    background-color: var(--flash);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes landing-row-flash-b {
+  from {
+    background-color: var(--flash);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-flash,
+  .landing-header-in,
+  .landing-hero-line,
+  .landing-hero-fade,
+  .landing-hero-fade-preview,
+  .landing-ambient-cell,
+  .landing-row-flash-a,
+  .landing-row-flash-b {
+    animation: none !important;
+  }
+
+  .landing-press:active {
+    transform: none;
+  }
+
+  .landing-reveal-pending,
+  .landing-reveal-pending .landing-reveal-child,
+  .landing-rule-draw,
+  .landing-funnel-grow,
+  .landing-cursor-cell {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  ::view-transition-old(workspace-view),
+  ::view-transition-new(workspace-view) {
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(workspace-view) {
+    animation: workspace-view-out 150ms var(--ease) both;
+  }
+
+  ::view-transition-new(workspace-view) {
+    animation: workspace-view-in 150ms var(--ease) both;
+  }
+}
+
+@keyframes workspace-view-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes workspace-view-in {
+  from {
+    opacity: 0;
   }
 }

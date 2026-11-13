@@ -140,9 +140,9 @@ View tabs look like spreadsheet sheet tabs: square, ruled on three sides, the ac
 
 ## 7. Motion
 
-- None on page load. No fade-ins, no scroll reveals, no animated counters.
-- Allowed, and only in response to an action: dialog/menu open (100ms opacity), the Board drop animation, the optimistic row update.
-- Everything respects `prefers-reduced-motion` (no motion at all).
+Motion responds to what the user does or shows what the product does. Durations 120–250ms for interface feedback, up to 700ms for reveals. One easing curve: cubic-bezier(0.2, 0, 0, 1), defined as --ease. Animate transform and opacity (plus background-color for highlights). Allowed without user input, landing page only: the hero demo (plays once), the hero grid's ambient cells, and one-time scroll reveals. Nothing else loops; no counters. Everything is disabled under prefers-reduced-motion.
+
+App workspace motion (Sheet, Board, Overview, tabs) still uses the `motion` package under `MotionConfig reducedMotion="user"`. The landing page uses CSS and IntersectionObserver only — never import `motion` from landing code.
 
 ---
 
@@ -158,7 +158,7 @@ View tabs look like spreadsheet sheet tabs: square, ruled on three sides, the ac
 
 ## 9. Don't
 
-- No gradients, glows, blurs, glassmorphism, animated backgrounds, cursor spotlights or text-reveal effects.
+- No gradients, glows, blurs, glassmorphism, animated backgrounds, cursor spotlights or text-reveal effects (landing hero grid / entrance / scroll reveals excepted per §7).
 - No shadows. Depth comes from rules and inversion, never from shadows.
 - No rounded cards in grids, no pill badges.
 - No tinted near-black standing in for black (`#0B0B0B`, `#111`): ink is `#000` / `#FFF`.

@@ -41,7 +41,7 @@ function DropdownMenuContent({
         sideOffset={sideOffset}
         align={align}
         className={cn(
-          'z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 overflow-x-hidden overflow-y-auto rounded-none border border-ink bg-paper p-0 text-ink duration-100 data-[state=closed]:overflow-hidden motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-reduce:transition-none',
+          'z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 overflow-x-hidden overflow-y-auto rounded-none border border-ink bg-paper p-0 text-ink [transform-origin:var(--radix-dropdown-menu-content-transform-origin)] data-[state=closed]:overflow-hidden motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-open:zoom-in-[0.98] motion-safe:data-open:duration-160 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-safe:data-closed:zoom-out-[0.98] motion-safe:data-closed:duration-120 motion-reduce:transition-none',
           className,
         )}
         {...props}
@@ -243,7 +243,7 @@ function DropdownMenuSubContent({
     <DropdownMenuPrimitive.SubContent
       data-slot="dropdown-menu-sub-content"
       className={cn(
-        'z-50 min-w-[96px] overflow-hidden rounded-none border border-ink bg-paper p-0 text-ink duration-100 motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-reduce:transition-none',
+        'z-50 min-w-[96px] overflow-hidden rounded-none border border-ink bg-paper p-0 text-ink [transform-origin:var(--radix-dropdown-menu-content-transform-origin)] motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-open:zoom-in-[0.98] motion-safe:data-open:duration-160 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-safe:data-closed:zoom-out-[0.98] motion-safe:data-closed:duration-120 motion-reduce:transition-none',
         className,
       )}
       {...props}

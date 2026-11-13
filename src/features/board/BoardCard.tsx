@@ -1,7 +1,9 @@
 import { useDraggable } from '@dnd-kit/core'
+import { motion } from 'motion/react'
 
 import { BoardCardFace } from '@/features/board/BoardCardFace'
 import { BoardCardMenu } from '@/features/board/BoardCardMenu'
+import { layoutTransition } from '@/lib/motion'
 import type { Application } from '@/types/index'
 
 type BoardCardProps = {
@@ -15,7 +17,9 @@ export function BoardCard({ application }: BoardCardProps) {
   })
 
   return (
-    <div
+    <motion.div
+      layout={!isDragging}
+      transition={layoutTransition}
       ref={setNodeRef}
       {...attributes}
       {...listeners}
@@ -29,6 +33,6 @@ export function BoardCard({ application }: BoardCardProps) {
         application={application}
         menu={<BoardCardMenu application={application} />}
       />
-    </div>
+    </motion.div>
   )
 }

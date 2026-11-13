@@ -43,6 +43,7 @@ function findApplication(
 export function Board({ applications }: BoardProps) {
   const updateStatus = useUpdateStatus()
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null)
+  const [returnOnCancel, setReturnOnCancel] = useState(false)
   const columns = groupByStatus(applications)
   const announcements = createBoardAnnouncements(applications)
   const activeApplication =
@@ -59,10 +60,12 @@ export function Board({ applications }: BoardProps) {
   )
 
   function handleDragStart(event: DragStartEvent) {
+    setReturnOnCancel(false)
     setActiveId(event.active.id)
   }
 
   function handleDragEnd(event: DragEndEvent) {
+    setReturnOnCancel(false)
     setActiveId(null)
     const { active, over } = event
     if (!over) return
@@ -87,6 +90,7 @@ export function Board({ applications }: BoardProps) {
   }
 
   function handleDragCancel() {
+    setReturnOnCancel(!prefersReducedMotion())
     setActiveId(null)
   }
 
@@ -109,7 +113,7 @@ export function Board({ applications }: BoardProps) {
         ))}
       </div>
 
-      <DragOverlay dropAnimation={prefersReducedMotion() ? null : undefined}>
+      <DragOverlay dropAnimation={returnOnCancel ? undefined : null}>
         {activeApplication ? (
           <BoardCardOverlay application={activeApplication} />
         ) : null}

@@ -4,20 +4,20 @@ import {
   useRef,
   useState,
 } from 'react'
-import { ExternalLink, MoreHorizontal } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
+import { motion } from 'motion/react'
 
 import { toLocalYmd } from '@/lib/dates'
+import {
+  enterTransition,
+  exitTransition,
+  layoutTransition,
+} from '@/lib/motion'
 import { safeExternalUrl } from '@/lib/urls'
+import { ApplicationRowActions } from '@/features/applications/ApplicationRowActions'
 import { ApplicationStatusCell } from '@/features/applications/ApplicationStatusCell'
-import { DeleteApplicationDialog } from '@/features/applications/DeleteApplicationDialog'
 import { SheetCell, SheetGutterCell } from '@/components/sheet'
 import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import type { Application } from '@/types/index'
 
 export type ApplicationRowHandle = {
@@ -59,105 +59,86 @@ export const ApplicationRow = forwardRef<
   }
 
   return (
-    <>
-      <tr
-        ref={rowRef}
-        tabIndex={selected ? 0 : -1}
-        data-selected={selected ? 'true' : undefined}
-        onClick={() => {
-          onSelect()
-          focusRow()
-        }}
-        onFocus={onSelect}
-        className={
-          selected
-            ? 'group/row h-9 bg-fill outline-2 outline-offset-[-2px] outline-select'
-            : 'group/row h-9 outline-none hover:bg-fill'
-        }
+    <motion.tr
+      ref={rowRef}
+      layout="position"
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, transition: exitTransition }}
+      transition={{ ...enterTransition, layout: layoutTransition }}
+      tabIndex={selected ? 0 : -1}
+      data-selected={selected ? 'true' : undefined}
+      onClick={() => {
+        onSelect()
+        focusRow()
+      }}
+      onFocus={onSelect}
+      className={
+        selected
+          ? 'group/row h-9 bg-fill outline-2 outline-offset-[-2px] outline-select transition-colors duration-[120ms] ease-[var(--ease)]'
+          : 'group/row h-9 outline-none transition-colors duration-[120ms] ease-[var(--ease)] hover:bg-fill'
+      }
+    >
+      <SheetGutterCell>{rowNumber}</SheetGutterCell>
+      <SheetCell
+        sticky="company"
+        selected={selected}
+        truncate
+        title={application.company}
       >
-        <SheetGutterCell>{rowNumber}</SheetGutterCell>
-        <SheetCell
-          sticky="company"
-          selected={selected}
-          truncate
-          title={application.company}
-        >
-          {application.company}
-        </SheetCell>
-        <SheetCell truncate title={application.role} className="max-w-[14rem]">
-          {application.role}
-        </SheetCell>
-        <SheetCell>
-          <ApplicationStatusCell
-            application={application}
-            triggerRef={statusTriggerRef}
-            open={statusOpen}
-            onOpenChange={setStatusOpen}
-            onCloseAutoFocus={(event) => {
-              event.preventDefault()
-              focusRow()
-            }}
-          />
-        </SheetCell>
-        <SheetCell
-          truncate
-          title={application.location ?? undefined}
-          className="max-w-[10rem]"
-        >
-          {application.location ?? '—'}
-        </SheetCell>
-        <SheetCell className="text-right">
-          <span className="figure">{added}</span>
-        </SheetCell>
-        <SheetCell className="px-1">
-          {externalUrl ? (
-            <Button variant="ghost" size="icon-sm" asChild>
-              <a
-                href={externalUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Open posting for ${application.company}`}
-              >
-                <ExternalLink />
-              </a>
-            </Button>
-          ) : null}
-        </SheetCell>
-        <SheetCell isLast className="px-1">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label={`Actions for ${application.company}`}
-              >
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={() => onEdit(application)}>
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onSelect={() => setDeleteOpen(true)}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </SheetCell>
-      </tr>
-
-      <DeleteApplicationDialog
-        application={application}
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        onCloseAutoFocus={(event) => {
-          event.preventDefault()
-          focusRow()
-        }}
-      />
-    </>
+        {application.company}
+      </SheetCell>
+      <SheetCell truncate title={application.role} className="max-w-[14rem]">
+        {application.role}
+      </SheetCell>
+      <SheetCell>
+        <ApplicationStatusCell
+          application={application}
+          triggerRef={statusTriggerRef}
+          open={statusOpen}
+          onOpenChange={setStatusOpen}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault()
+            focusRow()
+          }}
+        />
+      </SheetCell>
+      <SheetCell
+        truncate
+        title={application.location ?? undefined}
+        className="max-w-[10rem]"
+      >
+        {application.location ?? '—'}
+      </SheetCell>
+      <SheetCell className="text-right">
+        <span className="figure">{added}</span>
+      </SheetCell>
+      <SheetCell className="px-1">
+        {externalUrl ? (
+          <Button variant="ghost" size="icon-sm" asChild>
+            <a
+              href={externalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open posting for ${application.company}`}
+            >
+              <ExternalLink />
+            </a>
+          </Button>
+        ) : null}
+      </SheetCell>
+      <SheetCell isLast className="px-1">
+        <ApplicationRowActions
+          application={application}
+          deleteOpen={deleteOpen}
+          onDeleteOpenChange={setDeleteOpen}
+          onEdit={onEdit}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault()
+            focusRow()
+          }}
+        />
+      </SheetCell>
+    </motion.tr>
   )
 })

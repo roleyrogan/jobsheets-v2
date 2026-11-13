@@ -1,6 +1,9 @@
+import { motion } from 'motion/react'
+
 import { weeklyCounts, type WeeklyCount } from '@/lib/stats'
 import { formatMonthDay } from '@/features/overview/format'
 import { useMediaQuery } from '@/features/overview/useMediaQuery'
+import { revealTransition } from '@/lib/motion'
 import { localYmd, mondayOfWeek } from '@/lib/stats/helpers'
 import type { Application } from '@/types/index'
 
@@ -31,12 +34,13 @@ export function WeeklyBars({ applications, now }: WeeklyBarsProps) {
       <h2 id="overview-weekly-heading">Weekly applications</h2>
 
       <div className="flex w-full items-end gap-1">
-        {weeks.map((week) => (
+        {weeks.map((week, index) => (
           <WeekBar
             key={week.weekStart}
             week={week}
             max={max}
             current={week.weekStart === currentWeek}
+            index={index}
           />
         ))}
       </div>
@@ -48,10 +52,12 @@ function WeekBar({
   week,
   max,
   current,
+  index,
 }: {
   week: WeeklyCount
   max: number
   current: boolean
+  index: number
 }) {
   const height = barHeight(week.count, max)
 
@@ -59,12 +65,15 @@ function WeekBar({
     <div className="flex min-w-0 flex-1 flex-col items-center gap-1 text-ink-2">
       <span className="figure text-xs">{week.count}</span>
       <div className="flex h-24 w-full items-end justify-center">
-        <div
-          className="w-full bg-ink"
+        <motion.div
+          className="w-full origin-bottom bg-ink"
           style={{
             height: `${height}px`,
             opacity: current ? 1 : 0.35,
           }}
+          initial={{ scaleY: 0 }}
+          animate={{ scaleY: 1 }}
+          transition={{ ...revealTransition, delay: index * 0.03 }}
           aria-hidden
         />
       </div>

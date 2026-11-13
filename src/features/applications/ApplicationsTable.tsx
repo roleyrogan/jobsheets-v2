@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react'
+import { AnimatePresence } from 'motion/react'
 
 import { countByStatus } from '@/lib/applicationFilters'
 import { useApplicationFilters } from '@/features/applications/useApplicationFilters'
@@ -53,20 +54,22 @@ export function ApplicationsTable({
       <SheetTable>
         <ApplicationsTableHeader sort={filters.sort} onSort={toggleSort} />
         <tbody onKeyDown={onKeyDown}>
-          {applications.map((application, index) => (
-            <ApplicationRow
-              key={application.id}
-              ref={(handle) => {
-                if (handle) rowRefs.current.set(application.id, handle)
-                else rowRefs.current.delete(application.id)
-              }}
-              application={application}
-              rowNumber={index + 1}
-              selected={application.id === selectedId}
-              onSelect={() => setSelectedId(application.id)}
-              onEdit={onEdit}
-            />
-          ))}
+          <AnimatePresence mode="popLayout" initial={false}>
+            {applications.map((application, index) => (
+              <ApplicationRow
+                key={application.id}
+                ref={(handle) => {
+                  if (handle) rowRefs.current.set(application.id, handle)
+                  else rowRefs.current.delete(application.id)
+                }}
+                application={application}
+                rowNumber={index + 1}
+                selected={application.id === selectedId}
+                onSelect={() => setSelectedId(application.id)}
+                onEdit={onEdit}
+              />
+            ))}
+          </AnimatePresence>
         </tbody>
         <ApplicationsTableFooter
           total={applications.length}
