@@ -3,7 +3,7 @@ import {
   DndContext,
   DragOverlay,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
   TouchSensor,
   closestCorners,
   useSensor,
@@ -49,7 +49,7 @@ export function Board({ applications }: BoardProps) {
     activeId === null ? undefined : findApplication(applications, activeId)
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: { distance: 6 },
     }),
     useSensor(TouchSensor, {
