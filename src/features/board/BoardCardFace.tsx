@@ -17,7 +17,7 @@ export function BoardCardFace({ application, menu }: BoardCardFaceProps) {
   const ago = daysAgo(application.created_at)
 
   return (
-    <div className="flex flex-col gap-1 rounded-md border bg-background p-3 shadow-sm">
+    <div className="flex flex-col gap-1 rounded-[3px] border border-rule bg-paper p-3">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate font-medium">{application.company}</p>

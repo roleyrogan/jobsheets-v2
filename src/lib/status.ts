@@ -3,25 +3,31 @@ export const STATUSES = [
     value: 'Applied',
     label: 'Applied',
     color: 'var(--status-applied)',
+    mark: 'open',
   },
   {
     value: 'Interview',
     label: 'Interview',
     color: 'var(--status-interview)',
+    mark: 'half',
   },
   {
     value: 'Offer',
     label: 'Offer',
     color: 'var(--status-offer)',
+    mark: 'filled',
   },
   {
     value: 'Rejected',
     label: 'Rejected',
     color: 'var(--status-rejected)',
+    mark: 'cross',
   },
 ] as const
 
 export type Status = (typeof STATUSES)[number]['value']
+
+export type StatusMarkKind = (typeof STATUSES)[number]['mark']
 
 export type StatusConfig = (typeof STATUSES)[number]
 

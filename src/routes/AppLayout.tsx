@@ -19,17 +19,17 @@ export function AppLayout() {
   }
 
   return (
-    <div className="min-h-svh">
-      <header className="border-b">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <Link to="/app" className="font-medium tracking-tight">
+    <div className="min-h-svh bg-paper text-ink">
+      <header className="border-b border-rule">
+        <div className="mx-auto flex h-12 max-w-5xl items-center justify-between px-4">
+          <Link to="/app" className="text-[15px] font-semibold">
             JobSheets
           </Link>
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1">
             <Button variant="ghost" size="sm" asChild>
               <Link to="/app/settings">Settings</Link>
             </Button>
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
               Sign out
             </Button>
           </nav>

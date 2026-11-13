@@ -58,7 +58,7 @@ export function ApplicationRow({ application, onEdit }: ApplicationRowProps) {
           >
             <SelectTrigger
               size="sm"
-              className="h-auto border-0 bg-transparent px-1.5 py-1 shadow-none dark:bg-transparent"
+              className="h-auto border-0 bg-transparent px-1.5 py-1"
               aria-label={`Status for ${application.company}`}
             >
               <SelectValue>

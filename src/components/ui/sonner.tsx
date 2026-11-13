@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react'
 import { Toaster as Sonner, type ToasterProps } from 'sonner'
 import {
   CircleCheckIcon,
@@ -12,6 +11,7 @@ function Toaster(props: ToasterProps) {
   return (
     <Sonner
       theme="system"
+      position="bottom-right"
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,
@@ -20,17 +20,13 @@ function Toaster(props: ToasterProps) {
         error: <OctagonXIcon className="size-4" />,
         loading: <Loader2Icon className="size-4 animate-spin" />,
       }}
-      style={
-        {
-          '--normal-bg': 'var(--popover)',
-          '--normal-text': 'var(--popover-foreground)',
-          '--normal-border': 'var(--border)',
-          '--border-radius': 'var(--radius)',
-        } as CSSProperties
-      }
       toastOptions={{
         classNames: {
-          toast: 'cn-toast',
+          toast:
+            'rounded-none border border-ink bg-paper text-ink',
+          description: 'text-ink-2',
+          actionButton: 'bg-ink text-paper',
+          cancelButton: 'border border-ink bg-transparent text-ink',
         },
       }}
       {...props}

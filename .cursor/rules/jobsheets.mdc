@@ -33,7 +33,7 @@ Read `docs/ARCHITECTURE.md` and `docs/PLAN.md` before making changes. They are t
 - Accessible by default: buttons are `<button>`, icon-only buttons have `aria-label`, focus is visible, dialogs trap focus (Radix does this).
 
 ## Styling
-- Until Phase 4, use the default shadcn neutral theme. No gradients, glows, spotlight/hover-follow effects, glassmorphism, animated backgrounds, or text-reveal animations.
+- All visual decisions follow `docs/DESIGN.md`. Use only its tokens and type scale. No shadows, gradients, pill badges, all-caps labels, or colour outside the status marks.
 - No hard-coded hex colours in components. Use Tailwind theme tokens / CSS variables.
 - Any motion must respect `prefers-reduced-motion`.
 

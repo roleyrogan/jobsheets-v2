@@ -7,7 +7,8 @@ How the frontend is organized and the rules that keep it that way. If code doesn
 | Concern | Choice | Notes |
 |---|---|---|
 | Build | Vite + React 19 + TypeScript (strict) | |
-| Styling | Tailwind CSS v4 | |
+| Styling | Tailwind CSS v4 | Visual system in [`docs/DESIGN.md`](DESIGN.md) |
+| Fonts | Instrument Sans + Fragment Mono via Fontsource | Variable Instrument Sans (width axis for headings); Fragment Mono for figures |
 | UI primitives | shadcn/ui (Radix) | Components live in `src/components/ui/` and are ours to edit. HeroUI is removed. |
 | Routing | React Router (library mode) | |
 | Server state | TanStack Query | Loading, errors, caching, optimistic updates |

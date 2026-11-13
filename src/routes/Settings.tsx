@@ -1,12 +1,13 @@
 import { AccountEmailForm } from '@/features/account/AccountEmailForm'
 import { AccountPasswordForm } from '@/features/account/AccountPasswordForm'
 import { DeleteAccountSection } from '@/features/account/DeleteAccountSection'
+import { PageTitle } from '@/components/PageTitle'
 import { Separator } from '@/components/ui/separator'
 
 export function Settings() {
   return (
     <div className="mx-auto flex w-full max-w-lg flex-col gap-8">
-      <h1 className="text-2xl font-medium tracking-tight">Settings</h1>
+      <PageTitle>Settings</PageTitle>
       <AccountEmailForm />
       <Separator />
       <AccountPasswordForm />

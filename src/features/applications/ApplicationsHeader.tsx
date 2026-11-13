@@ -1,3 +1,4 @@
+import { PageTitle } from '@/components/PageTitle'
 import { Button } from '@/components/ui/button'
 
 type ApplicationsHeaderProps = {
@@ -11,7 +12,7 @@ export function ApplicationsHeader({
 }: ApplicationsHeaderProps) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <h1 className="text-2xl font-medium tracking-tight">Applications</h1>
+      <PageTitle>Applications</PageTitle>
       <div className="flex flex-wrap gap-2">
         <Button onClick={onAdd}>Add application</Button>
         <Button variant="outline" onClick={onImport}>
