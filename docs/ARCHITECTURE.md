@@ -15,6 +15,7 @@ How the frontend is organized and the rules that keep it that way. If code doesn
 | CSV parsing | PapaParse | Handles quoted fields, embedded commas/newlines, BOM |
 | Toasts | Sonner (shadcn's toast) | Replaces the custom `Toast` + `useToast` |
 | Animation | Motion (`motion` package) — not installed yet; add only when there's a real need. | |
+| Drag and drop | @dnd-kit/core | Pointer, touch and keyboard sensors; screen reader announcements. Board view only (lazy-loaded). |
 | Icons | lucide-react | |
 | Backend | Supabase (Postgres, Auth, Edge Functions) | |
 | Tests | Vitest | For `src/lib/` pure functions |
@@ -39,7 +40,7 @@ src/
     AppRedirect.tsx        /app → last view (sheet|board|overview), keeps query
     ApplicationsWorkspace.tsx  Shared heading, Add/Import, view tabs, <Outlet />
     SheetView.tsx          Dense table + filters + export
-    BoardView.tsx          Kanban (lazy); placeholder until built
+    BoardView.tsx          Kanban (lazy); composes features/board
     OverviewView.tsx       Stats (lazy); placeholder until built
     Settings.tsx
     RequireAuth.tsx        Redirects to /login when signed out
@@ -47,6 +48,7 @@ src/
   features/
     auth/                  useSession, auth forms
     applications/          list, row, form, filters, CSV import dialog, hooks
+    board/                 Kanban columns, cards, dnd-kit (lazy chunk only)
     account/               email / password / delete-account forms
 
   lib/
@@ -56,6 +58,7 @@ src/
       auth.ts              signIn, signUp, signOut, requestReset, updatePassword, updateEmail
       account.ts           deleteAccount (edge function)
     status.ts              Single source for statuses: order, labels, colours
+    board.ts               groupByStatus (pure)
     csv.ts                 toCsv / parseCsv (pure)
     dates.ts               Formatting helpers (pure)
     stats.ts               Phase 3 (pure)
