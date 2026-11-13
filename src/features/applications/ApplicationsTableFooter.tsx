@@ -10,5 +10,5 @@ export function ApplicationsTableFooter({
   total,
   counts,
 }: ApplicationsTableFooterProps) {
-  return <SheetTotalsRow total={total} counts={counts} trailingEmpty={2} />
+  return <SheetTotalsRow total={total} counts={counts} columnCount={8} />
 }

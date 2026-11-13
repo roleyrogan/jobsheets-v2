@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
+import { initialAuthHash } from '@/lib/api/authHash'
 import type { Database } from '@/types/database'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
@@ -11,8 +12,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   )
 }
 
-// Capture before createClient — Supabase strips the hash during init.
-export const initialAuthHash =
-  typeof window !== 'undefined' ? window.location.hash : ''
+// Re-export so existing imports keep working; hash was captured in authHash.
+export { initialAuthHash }
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)

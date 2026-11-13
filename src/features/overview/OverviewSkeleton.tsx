@@ -3,14 +3,16 @@ import { Skeleton } from '@/components/ui/skeleton'
 export function OverviewSkeleton() {
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-2 border-b-[3px] border-double border-ink sm:grid-cols-4">
+      <div className="grid grid-cols-2 border-b-[3px] border-double border-b-ink sm:grid-cols-4">
         {Array.from({ length: 4 }, (_, index) => (
           <div
             key={index}
             className={
-              index < 3
-                ? 'flex flex-col gap-2 border-r border-rule px-3 py-4'
-                : 'flex flex-col gap-2 px-3 py-4'
+              index === 0 || index === 2
+                ? 'flex flex-col gap-2 border-r border-r-rule px-3 py-4'
+                : index === 1
+                  ? 'flex flex-col gap-2 px-3 py-4 sm:border-r sm:border-r-rule'
+                  : 'flex flex-col gap-2 px-3 py-4'
             }
           >
             <Skeleton className="h-9 w-12" />

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from 'cn'
-import { Slot } from 'radix-ui'
 
 const buttonVariants = cva(
   'group/button inline-flex shrink-0 items-center justify-center rounded-[3px] border border-transparent text-[13px] font-medium whitespace-nowrap transition-colors outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=\'size-\'])]:size-4',
@@ -25,7 +24,8 @@ const buttonVariants = cva(
         sm: 'h-7 gap-1 px-2.5 text-[13px]',
         lg: 'h-8 gap-1.5 px-3',
         icon: 'size-8',
-        'icon-xs': 'size-7 text-ink-2 hover:text-ink [&_svg:not([class*=\'size-\'])]:size-3.5',
+        'icon-xs':
+          'size-7 text-ink-2 hover:text-ink [&_svg:not([class*=\'size-\'])]:size-3.5',
         'icon-sm':
           'size-7 text-ink-2 hover:text-ink [&_svg:not([class*=\'size-\'])]:size-3.5',
         'icon-lg': 'size-8',
@@ -38,27 +38,38 @@ const buttonVariants = cva(
   },
 )
 
-function Button({
+type ButtonProps = React.ComponentProps<'button'> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  }
+
+export function Button({
   className,
   variant = 'default',
   size = 'default',
   asChild = false,
+  children,
   ...props
-}: React.ComponentProps<'button'> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
-  const Comp = asChild ? Slot.Root : 'button'
+}: ButtonProps) {
+  const classes = cn(buttonVariants({ variant, size, className }))
+
+  if (asChild && React.isValidElement<{ className?: string }>(children)) {
+    return React.cloneElement(children, {
+      className: cn(classes, children.props.className),
+    })
+  }
 
   return (
-    <Comp
+    <button
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={classes}
       {...props}
-    />
+    >
+      {children}
+    </button>
   )
 }
 
-export { Button, buttonVariants }
+export { buttonVariants }

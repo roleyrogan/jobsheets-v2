@@ -6,8 +6,8 @@ export function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-rule">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-6 text-sm text-ink-2">
+    <footer className="border-t border-t-rule">
+      <div className="mx-auto flex w-full max-w-[1200px] flex-wrap items-center gap-x-4 gap-y-2 px-4 py-6 text-sm text-ink-2">
         <Link to="/privacy" className="hover:underline hover:underline-offset-4">
           Privacy
         </Link>

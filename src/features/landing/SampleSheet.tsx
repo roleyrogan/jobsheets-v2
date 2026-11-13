@@ -1,4 +1,5 @@
-import { StatusBadge } from '@/features/applications/StatusBadge'
+import { getStatusConfig } from '@/lib/status'
+import { StatusMark } from '@/features/applications/StatusMark'
 import {
   SAMPLE_ROWS,
   sampleStatusCounts,
@@ -63,7 +64,7 @@ export function SampleSheet() {
                 {row.role}
               </SheetCell>
               <SheetCell>
-                <StatusBadge value={row.status} />
+                <SampleStatus value={row.status} />
               </SheetCell>
               <SheetCell truncate title={row.location} className="max-w-[10rem]">
                 {row.location}
@@ -77,9 +78,19 @@ export function SampleSheet() {
         <SheetTotalsRow
           total={SAMPLE_ROWS.length}
           counts={counts}
-          trailingEmpty={0}
+          columnCount={6}
         />
       </SheetTable>
     </figure>
+  )
+}
+
+function SampleStatus({ value }: { value: string }) {
+  const config = getStatusConfig(value)
+  return (
+    <span className="inline-flex items-center gap-1.5 text-sm text-current">
+      <StatusMark mark={config.mark} color={config.color} />
+      {config.label}
+    </span>
   )
 }

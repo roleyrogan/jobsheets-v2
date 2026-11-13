@@ -20,23 +20,23 @@ export function GhostedRow({
   const externalUrl = safeExternalUrl(application.application_url)
 
   return (
-    <tr className="h-9 border-b border-rule">
+    <tr className="h-9">
       <td
-        className="max-w-[10rem] border-r border-rule px-2 font-medium"
+        className="max-w-[10rem] border-r border-r-rule border-b border-b-rule px-2 font-medium"
         title={application.company}
       >
         <span className="block truncate">{application.company}</span>
       </td>
       <td
-        className="max-w-[12rem] border-r border-rule px-2"
+        className="max-w-[12rem] border-r border-r-rule border-b border-b-rule px-2"
         title={application.role}
       >
         <span className="block truncate">{application.role}</span>
       </td>
-      <td className="border-r border-rule px-2 text-right">
+      <td className="border-r border-r-rule border-b border-b-rule px-2 text-right">
         <span className="figure">{daysSince}</span>
       </td>
-      <td className="px-1">
+      <td className="border-b border-b-rule px-1">
         <div className="flex items-center justify-end gap-0.5">
           {externalUrl ? (
             <Button variant="ghost" size="icon-sm" asChild>

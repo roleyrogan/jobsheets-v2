@@ -8,7 +8,7 @@ type LandingHeaderProps = {
 
 export function LandingHeader({ signedIn }: LandingHeaderProps) {
   return (
-    <header className="border-b border-rule">
+    <header className="border-b border-b-rule">
       <div className="mx-auto flex h-12 w-full max-w-[1200px] items-center justify-between px-4">
         <Link to="/" className="text-sm font-medium">
           JobSheets

@@ -35,13 +35,13 @@ export function LandingFeatures() {
           <tr>
             <th
               scope="col"
-              className="border-r border-b border-ink px-2 py-2 text-left text-xs font-medium"
+              className="border-r border-r-rule border-b border-b-ink px-2 py-2 text-left text-xs font-medium"
             >
               Feature
             </th>
             <th
               scope="col"
-              className="border-b border-ink px-2 py-2 text-left text-xs font-medium"
+              className="border-b border-b-ink px-2 py-2 text-left text-xs font-medium"
             >
               Detail
             </th>
@@ -55,8 +55,8 @@ export function LandingFeatures() {
                 <td
                   className={
                     isLast
-                      ? 'border-r border-rule px-2 py-2 font-medium align-top'
-                      : 'border-r border-b border-rule px-2 py-2 font-medium align-top'
+                      ? 'align-top border-r border-r-rule px-2 py-2 font-medium'
+                      : 'align-top border-r border-r-rule border-b border-b-rule px-2 py-2 font-medium'
                   }
                 >
                   {row.feature}
@@ -65,7 +65,7 @@ export function LandingFeatures() {
                   className={
                     isLast
                       ? 'px-2 py-2 text-ink-2'
-                      : 'border-b border-rule px-2 py-2 text-ink-2'
+                      : 'border-b border-b-rule px-2 py-2 text-ink-2'
                   }
                 >
                   {row.detail}

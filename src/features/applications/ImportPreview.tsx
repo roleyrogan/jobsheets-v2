@@ -13,7 +13,7 @@ export function ImportPreview({ result }: ImportPreviewProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-3 border-b border-rule">
+      <div className="grid grid-cols-3 border-b border-b-rule">
         <SummaryCell label="Ready" value={result.ready.length} />
         <SummaryCell label="Skipped" value={result.skipped.length} />
         <SummaryCell
@@ -30,31 +30,31 @@ export function ImportPreview({ result }: ImportPreviewProps) {
               <tr>
                 <th
                   scope="col"
-                  className="w-10 border-r border-b border-ink px-2 text-right text-xs font-medium"
+                  className="w-10 border-r border-r-rule border-b border-b-ink px-2 text-right text-xs font-medium"
                 >
                   <span className="sr-only">Line</span>
                 </th>
                 <th
                   scope="col"
-                  className="border-r border-b border-ink px-2 text-left text-xs font-medium"
+                  className="border-r border-r-rule border-b border-b-ink px-2 text-left text-xs font-medium"
                 >
                   Company
                 </th>
                 <th
                   scope="col"
-                  className="border-r border-b border-ink px-2 text-left text-xs font-medium"
+                  className="border-r border-r-rule border-b border-b-ink px-2 text-left text-xs font-medium"
                 >
                   Role
                 </th>
                 <th
                   scope="col"
-                  className="border-r border-b border-ink px-2 text-left text-xs font-medium"
+                  className="border-r border-r-rule border-b border-b-ink px-2 text-left text-xs font-medium"
                 >
                   Status
                 </th>
                 <th
                   scope="col"
-                  className="border-b border-ink px-2 text-right text-xs font-medium"
+                  className="border-b border-b-ink px-2 text-right text-xs font-medium"
                 >
                   Added
                 </th>
@@ -63,27 +63,27 @@ export function ImportPreview({ result }: ImportPreviewProps) {
             <tbody>
               {preview.map((row) => (
                 <tr key={`${row.line}-${row.company}`} className="h-9">
-                  <td className="border-r border-b border-rule bg-fill px-2 text-right">
+                  <td className="border-r border-r-rule border-b border-b-rule bg-fill px-2 text-right">
                     <span className="figure whitespace-nowrap text-ink-2">
                       {row.line}
                     </span>
                   </td>
                   <td
-                    className="max-w-[10rem] border-r border-b border-rule px-2 font-medium"
+                    className="max-w-[10rem] border-r border-r-rule border-b border-b-rule px-2 font-medium"
                     title={row.company}
                   >
                     <span className="block truncate">{row.company}</span>
                   </td>
                   <td
-                    className="max-w-[12rem] border-r border-b border-rule px-2"
+                    className="max-w-[12rem] border-r border-r-rule border-b border-b-rule px-2"
                     title={row.role}
                   >
                     <span className="block truncate">{row.role}</span>
                   </td>
-                  <td className="border-r border-b border-rule px-2 whitespace-nowrap">
+                  <td className="whitespace-nowrap border-r border-r-rule border-b border-b-rule px-2">
                     <StatusBadge value={row.status} />
                   </td>
-                  <td className="border-b border-rule px-2 text-right">
+                  <td className="border-b border-b-rule px-2 text-right">
                     <span className="figure whitespace-nowrap">
                       {toLocalYmd(new Date(row.created_at))}
                     </span>
@@ -137,7 +137,7 @@ function SummaryCell({
       className={
         last
           ? 'flex flex-col gap-0.5 px-2 py-2'
-          : 'flex flex-col gap-0.5 border-r border-rule px-2 py-2'
+          : 'flex flex-col gap-0.5 border-r border-r-rule px-2 py-2'
       }
     >
       <span className="figure text-[32px] leading-9">{value}</span>

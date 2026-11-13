@@ -54,18 +54,18 @@ export function ResponseStats({
         </div>
       </div>
 
-      <table className="w-full max-w-md border-collapse text-[13px] leading-5">
+      <table className="w-full max-w-md border-separate border-spacing-0 text-[13px] leading-5">
         <thead className="bg-fill">
-          <tr className="border-b border-ink">
+          <tr>
             <th
               scope="col"
-              className="border-r border-rule px-2 py-1.5 text-left text-xs font-medium"
+              className="border-r border-r-rule border-b border-b-ink px-2 py-1.5 text-left text-xs font-medium"
             >
               Outcome
             </th>
             <th
               scope="col"
-              className="px-2 py-1.5 text-right text-xs font-medium"
+              className="border-b border-b-ink px-2 py-1.5 text-right text-xs font-medium"
             >
               Count
             </th>
@@ -98,9 +98,25 @@ function OutcomeRow({
   last?: boolean
 }) {
   return (
-    <tr className={last ? undefined : 'border-b border-rule'}>
-      <td className="border-r border-rule px-2 py-1.5">{label}</td>
-      <td className="figure px-2 py-1.5 text-right">{value}</td>
+    <tr>
+      <td
+        className={
+          last
+            ? 'border-r border-r-rule px-2 py-1.5'
+            : 'border-r border-r-rule border-b border-b-rule px-2 py-1.5'
+        }
+      >
+        {label}
+      </td>
+      <td
+        className={
+          last
+            ? 'figure px-2 py-1.5 text-right'
+            : 'figure border-b border-b-rule px-2 py-1.5 text-right'
+        }
+      >
+        {value}
+      </td>
     </tr>
   )
 }

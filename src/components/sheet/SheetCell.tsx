@@ -23,14 +23,14 @@ export function SheetCell({
   const borderR = isLast
     ? ''
     : sticky === 'company'
-      ? 'border-r border-rule max-md:border-r-ink'
-      : 'border-r border-rule'
+      ? 'border-r border-r-rule max-md:border-r-ink'
+      : 'border-r border-r-rule'
 
   return (
     <td
       title={title}
       className={cn(
-        'border-b border-rule px-2',
+        'border-b border-b-rule px-2',
         borderR,
         sticky === 'company' &&
           'sticky left-10 z-10 max-w-[12rem] font-medium md:static',

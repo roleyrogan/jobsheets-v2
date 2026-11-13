@@ -5,24 +5,13 @@ import type {
   User,
 } from '@supabase/supabase-js'
 
-import { initialAuthHash, supabase } from '@/lib/api/client'
+import { supabase } from '@/lib/api/client'
 
-const authHashParams = new URLSearchParams(
-  initialAuthHash.startsWith('#') ? initialAuthHash.slice(1) : initialAuthHash,
-)
-
-export const openedFromRecoveryLink = authHashParams.get('type') === 'recovery'
-
-export const authRedirectHadError =
-  authHashParams.has('error') || authHashParams.has('error_code')
-
-export function clearAuthHash(): void {
-  window.history.replaceState(
-    null,
-    '',
-    `${window.location.pathname}${window.location.search}`,
-  )
-}
+export {
+  authRedirectHadError,
+  clearAuthHash,
+  openedFromRecoveryLink,
+} from '@/lib/api/authFlags'
 
 export function onAuthStateChange(
   callback: (event: AuthChangeEvent, session: Session | null) => void,

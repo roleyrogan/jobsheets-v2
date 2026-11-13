@@ -76,28 +76,31 @@ export function GhostedList({
         <p className="text-sm text-ink-2">Nothing has gone quiet. Nice.</p>
       ) : (
         <div className="max-md:overflow-x-auto">
-          <table className="w-full min-w-[520px] border-collapse text-[13px] leading-5">
+          <table className="w-full min-w-[520px] border-separate border-spacing-0 text-[13px] leading-5">
             <thead className="bg-fill">
-              <tr className="border-b border-ink">
+              <tr>
                 <th
                   scope="col"
-                  className="border-r border-rule px-2 text-left text-xs font-medium"
+                  className="border-r border-r-rule border-b border-b-ink px-2 text-left text-xs font-medium"
                 >
                   Company
                 </th>
                 <th
                   scope="col"
-                  className="border-r border-rule px-2 text-left text-xs font-medium"
+                  className="border-r border-r-rule border-b border-b-ink px-2 text-left text-xs font-medium"
                 >
                   Role
                 </th>
                 <th
                   scope="col"
-                  className="border-r border-rule px-2 text-right text-xs font-medium"
+                  className="border-r border-r-rule border-b border-b-ink px-2 text-right text-xs font-medium"
                 >
                   Days
                 </th>
-                <th scope="col" className="px-2 text-left text-xs font-medium">
+                <th
+                  scope="col"
+                  className="border-b border-b-ink px-2 text-left text-xs font-medium"
+                >
                   <span className="sr-only">Actions</span>
                 </th>
               </tr>

@@ -16,14 +16,14 @@ export function SheetHeaderCell({
   const borderR = isLast
     ? ''
     : sticky === 'company'
-      ? 'border-r border-rule max-md:border-r-ink'
-      : 'border-r border-rule'
+      ? 'border-r border-r-rule max-md:border-r-ink'
+      : 'border-r border-r-rule'
 
   return (
     <th
       scope="col"
       className={cn(
-        'box-border border-b border-ink px-2 text-left text-xs font-medium',
+        'box-border border-b border-b-ink px-2 text-left text-xs font-medium',
         borderR,
         sticky === 'gutter' &&
           'sticky left-0 z-20 w-10 min-w-10 max-w-10 bg-fill md:static',

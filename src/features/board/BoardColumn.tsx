@@ -19,7 +19,7 @@ export function BoardColumn({ status, applications }: BoardColumnProps) {
       className="flex w-[85vw] shrink-0 snap-center flex-col border border-rule md:w-auto md:min-w-0 md:flex-1"
       aria-label={`${config.label} column`}
     >
-      <header className="flex items-center gap-2 border-b border-ink bg-fill px-2 py-2">
+      <header className="flex items-center gap-2 border-b border-b-ink bg-fill px-2 py-2">
         <StatusMark mark={config.mark} color={config.color} />
         <h2 className="flex-1 text-[13px] font-medium">{config.label}</h2>
         <span className="figure text-right text-[13px]">

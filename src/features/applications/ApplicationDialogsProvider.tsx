@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useCallback,
   useMemo,
   useRef,
@@ -7,11 +9,15 @@ import {
 } from 'react'
 
 import { ApplicationDialog } from '@/features/applications/ApplicationDialog'
-import { ImportDialog } from '@/features/applications/ImportDialog'
 import {
   ApplicationDialogsContext,
 } from '@/features/applications/useApplicationDialogs'
 import type { Application } from '@/types/index'
+
+const ImportDialog = lazy(async () => {
+  const mod = await import('@/features/applications/ImportDialog')
+  return { default: mod.ImportDialog }
+})
 
 function rememberFocusTarget(): HTMLElement | null {
   const active = document.activeElement
@@ -63,7 +69,11 @@ export function ApplicationDialogsProvider({
           target?.focus()
         }}
       />
-      <ImportDialog open={importOpen} onOpenChange={setImportOpen} />
+      {importOpen ? (
+        <Suspense fallback={null}>
+          <ImportDialog open={importOpen} onOpenChange={setImportOpen} />
+        </Suspense>
+      ) : null}
     </ApplicationDialogsContext.Provider>
   )
 }

@@ -1,19 +1,8 @@
 import { createBrowserRouter } from 'react-router'
 
 import { SessionProvider } from '@/features/auth/SessionProvider'
-import { RequireAuth } from '@/routes/RequireAuth'
 import { PublicOnly } from '@/routes/PublicOnly'
-import { AppLayout } from '@/routes/AppLayout'
-import { AppRedirect } from '@/routes/AppRedirect'
-import { ApplicationsWorkspace } from '@/routes/ApplicationsWorkspace'
-import { SheetView } from '@/routes/SheetView'
 import { Landing } from '@/routes/Landing'
-import { Login } from '@/routes/Login'
-import { Signup } from '@/routes/Signup'
-import { ForgotPassword } from '@/routes/ForgotPassword'
-import { ResetPassword } from '@/routes/ResetPassword'
-import { Privacy } from '@/routes/Privacy'
-import { Settings } from '@/routes/Settings'
 import { NotFound } from '@/routes/NotFound'
 import { RouteError } from '@/routes/RouteError'
 
@@ -26,25 +15,77 @@ export const router = createBrowserRouter([
       {
         element: <PublicOnly />,
         children: [
-          { path: 'login', element: <Login /> },
-          { path: 'signup', element: <Signup /> },
+          {
+            path: 'login',
+            lazy: async () => {
+              const { Login } = await import('@/routes/Login')
+              return { Component: Login }
+            },
+          },
+          {
+            path: 'signup',
+            lazy: async () => {
+              const { Signup } = await import('@/routes/Signup')
+              return { Component: Signup }
+            },
+          },
         ],
       },
-      { path: 'forgot-password', element: <ForgotPassword /> },
-      { path: 'reset-password', element: <ResetPassword /> },
-      { path: 'privacy', element: <Privacy /> },
+      {
+        path: 'forgot-password',
+        lazy: async () => {
+          const { ForgotPassword } = await import('@/routes/ForgotPassword')
+          return { Component: ForgotPassword }
+        },
+      },
+      {
+        path: 'reset-password',
+        lazy: async () => {
+          const { ResetPassword } = await import('@/routes/ResetPassword')
+          return { Component: ResetPassword }
+        },
+      },
+      {
+        path: 'privacy',
+        lazy: async () => {
+          const { Privacy } = await import('@/routes/Privacy')
+          return { Component: Privacy }
+        },
+      },
       {
         path: 'app',
-        element: <RequireAuth />,
+        lazy: async () => {
+          const { RequireAuth } = await import('@/routes/RequireAuth')
+          return { Component: RequireAuth }
+        },
         children: [
           {
-            element: <AppLayout />,
+            lazy: async () => {
+              const { AppLayout } = await import('@/routes/AppLayout')
+              return { Component: AppLayout }
+            },
             children: [
-              { index: true, element: <AppRedirect /> },
               {
-                element: <ApplicationsWorkspace />,
+                index: true,
+                lazy: async () => {
+                  const { AppRedirect } = await import('@/routes/AppRedirect')
+                  return { Component: AppRedirect }
+                },
+              },
+              {
+                lazy: async () => {
+                  const { ApplicationsWorkspace } =
+                    await import('@/routes/ApplicationsWorkspace')
+                  return { Component: ApplicationsWorkspace }
+                },
                 children: [
-                  { path: 'sheet', element: <SheetView /> },
+                  {
+                    path: 'sheet',
+                    lazy: async () => {
+                      const { SheetView } = await import('@/routes/SheetView')
+                      return { Component: SheetView }
+                    },
+                  },
                   {
                     path: 'board',
                     lazy: async () => {
@@ -62,7 +103,13 @@ export const router = createBrowserRouter([
                   },
                 ],
               },
-              { path: 'settings', element: <Settings /> },
+              {
+                path: 'settings',
+                lazy: async () => {
+                  const { Settings } = await import('@/routes/Settings')
+                  return { Component: Settings }
+                },
+              },
             ],
           },
         ],

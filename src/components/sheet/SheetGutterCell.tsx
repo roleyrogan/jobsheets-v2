@@ -10,7 +10,7 @@ export function SheetGutterCell({ children, className }: SheetGutterCellProps) {
   return (
     <td
       className={cn(
-        'sticky left-0 z-10 box-border w-10 min-w-10 max-w-10 border-r border-b border-rule bg-fill px-2 text-right md:static',
+        'sticky left-0 z-10 box-border w-10 min-w-10 max-w-10 border-r border-r-rule border-b border-b-rule bg-fill px-2 text-right md:static',
         className,
       )}
     >
