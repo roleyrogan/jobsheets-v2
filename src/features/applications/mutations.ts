@@ -7,6 +7,7 @@ import {
   updateApplication,
 } from '@/lib/api/applications'
 import type { ImportRow } from '@/lib/csv'
+import { invalidateApplicationEvents } from '@/features/applications/invalidateEvents'
 import { applicationKeys } from '@/features/applications/queries'
 import { useSession } from '@/features/auth/useSession'
 import type { ApplicationFormValues } from '@/features/applications/schema'
@@ -29,6 +30,10 @@ export function useCreateApplication() {
         current ? [created, ...current] : [created],
       )
     },
+    onSettled: () => {
+      if (!user) return
+      invalidateApplicationEvents(queryClient, user.id)
+    },
   })
 }
 
@@ -50,6 +55,10 @@ export function useUpdateApplication() {
       queryClient.setQueryData<Application[]>(key, (current) =>
         current?.map((row) => (row.id === updated.id ? updated : row)),
       )
+    },
+    onSettled: () => {
+      if (!user) return
+      invalidateApplicationEvents(queryClient, user.id)
     },
   })
 }
@@ -80,6 +89,9 @@ export function useUpdateStatus() {
       if (context?.key) {
         void queryClient.invalidateQueries({ queryKey: context.key })
       }
+      if (user) {
+        invalidateApplicationEvents(queryClient, user.id)
+      }
     },
   })
 }
@@ -109,6 +121,9 @@ export function useDeleteApplication() {
       if (context?.key) {
         void queryClient.invalidateQueries({ queryKey: context.key })
       }
+      if (user) {
+        invalidateApplicationEvents(queryClient, user.id)
+      }
     },
   })
 }
@@ -127,6 +142,10 @@ export function useImportApplications() {
       void queryClient.invalidateQueries({
         queryKey: applicationKeys.list(user.id),
       })
+    },
+    onSettled: () => {
+      if (!user) return
+      invalidateApplicationEvents(queryClient, user.id)
     },
   })
 }

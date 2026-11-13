@@ -61,7 +61,8 @@ src/
     board.ts               groupByStatus (pure)
     csv.ts                 toCsv / parseCsv (pure)
     dates.ts               Formatting helpers (pure)
-    stats.ts               Phase 3 (pure)
+    ghostSetting.ts        Ghosted threshold in localStorage (7–90, default 21)
+    stats/                 Pure overview stats (funnel, activity, ghosted, …)
 
   components/ui/           shadcn primitives
 

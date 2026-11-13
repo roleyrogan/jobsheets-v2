@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useSearchParams } from 'react-router'
 
 import { ApplicationDialogsProvider } from '@/features/applications/ApplicationDialogsProvider'
 import { ApplicationsHeader } from '@/features/applications/ApplicationsHeader'
+import { useApplicationEvents } from '@/features/applications/queries'
 import { useApplicationDialogs } from '@/features/applications/useApplicationDialogs'
 import { isAppView, setLastView } from '@/lib/lastView'
 
@@ -23,6 +24,7 @@ function viewHref(
 
 function WorkspaceChrome() {
   const { openCreate, openImport } = useApplicationDialogs()
+  useApplicationEvents()
   const [searchParams] = useSearchParams()
   const location = useLocation()
   const q = searchParams.get('q')
