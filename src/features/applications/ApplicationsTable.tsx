@@ -9,6 +9,7 @@ import {
 import { ApplicationsTableFooter } from '@/features/applications/ApplicationsTableFooter'
 import { ApplicationsTableHeader } from '@/features/applications/ApplicationsTableHeader'
 import { useSheetKeyboard } from '@/features/applications/useSheetKeyboard'
+import { SheetTable } from '@/components/sheet'
 import type { Application } from '@/types/index'
 
 type ApplicationsTableProps = {
@@ -45,11 +46,11 @@ export function ApplicationsTable({
   })
 
   return (
-    <div className="max-md:overflow-x-auto">
+    <>
       <p className="sr-only">
         Use arrow keys to move between rows, Enter to edit, S to change status.
       </p>
-      <table className="w-full min-w-[760px] border-separate border-spacing-0 text-[13px] leading-5 md:min-w-0">
+      <SheetTable>
         <ApplicationsTableHeader sort={filters.sort} onSort={toggleSort} />
         <tbody onKeyDown={onKeyDown}>
           {applications.map((application, index) => (
@@ -71,7 +72,7 @@ export function ApplicationsTable({
           total={applications.length}
           counts={counts}
         />
-      </table>
-    </div>
+      </SheetTable>
+    </>
   )
 }

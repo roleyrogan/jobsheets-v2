@@ -10,6 +10,7 @@ import { toLocalYmd } from '@/lib/dates'
 import { safeExternalUrl } from '@/lib/urls'
 import { ApplicationStatusCell } from '@/features/applications/ApplicationStatusCell'
 import { DeleteApplicationDialog } from '@/features/applications/DeleteApplicationDialog'
+import { SheetCell, SheetGutterCell } from '@/components/sheet'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -74,26 +75,19 @@ export const ApplicationRow = forwardRef<
             : 'group/row h-9 outline-none hover:bg-fill'
         }
       >
-        <td className="sticky left-0 z-10 box-border w-10 min-w-10 max-w-10 border-r border-b border-rule bg-fill px-2 text-right md:static">
-          <span className="figure text-ink-2">{rowNumber}</span>
-        </td>
-        <td
-          className={
-            selected
-              ? 'sticky left-10 z-10 max-w-[12rem] border-b border-r border-rule bg-fill px-2 font-medium max-md:border-r-ink md:static'
-              : 'sticky left-10 z-10 max-w-[12rem] border-b border-r border-rule bg-paper px-2 font-medium max-md:border-r-ink group-hover/row:bg-fill group-data-[selected=true]/row:bg-fill md:static'
-          }
+        <SheetGutterCell>{rowNumber}</SheetGutterCell>
+        <SheetCell
+          sticky="company"
+          selected={selected}
+          truncate
           title={application.company}
         >
-          <span className="block truncate">{application.company}</span>
-        </td>
-        <td
-          className="max-w-[14rem] border-r border-b border-rule px-2"
-          title={application.role}
-        >
-          <span className="block truncate">{application.role}</span>
-        </td>
-        <td className="border-r border-b border-rule px-2">
+          {application.company}
+        </SheetCell>
+        <SheetCell truncate title={application.role} className="max-w-[14rem]">
+          {application.role}
+        </SheetCell>
+        <SheetCell>
           <ApplicationStatusCell
             application={application}
             triggerRef={statusTriggerRef}
@@ -104,17 +98,18 @@ export const ApplicationRow = forwardRef<
               focusRow()
             }}
           />
-        </td>
-        <td
-          className="max-w-[10rem] border-r border-b border-rule px-2"
+        </SheetCell>
+        <SheetCell
+          truncate
           title={application.location ?? undefined}
+          className="max-w-[10rem]"
         >
-          <span className="block truncate">{application.location ?? '—'}</span>
-        </td>
-        <td className="border-r border-b border-rule px-2 text-right">
+          {application.location ?? '—'}
+        </SheetCell>
+        <SheetCell className="text-right">
           <span className="figure">{added}</span>
-        </td>
-        <td className="border-r border-b border-rule px-1">
+        </SheetCell>
+        <SheetCell className="px-1">
           {externalUrl ? (
             <Button variant="ghost" size="icon-sm" asChild>
               <a
@@ -127,8 +122,8 @@ export const ApplicationRow = forwardRef<
               </a>
             </Button>
           ) : null}
-        </td>
-        <td className="border-b border-rule px-1">
+        </SheetCell>
+        <SheetCell isLast className="px-1">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -151,7 +146,7 @@ export const ApplicationRow = forwardRef<
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </td>
+        </SheetCell>
       </tr>
 
       <DeleteApplicationDialog

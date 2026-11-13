@@ -161,6 +161,14 @@
     letter-spacing: -0.01em;
   }
 
+  .landing-headline {
+    font-size: 44px;
+    line-height: 48px;
+    font-weight: 600;
+    font-stretch: 85%;
+    letter-spacing: -0.02em;
+  }
+
   .figure {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;

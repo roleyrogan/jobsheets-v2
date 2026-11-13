@@ -1,14 +1,16 @@
 import type { ApplicationSort, SortColumn } from '@/lib/applicationFilters'
+import { SheetHeaderCell } from '@/components/sheet'
 
 type Column = {
   key: SortColumn | null
   label: string
   className?: string
+  sticky?: 'gutter' | 'company'
 }
 
 const COLUMNS: Column[] = [
-  { key: null, label: '', className: 'w-10 min-w-10 max-w-10' },
-  { key: 'company', label: 'Company' },
+  { key: null, label: '', sticky: 'gutter' },
+  { key: 'company', label: 'Company', sticky: 'company' },
   { key: 'role', label: 'Role' },
   { key: 'status', label: 'Status' },
   { key: 'location', label: 'Location' },
@@ -20,26 +22,6 @@ const COLUMNS: Column[] = [
 type ApplicationsTableHeaderProps = {
   sort: ApplicationSort
   onSort: (key: SortColumn) => void
-}
-
-function headerCellClass(
-  index: number,
-  isLast: boolean,
-  extra?: string,
-): string {
-  const borderR = isLast
-    ? ''
-    : index === 1
-      ? 'border-r border-rule max-md:border-r-ink'
-      : 'border-r border-rule'
-  const base = `box-border border-b border-ink ${borderR} px-2 text-left text-xs font-medium ${extra ?? ''}`
-  if (index === 0) {
-    return `${base} sticky left-0 z-20 w-10 min-w-10 max-w-10 bg-fill md:static`
-  }
-  if (index === 1) {
-    return `${base} sticky left-10 z-20 max-w-[12rem] bg-fill md:static`
-  }
-  return base
 }
 
 export function ApplicationsTableHeader({
@@ -54,17 +36,18 @@ export function ApplicationsTableHeader({
 
           if (column.key === null) {
             return (
-              <th
+              <SheetHeaderCell
                 key={`${column.label}-${index}`}
-                scope="col"
-                className={headerCellClass(index, isLast, column.className)}
+                sticky={column.sticky}
+                isLast={isLast}
+                className={column.className}
               >
                 {column.label === '' ? (
                   <span className="sr-only">Row</span>
                 ) : (
                   <span className="sr-only">{column.label}</span>
                 )}
-              </th>
+              </SheetHeaderCell>
             )
           }
 
@@ -77,11 +60,12 @@ export function ApplicationsTableHeader({
             : 'none'
 
           return (
-            <th
+            <SheetHeaderCell
               key={columnKey}
-              scope="col"
+              sticky={column.sticky}
+              isLast={isLast}
               aria-sort={ariaSort}
-              className={headerCellClass(index, isLast, column.className)}
+              className={column.className}
             >
               <button
                 type="button"
@@ -95,7 +79,7 @@ export function ApplicationsTableHeader({
                   </span>
                 ) : null}
               </button>
-            </th>
+            </SheetHeaderCell>
           )
         })}
       </tr>
