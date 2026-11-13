@@ -91,9 +91,9 @@ export function AccountPasswordForm() {
 
   return (
     <section className="flex flex-col gap-4">
-      <div>
-        <h2 className="text-base font-medium">Password</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <div className="flex flex-col gap-1">
+        <h2>Password</h2>
+        <p className="text-sm text-ink-2">
           Change the password you use to sign in.
         </p>
       </div>
@@ -123,8 +123,11 @@ export function AccountPasswordForm() {
         </Button>
       </form>
 
-      <p className="text-sm text-muted-foreground">
-        <Link to="/forgot-password" className="underline underline-offset-4">
+      <p className="text-sm text-ink-2">
+        <Link
+          to="/forgot-password"
+          className="hover:underline hover:underline-offset-4"
+        >
           Forgot your current password?
         </Link>
       </p>

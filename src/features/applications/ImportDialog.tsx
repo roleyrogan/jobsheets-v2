@@ -9,6 +9,7 @@ import { ImportPreview } from '@/features/applications/ImportPreview'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -40,15 +41,17 @@ export function ImportDialog({ open, onOpenChange }: ImportDialogProps) {
           <DialogTitle>Import applications</DialogTitle>
         </DialogHeader>
 
-        {result ? (
-          <ImportPreview result={result} />
-        ) : (
-          <ImportFileStep
-            onTextLoaded={(text) => {
-              setResult(parseApplicationsCsv(text, existing))
-            }}
-          />
-        )}
+        <DialogBody>
+          {result ? (
+            <ImportPreview result={result} />
+          ) : (
+            <ImportFileStep
+              onTextLoaded={(text) => {
+                setResult(parseApplicationsCsv(text, existing))
+              }}
+            />
+          )}
+        </DialogBody>
 
         <DialogFooter>
           {result ? (

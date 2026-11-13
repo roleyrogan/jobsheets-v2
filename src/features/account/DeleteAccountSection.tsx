@@ -23,9 +23,9 @@ export function DeleteAccountSection() {
 
   return (
     <section className="flex flex-col gap-4">
-      <div>
-        <h2 className="text-base font-medium">Delete account</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <div className="flex flex-col gap-1">
+        <h2>Delete account</h2>
+        <p className="text-sm text-ink-2">
           Permanently deletes your account and every application. This can&apos;t
           be undone. Export your data first if you want a copy.
         </p>

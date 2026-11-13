@@ -234,7 +234,7 @@ describe('parseApplicationsCsv', () => {
     expect(result.skipped).toEqual([
       {
         line: 2,
-        reason: 'Unclosed quote near this line — fix the file and try again',
+        reason: 'Unclosed quote near this line. Fix the file and try again',
       },
     ])
   })

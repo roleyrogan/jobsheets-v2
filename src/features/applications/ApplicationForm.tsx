@@ -8,11 +8,13 @@ import {
 import { ApplicationFormFields } from '@/features/applications/ApplicationFormFields'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { DialogBody, DialogFooter } from '@/components/ui/dialog'
 
 type ApplicationFormProps = {
   mode: 'create' | 'edit'
   defaultValues: ApplicationFormInput
   onSubmit: (values: ApplicationFormValues) => Promise<void>
+  layout?: 'default' | 'dialog'
 }
 
 type FieldErrors = Partial<Record<keyof ApplicationFormInput, string>>
@@ -21,6 +23,7 @@ export function ApplicationForm({
   mode,
   defaultValues,
   onSubmit,
+  layout = 'default',
 }: ApplicationFormProps) {
   const [values, setValues] = useState<ApplicationFormInput>(defaultValues)
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -71,8 +74,8 @@ export function ApplicationForm({
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+  const fields = (
+    <>
       {serverError ? (
         <Alert variant="destructive">
           <AlertDescription>{serverError}</AlertDescription>
@@ -85,13 +88,33 @@ export function ApplicationForm({
         pending={pending}
         onChange={updateField}
       />
+    </>
+  )
 
+  const submitLabel = pending
+    ? 'Saving…'
+    : mode === 'create'
+      ? 'Add application'
+      : 'Save changes'
+
+  if (layout === 'dialog') {
+    return (
+      <form onSubmit={handleSubmit} className="contents" noValidate>
+        <DialogBody className="flex flex-col gap-4">{fields}</DialogBody>
+        <DialogFooter>
+          <Button type="submit" disabled={pending}>
+            {submitLabel}
+          </Button>
+        </DialogFooter>
+      </form>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+      {fields}
       <Button type="submit" disabled={pending} className="w-full">
-        {pending
-          ? 'Saving…'
-          : mode === 'create'
-            ? 'Add application'
-            : 'Save changes'}
+        {submitLabel}
       </Button>
     </form>
   )

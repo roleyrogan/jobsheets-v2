@@ -64,10 +64,10 @@ export function ApplicationDialog({
             {mode === 'create' ? 'Add application' : 'Edit application'}
           </DialogTitle>
         </DialogHeader>
-        {/* Remount when switching records so defaultValues apply */}
         <ApplicationForm
           key={application ? `edit-${application.id}` : 'create'}
           mode={mode}
+          layout="dialog"
           defaultValues={defaultValues}
           onSubmit={async (values) => {
             if (mode === 'create') {

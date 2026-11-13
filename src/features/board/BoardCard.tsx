@@ -21,8 +21,8 @@ export function BoardCard({ application }: BoardCardProps) {
       {...listeners}
       className={
         isDragging
-          ? 'cursor-grabbing touch-manipulation opacity-50'
-          : 'cursor-grab touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+          ? 'cursor-grabbing touch-manipulation opacity-50 outline-2 outline-select'
+          : 'cursor-grab touch-manipulation'
       }
     >
       <BoardCardFace

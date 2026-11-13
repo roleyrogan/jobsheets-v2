@@ -52,7 +52,7 @@ export function BoardView() {
       <div className="flex flex-col items-start gap-3">
         <div className="flex flex-col gap-1">
           <p className="font-medium">No applications yet</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-ink-2">
             When you add one, it will show up here.
           </p>
         </div>

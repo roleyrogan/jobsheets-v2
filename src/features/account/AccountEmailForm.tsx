@@ -28,7 +28,10 @@ export function AccountEmailForm() {
       })
       .refine(
         (data) => data.email.trim().toLowerCase() !== currentEmail.toLowerCase(),
-        { message: 'New email must be different from your current email', path: ['email'] },
+        {
+          message: 'New email must be different from your current email',
+          path: ['email'],
+        },
       )
 
     const parsed = schema.safeParse({ email: newEmail.trim() })
@@ -56,12 +59,16 @@ export function AccountEmailForm() {
 
   return (
     <section className="flex flex-col gap-4">
-      <div>
-        <h2 className="text-base font-medium">Email</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Current email:{' '}
-          <span className="text-foreground">{currentEmail || '—'}</span>
+      <div className="flex flex-col gap-1">
+        <h2>Email</h2>
+        <p className="text-sm text-ink-2">
+          Change the email you use to sign in.
         </p>
+      </div>
+
+      <div className="flex flex-col gap-0.5">
+        <span className="text-xs font-medium">Current email</span>
+        <span className="text-sm">{currentEmail || '—'}</span>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
@@ -89,11 +96,15 @@ export function AccountEmailForm() {
             disabled={pending || !currentEmail}
           />
           {fieldError ? (
-            <p className="text-sm text-destructive">{fieldError}</p>
+            <p className="text-sm text-ink-2">{fieldError}</p>
           ) : null}
         </div>
 
-        <Button type="submit" disabled={pending || !currentEmail} className="w-fit">
+        <Button
+          type="submit"
+          disabled={pending || !currentEmail}
+          className="w-fit"
+        >
           {pending ? 'Sending…' : 'Change email'}
         </Button>
       </form>

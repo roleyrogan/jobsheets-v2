@@ -66,8 +66,8 @@ export function ForgotPasswordForm() {
         <Alert>
           <AlertDescription>{SUCCESS_MESSAGE}</AlertDescription>
         </Alert>
-        <p className="text-center text-sm text-muted-foreground">
-          <Link to="/login" className="underline underline-offset-4">
+        <p className="text-sm text-ink-2">
+          <Link to="/login" className="hover:underline hover:underline-offset-4">
             Back to sign in
           </Link>
         </p>
@@ -103,8 +103,8 @@ export function ForgotPasswordForm() {
         {pending ? 'Sending…' : 'Send reset link'}
       </Button>
 
-      <p className="text-center text-sm text-muted-foreground">
-        <Link to="/login" className="underline underline-offset-4">
+      <p className="text-sm text-ink-2">
+        <Link to="/login" className="hover:underline hover:underline-offset-4">
           Back to sign in
         </Link>
       </p>

@@ -8,7 +8,7 @@ type BoardCardOverlayProps = {
 export function BoardCardOverlay({ application }: BoardCardOverlayProps) {
   return (
     <div className="cursor-grabbing">
-      <BoardCardFace application={application} />
+      <BoardCardFace application={application} outlined />
     </div>
   )
 }

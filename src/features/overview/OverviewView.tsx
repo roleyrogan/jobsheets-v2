@@ -79,7 +79,7 @@ export function OverviewView() {
       <div className="flex flex-col items-start gap-3">
         <div className="flex flex-col gap-1">
           <p className="font-medium">No applications yet</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-ink-2">
             When you add one, stats will show up here.
           </p>
         </div>
@@ -91,7 +91,7 @@ export function OverviewView() {
   return (
     <div className="flex flex-col gap-8">
       {apps.length < 5 ? (
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-ink-2">
           Stats get more useful after a few more applications.
         </p>
       ) : null}

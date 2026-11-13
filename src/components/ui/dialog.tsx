@@ -59,7 +59,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-none border border-ink bg-paper p-4 text-sm text-ink duration-100 outline-none sm:max-w-sm motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-reduce:transition-none',
+          'fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 flex-col gap-0 overflow-hidden rounded-none border border-ink bg-paper p-0 text-sm text-ink duration-100 outline-none sm:max-w-sm motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-reduce:transition-none',
           className,
         )}
         {...props}
@@ -87,9 +87,19 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="dialog-header"
       className={cn(
-        'flex flex-col gap-2 border-b border-rule pb-3',
+        'flex shrink-0 flex-col gap-2 border-b border-rule px-4 pt-4 pb-3',
         className,
       )}
+      {...props}
+    />
+  )
+}
+
+function DialogBody({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot="dialog-body"
+      className={cn('min-h-0 overflow-y-auto px-4 py-4', className)}
       {...props}
     />
   )
@@ -107,7 +117,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        '-mx-4 -mb-4 flex flex-col-reverse gap-2 border-t border-rule p-4 sm:flex-row sm:justify-end',
+        'flex shrink-0 flex-col-reverse gap-2 border-t border-rule p-4 sm:flex-row sm:justify-end',
         className,
       )}
       {...props}
@@ -153,6 +163,7 @@ function DialogDescription({
 
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,

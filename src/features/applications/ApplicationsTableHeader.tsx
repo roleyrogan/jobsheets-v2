@@ -7,7 +7,7 @@ type Column = {
 }
 
 const COLUMNS: Column[] = [
-  { key: null, label: '', className: 'w-10' },
+  { key: null, label: '', className: 'w-10 min-w-10 max-w-10' },
   { key: 'company', label: 'Company' },
   { key: 'role', label: 'Role' },
   { key: 'status', label: 'Status' },
@@ -22,20 +22,42 @@ type ApplicationsTableHeaderProps = {
   onSort: (key: SortColumn) => void
 }
 
+function headerCellClass(
+  index: number,
+  isLast: boolean,
+  extra?: string,
+): string {
+  const borderR = isLast
+    ? ''
+    : index === 1
+      ? 'border-r border-rule max-md:border-r-ink'
+      : 'border-r border-rule'
+  const base = `box-border border-b border-ink ${borderR} px-2 text-left text-xs font-medium ${extra ?? ''}`
+  if (index === 0) {
+    return `${base} sticky left-0 z-20 w-10 min-w-10 max-w-10 bg-fill md:static`
+  }
+  if (index === 1) {
+    return `${base} sticky left-10 z-20 max-w-[12rem] bg-fill md:static`
+  }
+  return base
+}
+
 export function ApplicationsTableHeader({
   sort,
   onSort,
 }: ApplicationsTableHeaderProps) {
   return (
     <thead className="bg-fill md:sticky md:top-0 md:z-20">
-      <tr className="border-b border-ink">
+      <tr>
         {COLUMNS.map((column, index) => {
+          const isLast = index === COLUMNS.length - 1
+
           if (column.key === null) {
             return (
               <th
                 key={`${column.label}-${index}`}
                 scope="col"
-                className={`border-r border-rule px-2 text-left text-xs font-medium last:border-r-0 ${column.className ?? ''}`}
+                className={headerCellClass(index, isLast, column.className)}
               >
                 {column.label === '' ? (
                   <span className="sr-only">Row</span>
@@ -59,7 +81,7 @@ export function ApplicationsTableHeader({
               key={columnKey}
               scope="col"
               aria-sort={ariaSort}
-              className={`border-r border-rule px-2 text-left text-xs font-medium last:border-r-0 ${column.className ?? ''}`}
+              className={headerCellClass(index, isLast, column.className)}
             >
               <button
                 type="button"

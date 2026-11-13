@@ -28,9 +28,7 @@ export function WeeklyBars({ applications, now }: WeeklyBarsProps) {
       aria-labelledby="overview-weekly-heading"
       className="flex flex-col gap-3"
     >
-      <h2 id="overview-weekly-heading" className="text-sm font-medium">
-        Weekly applications
-      </h2>
+      <h2 id="overview-weekly-heading">Weekly applications</h2>
 
       <div className="flex w-full items-end gap-1">
         {weeks.map((week) => (
@@ -58,22 +56,15 @@ function WeekBar({
   const height = barHeight(week.count, max)
 
   return (
-    <div
-      className={
-        current
-          ? 'flex min-w-0 flex-1 flex-col items-center gap-1 text-foreground'
-          : 'flex min-w-0 flex-1 flex-col items-center gap-1 text-muted-foreground'
-      }
-    >
-      <span className="text-xs tabular-nums">{week.count}</span>
+    <div className="flex min-w-0 flex-1 flex-col items-center gap-1 text-ink-2">
+      <span className="figure text-xs">{week.count}</span>
       <div className="flex h-24 w-full items-end justify-center">
         <div
-          className={
-            current
-              ? 'w-full rounded-sm bg-foreground'
-              : 'w-full rounded-sm bg-foreground/40'
-          }
-          style={{ height: `${height}px` }}
+          className="w-full bg-ink"
+          style={{
+            height: `${height}px`,
+            opacity: current ? 1 : 0.35,
+          }}
           aria-hidden
         />
       </div>

@@ -4,6 +4,7 @@ import { useDeleteApplication } from '@/features/applications/mutations'
 import {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogBody,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -32,13 +33,21 @@ export function DeleteApplicationDialog({
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete application?</AlertDialogTitle>
-          <AlertDialogDescription>
-            {application
-              ? `Delete ${application.company} — ${application.role}? This can't be undone.`
-              : 'This can’t be undone.'}
-          </AlertDialogDescription>
+          <AlertDialogTitle>Delete this application?</AlertDialogTitle>
         </AlertDialogHeader>
+        <AlertDialogBody>
+          <AlertDialogDescription asChild>
+            <div className="flex flex-col gap-1 text-sm">
+              {application ? (
+                <>
+                  <p className="font-medium text-ink">{application.company}</p>
+                  <p className="text-ink-2">{application.role}</p>
+                </>
+              ) : null}
+              <p className="mt-2 text-ink-2">This can&apos;t be undone.</p>
+            </div>
+          </AlertDialogDescription>
+        </AlertDialogBody>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction

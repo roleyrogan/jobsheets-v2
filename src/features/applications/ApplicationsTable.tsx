@@ -49,7 +49,7 @@ export function ApplicationsTable({
       <p className="sr-only">
         Use arrow keys to move between rows, Enter to edit, S to change status.
       </p>
-      <table className="w-full min-w-[760px] border-collapse text-[13px] leading-5 md:min-w-0">
+      <table className="w-full min-w-[760px] border-separate border-spacing-0 text-[13px] leading-5 md:min-w-0">
         <ApplicationsTableHeader sort={filters.sort} onSort={toggleSort} />
         <tbody onKeyDown={onKeyDown}>
           {applications.map((application, index) => (

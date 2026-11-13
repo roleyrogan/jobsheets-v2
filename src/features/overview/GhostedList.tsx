@@ -49,8 +49,8 @@ export function GhostedList({
       aria-labelledby="overview-ghosted-heading"
       className="flex flex-col gap-3"
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="overview-ghosted-heading" className="text-sm font-medium">
+      <div className="flex flex-wrap items-center gap-3">
+        <h2 id="overview-ghosted-heading">
           No response in {afterDays}+ days
         </h2>
         <div className="flex items-center gap-2">
@@ -73,30 +73,57 @@ export function GhostedList({
       </div>
 
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          Nothing has gone quiet. Nice.
-        </p>
+        <p className="text-sm text-ink-2">Nothing has gone quiet. Nice.</p>
       ) : (
-        <ul className="flex flex-col divide-y border-y">
-          {visible.map(({ application, daysSince }) => (
-            <GhostedRow
-              key={application.id}
-              application={application}
-              daysSince={daysSince}
-              onEdit={() => openEdit(application)}
-              onReject={() => {
-                updateStatus.mutate(
-                  { id: application.id, status: 'Rejected' },
-                  {
-                    onError: () => {
-                      toast.error("Couldn't update status")
-                    },
-                  },
-                )
-              }}
-            />
-          ))}
-        </ul>
+        <div className="max-md:overflow-x-auto">
+          <table className="w-full min-w-[520px] border-collapse text-[13px] leading-5">
+            <thead className="bg-fill">
+              <tr className="border-b border-ink">
+                <th
+                  scope="col"
+                  className="border-r border-rule px-2 text-left text-xs font-medium"
+                >
+                  Company
+                </th>
+                <th
+                  scope="col"
+                  className="border-r border-rule px-2 text-left text-xs font-medium"
+                >
+                  Role
+                </th>
+                <th
+                  scope="col"
+                  className="border-r border-rule px-2 text-right text-xs font-medium"
+                >
+                  Days
+                </th>
+                <th scope="col" className="px-2 text-left text-xs font-medium">
+                  <span className="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {visible.map(({ application, daysSince }) => (
+                <GhostedRow
+                  key={application.id}
+                  application={application}
+                  daysSince={daysSince}
+                  onEdit={() => openEdit(application)}
+                  onReject={() => {
+                    updateStatus.mutate(
+                      { id: application.id, status: 'Rejected' },
+                      {
+                        onError: () => {
+                          toast.error("Couldn't update status")
+                        },
+                      },
+                    )
+                  }}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {!expanded && items.length > 10 ? (

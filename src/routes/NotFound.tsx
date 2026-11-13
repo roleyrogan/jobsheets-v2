@@ -1,14 +1,15 @@
 import { Link } from 'react-router'
 
-import { PageTitle } from '@/components/PageTitle'
+import { AuthShell } from '@/components/AuthShell'
+import { Button } from '@/components/ui/button'
 
 export function NotFound() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-3 px-4">
-      <PageTitle>Page not found</PageTitle>
-      <Link to="/" className="text-sm underline underline-offset-4">
-        Go home
-      </Link>
-    </div>
+    <AuthShell title="Page not found">
+      <p className="text-sm text-ink-2">That page doesn&apos;t exist.</p>
+      <Button type="button" asChild className="w-fit">
+        <Link to="/">Go home</Link>
+      </Button>
+    </AuthShell>
   )
 }

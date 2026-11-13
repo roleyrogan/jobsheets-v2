@@ -33,7 +33,7 @@ export function ResetPasswordForm() {
 
   if (status === 'loading') {
     return (
-      <p className="text-sm text-muted-foreground" role="status">
+      <p className="text-sm text-ink-2" role="status">
         Loading…
       </p>
     )
@@ -45,7 +45,10 @@ export function ResetPasswordForm() {
         <Alert variant="destructive">
           <AlertDescription>
             This reset link is invalid or has expired.{' '}
-            <Link to="/forgot-password" className="underline underline-offset-4">
+            <Link
+              to="/forgot-password"
+              className="hover:underline hover:underline-offset-4"
+            >
               Request a new one
             </Link>
             .

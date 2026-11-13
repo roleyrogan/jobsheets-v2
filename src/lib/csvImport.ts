@@ -23,6 +23,7 @@ export type ImportRow = {
   location: string | null
   notes: string | null
   created_at: string
+  line: number
 }
 
 export type ParseApplicationsCsvResult = {
@@ -56,7 +57,7 @@ export function parseApplicationsCsv(
         {
           line,
           reason:
-            'Unclosed quote near this line — fix the file and try again',
+            'Unclosed quote near this line. Fix the file and try again',
         },
       ],
       warnings: [],
@@ -145,6 +146,7 @@ export function parseApplicationsCsv(
       ...formParsed.data,
       status: formParsed.data.status,
       created_at: dateMatch.iso,
+      line,
     })
   })
 

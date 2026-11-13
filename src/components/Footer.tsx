@@ -6,16 +6,16 @@ export function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="border-t">
-      <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-6 text-sm text-muted-foreground">
-        <Link to="/privacy" className="underline-offset-4 hover:underline">
+    <footer className="border-t border-rule">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-6 text-sm text-ink-2">
+        <Link to="/privacy" className="hover:underline hover:underline-offset-4">
           Privacy
         </Link>
         <a
           href={FEEDBACK_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="underline-offset-4 hover:underline"
+          className="hover:underline hover:underline-offset-4"
         >
           Send feedback
         </a>

@@ -20,34 +20,44 @@ export function GhostedRow({
   const externalUrl = safeExternalUrl(application.application_url)
 
   return (
-    <li className="flex flex-wrap items-center gap-2 py-3">
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm">
-          <span className="font-medium">{application.company}</span>
-          <span className="text-muted-foreground"> — {application.role}</span>
-        </p>
-        <p className="text-xs text-muted-foreground tabular-nums">
-          {daysSince} days
-        </p>
-      </div>
-      {externalUrl ? (
-        <Button variant="ghost" size="icon-sm" asChild>
-          <a
-            href={externalUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Open posting for ${application.company}`}
-          >
-            <ExternalLink />
-          </a>
-        </Button>
-      ) : null}
-      <Button type="button" variant="outline" size="sm" onClick={onReject}>
-        Mark rejected
-      </Button>
-      <Button type="button" variant="ghost" size="sm" onClick={onEdit}>
-        Edit
-      </Button>
-    </li>
+    <tr className="h-9 border-b border-rule">
+      <td
+        className="max-w-[10rem] border-r border-rule px-2 font-medium"
+        title={application.company}
+      >
+        <span className="block truncate">{application.company}</span>
+      </td>
+      <td
+        className="max-w-[12rem] border-r border-rule px-2"
+        title={application.role}
+      >
+        <span className="block truncate">{application.role}</span>
+      </td>
+      <td className="border-r border-rule px-2 text-right">
+        <span className="figure">{daysSince}</span>
+      </td>
+      <td className="px-1">
+        <div className="flex items-center justify-end gap-0.5">
+          {externalUrl ? (
+            <Button variant="ghost" size="icon-sm" asChild>
+              <a
+                href={externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open posting for ${application.company}`}
+              >
+                <ExternalLink />
+              </a>
+            </Button>
+          ) : null}
+          <Button type="button" variant="outline" size="sm" onClick={onReject}>
+            Mark rejected
+          </Button>
+          <Button type="button" variant="ghost" size="sm" onClick={onEdit}>
+            Edit
+          </Button>
+        </div>
+      </td>
+    </tr>
   )
 }

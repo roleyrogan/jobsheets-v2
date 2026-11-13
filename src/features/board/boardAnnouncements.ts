@@ -25,7 +25,7 @@ export function createBoardAnnouncements(
     onDragStart({ active }) {
       const app = findApp(apps, active.id)
       if (!app) return ''
-      return `Picked up ${app.company} — ${app.role}.`
+      return `Picked up ${app.company}, ${app.role}.`
     },
     onDragOver({ over }) {
       const status = columnLabel(over?.id)

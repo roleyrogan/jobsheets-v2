@@ -70,30 +70,30 @@ export const ApplicationRow = forwardRef<
         onFocus={onSelect}
         className={
           selected
-            ? 'group/row h-9 border-b border-rule bg-fill outline-2 outline-offset-[-2px] outline-select'
-            : 'group/row h-9 border-b border-rule outline-none hover:bg-fill'
+            ? 'group/row h-9 bg-fill outline-2 outline-offset-[-2px] outline-select'
+            : 'group/row h-9 outline-none hover:bg-fill'
         }
       >
-        <td className="sticky left-0 z-10 w-10 border-r border-rule bg-fill px-2 text-right md:static">
+        <td className="sticky left-0 z-10 box-border w-10 min-w-10 max-w-10 border-r border-b border-rule bg-fill px-2 text-right md:static">
           <span className="figure text-ink-2">{rowNumber}</span>
         </td>
         <td
           className={
             selected
-              ? 'sticky left-10 z-10 max-w-[12rem] border-r border-rule bg-fill px-2 font-medium md:static'
-              : 'sticky left-10 z-10 max-w-[12rem] border-r border-rule bg-paper px-2 font-medium group-hover/row:bg-fill md:static'
+              ? 'sticky left-10 z-10 max-w-[12rem] border-b border-r border-rule bg-fill px-2 font-medium max-md:border-r-ink md:static'
+              : 'sticky left-10 z-10 max-w-[12rem] border-b border-r border-rule bg-paper px-2 font-medium max-md:border-r-ink group-hover/row:bg-fill group-data-[selected=true]/row:bg-fill md:static'
           }
           title={application.company}
         >
           <span className="block truncate">{application.company}</span>
         </td>
         <td
-          className="max-w-[14rem] border-r border-rule px-2"
+          className="max-w-[14rem] border-r border-b border-rule px-2"
           title={application.role}
         >
           <span className="block truncate">{application.role}</span>
         </td>
-        <td className="border-r border-rule px-2">
+        <td className="border-r border-b border-rule px-2">
           <ApplicationStatusCell
             application={application}
             triggerRef={statusTriggerRef}
@@ -106,15 +106,15 @@ export const ApplicationRow = forwardRef<
           />
         </td>
         <td
-          className="max-w-[10rem] border-r border-rule px-2"
+          className="max-w-[10rem] border-r border-b border-rule px-2"
           title={application.location ?? undefined}
         >
           <span className="block truncate">{application.location ?? '—'}</span>
         </td>
-        <td className="border-r border-rule px-2 text-right">
+        <td className="border-r border-b border-rule px-2 text-right">
           <span className="figure">{added}</span>
         </td>
-        <td className="border-r border-rule px-1">
+        <td className="border-r border-b border-rule px-1">
           {externalUrl ? (
             <Button variant="ghost" size="icon-sm" asChild>
               <a
@@ -129,7 +129,7 @@ export const ApplicationRow = forwardRef<
             </Button>
           ) : null}
         </td>
-        <td className="px-1">
+        <td className="border-b border-rule px-1">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

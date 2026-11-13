@@ -6,6 +6,7 @@ import { deleteAccount } from '@/lib/api/account'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   AlertDialog,
+  AlertDialogBody,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -49,14 +50,13 @@ export function DeleteAccountDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete your account?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This permanently deletes your account and all applications. Type{' '}
-            <span className="font-medium text-foreground">{email}</span> to
-            confirm.
-          </AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className="flex flex-col gap-3">
+        <AlertDialogBody className="flex flex-col gap-3">
+          <AlertDialogDescription>
+            This permanently deletes your account and all applications. Type{' '}
+            <span className="font-medium text-ink">{email}</span> to confirm.
+          </AlertDialogDescription>
           {error ? (
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
@@ -73,7 +73,7 @@ export function DeleteAccountDialog({
               disabled={pending}
             />
           </div>
-        </div>
+        </AlertDialogBody>
 
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>Cancel</AlertDialogCancel>

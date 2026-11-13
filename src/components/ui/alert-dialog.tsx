@@ -56,7 +56,7 @@ function AlertDialogContent({
         data-slot="alert-dialog-content"
         data-size={size}
         className={cn(
-          'group/alert-dialog-content fixed top-1/2 left-1/2 z-50 grid w-full -translate-x-1/2 -translate-y-1/2 gap-4 rounded-none border border-ink bg-paper p-4 text-ink duration-100 outline-none data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-sm motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-reduce:transition-none',
+          'group/alert-dialog-content fixed top-1/2 left-1/2 z-50 flex max-h-[calc(100dvh-2rem)] w-full -translate-x-1/2 -translate-y-1/2 flex-col gap-0 overflow-hidden rounded-none border border-ink bg-paper p-0 text-ink duration-100 outline-none data-[size=default]:max-w-xs data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-sm motion-safe:data-open:animate-in motion-safe:data-open:fade-in-0 motion-safe:data-closed:animate-out motion-safe:data-closed:fade-out-0 motion-reduce:transition-none',
           className,
         )}
         {...props}
@@ -73,9 +73,22 @@ function AlertDialogHeader({
     <div
       data-slot="alert-dialog-header"
       className={cn(
-        'grid gap-1.5 border-b border-rule pb-3 text-left',
+        'grid shrink-0 gap-1.5 border-b border-rule px-4 pt-4 pb-3 text-left',
         className,
       )}
+      {...props}
+    />
+  )
+}
+
+function AlertDialogBody({
+  className,
+  ...props
+}: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot="alert-dialog-body"
+      className={cn('min-h-0 overflow-y-auto px-4 py-4', className)}
       {...props}
     />
   )
@@ -89,7 +102,7 @@ function AlertDialogFooter({
     <div
       data-slot="alert-dialog-footer"
       className={cn(
-        '-mx-4 -mb-4 flex flex-col-reverse gap-2 border-t border-rule p-4 sm:flex-row sm:justify-end',
+        'flex shrink-0 flex-col-reverse gap-2 border-t border-rule p-4 sm:flex-row sm:justify-end',
         className,
       )}
       {...props}
@@ -181,6 +194,7 @@ function AlertDialogCancel({
 export {
   AlertDialog,
   AlertDialogAction,
+  AlertDialogBody,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
