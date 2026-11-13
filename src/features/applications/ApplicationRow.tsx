@@ -1,6 +1,5 @@
 import {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState,
@@ -42,20 +41,17 @@ export const ApplicationRow = forwardRef<
   ref,
 ) {
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [statusOpen, setStatusOpen] = useState(false)
   const rowRef = useRef<HTMLTableRowElement>(null)
   const statusTriggerRef = useRef<HTMLButtonElement>(null)
   const externalUrl = safeExternalUrl(application.application_url)
   const added = toLocalYmd(new Date(application.created_at))
 
   useImperativeHandle(ref, () => ({
-    openStatus: () => statusTriggerRef.current?.click(),
+    openStatus: () => setStatusOpen(true),
     openDelete: () => setDeleteOpen(true),
     focus: () => rowRef.current?.focus(),
   }))
-
-  useEffect(() => {
-    if (selected) rowRef.current?.focus()
-  }, [selected])
 
   return (
     <>
@@ -63,7 +59,10 @@ export const ApplicationRow = forwardRef<
         ref={rowRef}
         tabIndex={selected ? 0 : -1}
         data-selected={selected ? 'true' : undefined}
-        onClick={onSelect}
+        onClick={() => {
+          onSelect()
+          rowRef.current?.focus()
+        }}
         onFocus={onSelect}
         className={
           selected
@@ -94,6 +93,8 @@ export const ApplicationRow = forwardRef<
           <ApplicationStatusCell
             application={application}
             triggerRef={statusTriggerRef}
+            open={statusOpen}
+            onOpenChange={setStatusOpen}
           />
         </td>
         <td

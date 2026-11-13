@@ -32,11 +32,16 @@ export function ApplicationsTable({
     rowRefs.current.get(id)?.openDelete()
   }, [])
 
+  const focusRow = useCallback((id: number) => {
+    rowRefs.current.get(id)?.focus()
+  }, [])
+
   const { selectedId, setSelectedId, onKeyDown } = useSheetKeyboard({
     applications,
     onEdit,
     openStatus,
     openDelete,
+    focusRow,
   })
 
   return (

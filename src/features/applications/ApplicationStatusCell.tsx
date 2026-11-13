@@ -16,11 +16,15 @@ import type { Application } from '@/types/index'
 type ApplicationStatusCellProps = {
   application: Application
   triggerRef: Ref<HTMLButtonElement>
+  open: boolean
+  onOpenChange: (open: boolean) => void
 }
 
 export function ApplicationStatusCell({
   application,
   triggerRef,
+  open,
+  onOpenChange,
 }: ApplicationStatusCellProps) {
   const updateStatus = useUpdateStatus()
   const status = toStatus(application.status)
@@ -28,6 +32,8 @@ export function ApplicationStatusCell({
   return (
     <Select
       value={status}
+      open={open}
+      onOpenChange={onOpenChange}
       onValueChange={(value) => {
         if (!isStatus(value) || value === status) return
         updateStatus.mutate(
@@ -44,7 +50,7 @@ export function ApplicationStatusCell({
         ref={triggerRef}
         size="sm"
         aria-label={`Status for ${application.company}`}
-        className="h-auto border-0 bg-transparent px-0 py-0 [&_svg]:opacity-0 group-hover/row:[&_svg]:opacity-100 group-focus-within/row:[&_svg]:opacity-100 data-[state=open]:[&_svg]:opacity-100"
+        className="h-auto w-auto border-0 bg-transparent px-0 py-0 [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:opacity-0 group-hover/row:[&_svg]:opacity-100 group-focus-within/row:[&_svg]:opacity-100 data-[state=open]:[&_svg]:opacity-100"
       >
         <SelectValue>
           <StatusBadge value={status} />

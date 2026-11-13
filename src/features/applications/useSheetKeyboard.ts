@@ -7,6 +7,7 @@ type UseSheetKeyboardArgs = {
   onEdit: (application: Application) => void
   openStatus: (id: number) => void
   openDelete: (id: number) => void
+  focusRow: (id: number) => void
 }
 
 function isTypingTarget(target: EventTarget | null): boolean {
@@ -17,9 +18,19 @@ function isTypingTarget(target: EventTarget | null): boolean {
     tag === 'TEXTAREA' ||
     tag === 'SELECT' ||
     target.isContentEditable ||
-    target.closest('[role="menu"]') !== null ||
-    target.closest('[role="listbox"]') !== null
+    target.closest(
+      '[role="menu"],[role="listbox"],[role="dialog"]',
+    ) !== null
   )
+}
+
+function openAfterKey(
+  event: KeyboardEvent<HTMLTableSectionElement>,
+  action: () => void,
+) {
+  event.preventDefault()
+  event.stopPropagation()
+  requestAnimationFrame(action)
 }
 
 export function useSheetKeyboard({
@@ -27,6 +38,7 @@ export function useSheetKeyboard({
   onEdit,
   openStatus,
   openDelete,
+  focusRow,
 }: UseSheetKeyboardArgs) {
   const [selectedId, setSelectedId] = useState<number | null>(null)
 
@@ -45,6 +57,15 @@ export function useSheetKeyboard({
     (app) => app.id === resolvedSelectedId,
   )
 
+  const moveTo = useCallback(
+    (application: Application | undefined) => {
+      if (!application) return
+      setSelectedId(application.id)
+      requestAnimationFrame(() => focusRow(application.id))
+    },
+    [focusRow],
+  )
+
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTableSectionElement>) => {
       if (isTypingTarget(event.target)) return
@@ -52,27 +73,26 @@ export function useSheetKeyboard({
 
       if (event.key === 'ArrowDown') {
         event.preventDefault()
-        const next =
-          applications[Math.min(selectedIndex + 1, applications.length - 1)]
-        if (next) setSelectedId(next.id)
+        moveTo(
+          applications[
+            Math.min(selectedIndex + 1, applications.length - 1)
+          ],
+        )
         return
       }
       if (event.key === 'ArrowUp') {
         event.preventDefault()
-        const prev = applications[Math.max(selectedIndex - 1, 0)]
-        if (prev) setSelectedId(prev.id)
+        moveTo(applications[Math.max(selectedIndex - 1, 0)])
         return
       }
       if (event.key === 'Home') {
         event.preventDefault()
-        const first = applications[0]
-        if (first) setSelectedId(first.id)
+        moveTo(applications[0])
         return
       }
       if (event.key === 'End') {
         event.preventDefault()
-        const last = applications[applications.length - 1]
-        if (last) setSelectedId(last.id)
+        moveTo(applications[applications.length - 1])
         return
       }
 
@@ -80,21 +100,25 @@ export function useSheetKeyboard({
       if (!current) return
 
       if (event.key === 'Enter') {
-        event.preventDefault()
-        onEdit(current)
+        openAfterKey(event, () => onEdit(current))
         return
       }
       if (event.key === 's' || event.key === 'S') {
-        event.preventDefault()
-        openStatus(current.id)
+        openAfterKey(event, () => openStatus(current.id))
         return
       }
       if (event.key === 'Delete' || event.key === 'Backspace') {
-        event.preventDefault()
-        openDelete(current.id)
+        openAfterKey(event, () => openDelete(current.id))
       }
     },
-    [applications, onEdit, openDelete, openStatus, selectedIndex],
+    [
+      applications,
+      moveTo,
+      onEdit,
+      openDelete,
+      openStatus,
+      selectedIndex,
+    ],
   )
 
   return {
