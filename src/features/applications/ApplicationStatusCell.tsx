@@ -18,6 +18,7 @@ type ApplicationStatusCellProps = {
   triggerRef: Ref<HTMLButtonElement>
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCloseAutoFocus?: (event: Event) => void
 }
 
 export function ApplicationStatusCell({
@@ -25,6 +26,7 @@ export function ApplicationStatusCell({
   triggerRef,
   open,
   onOpenChange,
+  onCloseAutoFocus,
 }: ApplicationStatusCellProps) {
   const updateStatus = useUpdateStatus()
   const status = toStatus(application.status)
@@ -50,13 +52,13 @@ export function ApplicationStatusCell({
         ref={triggerRef}
         size="sm"
         aria-label={`Status for ${application.company}`}
-        className="h-auto w-auto border-0 bg-transparent px-0 py-0 [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:opacity-0 group-hover/row:[&_svg]:opacity-100 group-focus-within/row:[&_svg]:opacity-100 data-[state=open]:[&_svg]:opacity-100"
+        className="h-auto w-auto border-0 bg-transparent px-0 py-0 [&_svg.lucide-chevron-down]:size-4 [&_svg.lucide-chevron-down]:shrink-0 [&_svg.lucide-chevron-down]:opacity-0 group-hover/row:[&_svg.lucide-chevron-down]:opacity-100 group-focus-within/row:[&_svg.lucide-chevron-down]:opacity-100 data-[state=open]:[&_svg.lucide-chevron-down]:opacity-100"
       >
         <SelectValue>
           <StatusBadge value={status} />
         </SelectValue>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent onCloseAutoFocus={onCloseAutoFocus}>
         {STATUSES.map((item) => (
           <SelectItem key={item.value} value={item.value}>
             <StatusBadge value={item.value} />

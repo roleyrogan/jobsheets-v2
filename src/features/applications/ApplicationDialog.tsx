@@ -19,6 +19,7 @@ type ApplicationDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
   application?: Application | null
+  onCloseAutoFocus?: (event: Event) => void
 }
 
 const emptyValues: ApplicationFormInput = {
@@ -45,6 +46,7 @@ export function ApplicationDialog({
   open,
   onOpenChange,
   application = null,
+  onCloseAutoFocus,
 }: ApplicationDialogProps) {
   const createMutation = useCreateApplication()
   const updateMutation = useUpdateApplication()
@@ -53,7 +55,10 @@ export function ApplicationDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onCloseAutoFocus={onCloseAutoFocus}
+      >
         <DialogHeader>
           <DialogTitle>
             {mode === 'create' ? 'Add application' : 'Edit application'}

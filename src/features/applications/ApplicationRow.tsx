@@ -53,6 +53,10 @@ export const ApplicationRow = forwardRef<
     focus: () => rowRef.current?.focus(),
   }))
 
+  function focusRow() {
+    rowRef.current?.focus()
+  }
+
   return (
     <>
       <tr
@@ -61,7 +65,7 @@ export const ApplicationRow = forwardRef<
         data-selected={selected ? 'true' : undefined}
         onClick={() => {
           onSelect()
-          rowRef.current?.focus()
+          focusRow()
         }}
         onFocus={onSelect}
         className={
@@ -95,6 +99,10 @@ export const ApplicationRow = forwardRef<
             triggerRef={statusTriggerRef}
             open={statusOpen}
             onOpenChange={setStatusOpen}
+            onCloseAutoFocus={(event) => {
+              event.preventDefault()
+              focusRow()
+            }}
           />
         </td>
         <td
@@ -152,6 +160,10 @@ export const ApplicationRow = forwardRef<
         application={application}
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault()
+          focusRow()
+        }}
       />
     </>
   )

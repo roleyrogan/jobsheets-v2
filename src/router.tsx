@@ -15,10 +15,12 @@ import { ResetPassword } from '@/routes/ResetPassword'
 import { Privacy } from '@/routes/Privacy'
 import { Settings } from '@/routes/Settings'
 import { NotFound } from '@/routes/NotFound'
+import { RouteError } from '@/routes/RouteError'
 
 export const router = createBrowserRouter([
   {
     element: <SessionProvider />,
+    errorElement: <RouteError />,
     children: [
       { path: '/', element: <Landing /> },
       {

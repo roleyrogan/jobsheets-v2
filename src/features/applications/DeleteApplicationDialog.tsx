@@ -17,18 +17,20 @@ type DeleteApplicationDialogProps = {
   application: Application | null
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCloseAutoFocus?: (event: Event) => void
 }
 
 export function DeleteApplicationDialog({
   application,
   open,
   onOpenChange,
+  onCloseAutoFocus,
 }: DeleteApplicationDialogProps) {
   const deleteMutation = useDeleteApplication()
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent onCloseAutoFocus={onCloseAutoFocus}>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete application?</AlertDialogTitle>
           <AlertDialogDescription>

@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
+import {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react'
 
 import { ApplicationDialog } from '@/features/applications/ApplicationDialog'
 import { ImportDialog } from '@/features/applications/ImportDialog'
@@ -6,6 +12,11 @@ import {
   ApplicationDialogsContext,
 } from '@/features/applications/useApplicationDialogs'
 import type { Application } from '@/types/index'
+
+function rememberFocusTarget(): HTMLElement | null {
+  const active = document.activeElement
+  return active instanceof HTMLElement ? active : null
+}
 
 export function ApplicationDialogsProvider({
   children,
@@ -15,8 +26,10 @@ export function ApplicationDialogsProvider({
   const [dialogOpen, setDialogOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
   const [editing, setEditing] = useState<Application | null>(null)
+  const restoreFocusRef = useRef<HTMLElement | null>(null)
 
   const openCreate = useCallback(() => {
+    restoreFocusRef.current = rememberFocusTarget()
     setEditing(null)
     setDialogOpen(true)
   }, [])
@@ -26,6 +39,7 @@ export function ApplicationDialogsProvider({
   }, [])
 
   const openEdit = useCallback((application: Application) => {
+    restoreFocusRef.current = rememberFocusTarget()
     setEditing(application)
     setDialogOpen(true)
   }, [])
@@ -42,6 +56,12 @@ export function ApplicationDialogsProvider({
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         application={editing}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault()
+          const target = restoreFocusRef.current
+          restoreFocusRef.current = null
+          target?.focus()
+        }}
       />
       <ImportDialog open={importOpen} onOpenChange={setImportOpen} />
     </ApplicationDialogsContext.Provider>

@@ -9,7 +9,7 @@ export function StatusBadge({ value }: StatusBadgeProps) {
   const config = getStatusConfig(value)
 
   return (
-    <span className="inline-flex items-center gap-1.5 text-sm text-ink">
+    <span className="inline-flex items-center gap-1.5 text-sm text-current">
       <StatusMark mark={config.mark} color={config.color} />
       {config.label}
     </span>

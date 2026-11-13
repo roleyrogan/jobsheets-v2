@@ -12,7 +12,7 @@ export function StatusMark({ mark, color }: StatusMarkProps) {
       height="10"
       viewBox="0 0 8 8"
       aria-hidden
-      className="shrink-0"
+      className="shrink-0 [[data-highlighted]_&]:![color:currentColor]"
       style={{ color }}
     >
       {mark === 'open' ? (

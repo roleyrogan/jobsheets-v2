@@ -10,29 +10,6 @@ type UseSheetKeyboardArgs = {
   focusRow: (id: number) => void
 }
 
-function isTypingTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false
-  const tag = target.tagName
-  return (
-    tag === 'INPUT' ||
-    tag === 'TEXTAREA' ||
-    tag === 'SELECT' ||
-    target.isContentEditable ||
-    target.closest(
-      '[role="menu"],[role="listbox"],[role="dialog"]',
-    ) !== null
-  )
-}
-
-function openAfterKey(
-  event: KeyboardEvent<HTMLTableSectionElement>,
-  action: () => void,
-) {
-  event.preventDefault()
-  event.stopPropagation()
-  requestAnimationFrame(action)
-}
-
 export function useSheetKeyboard({
   applications,
   onEdit,
@@ -61,14 +38,14 @@ export function useSheetKeyboard({
     (application: Application | undefined) => {
       if (!application) return
       setSelectedId(application.id)
-      requestAnimationFrame(() => focusRow(application.id))
+      focusRow(application.id)
     },
     [focusRow],
   )
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTableSectionElement>) => {
-      if (isTypingTarget(event.target)) return
+      if (!(event.target instanceof HTMLTableRowElement)) return
       if (applications.length === 0 || selectedIndex < 0) return
 
       if (event.key === 'ArrowDown') {
@@ -100,15 +77,18 @@ export function useSheetKeyboard({
       if (!current) return
 
       if (event.key === 'Enter') {
-        openAfterKey(event, () => onEdit(current))
+        event.preventDefault()
+        onEdit(current)
         return
       }
       if (event.key === 's' || event.key === 'S') {
-        openAfterKey(event, () => openStatus(current.id))
+        event.preventDefault()
+        openStatus(current.id)
         return
       }
       if (event.key === 'Delete' || event.key === 'Backspace') {
-        openAfterKey(event, () => openDelete(current.id))
+        event.preventDefault()
+        openDelete(current.id)
       }
     },
     [
