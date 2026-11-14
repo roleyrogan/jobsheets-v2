@@ -43,7 +43,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        'flex w-fit items-center justify-between gap-1.5 rounded-[3px] border border-rule bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap text-ink transition-colors outline-none select-none hover:border-ink disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-[color:var(--status-rejected)] data-placeholder:text-ink-2 data-[size=default]:h-8 data-[size=sm]:h-7 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=\'size-\'])]:size-4',
+        'flex w-fit items-center justify-between gap-1.5 rounded-[3px] border border-rule bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap text-ink transition-colors outline-none select-none hover:border-ink disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-[color:var(--status-rejected)] data-placeholder:text-ink-2 data-[size=default]:h-8 data-[size=sm]:h-7 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=size-])]:size-4',
         className,
       )}
       {...props}
@@ -115,7 +115,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        'relative flex h-8 w-full cursor-default items-center gap-1.5 py-0 pr-8 pl-2 text-sm outline-hidden select-none focus:bg-ink focus:text-paper data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=\'size-\'])]:size-4',
+        'relative flex h-8 w-full cursor-default items-center gap-1.5 py-0 pr-8 pl-2 text-sm outline-hidden select-none focus:bg-ink focus:text-paper data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=size-])]:size-4',
         className,
       )}
       {...props}
@@ -151,7 +151,7 @@ function SelectScrollUpButton({
     <SelectPrimitive.ScrollUpButton
       data-slot="select-scroll-up-button"
       className={cn(
-        'z-10 flex cursor-default items-center justify-center bg-paper py-1 [&_svg:not([class*=\'size-\'])]:size-4',
+        'z-10 flex cursor-default items-center justify-center bg-paper py-1 [&_svg:not([class*=size-])]:size-4',
         className,
       )}
       {...props}
@@ -169,7 +169,7 @@ function SelectScrollDownButton({
     <SelectPrimitive.ScrollDownButton
       data-slot="select-scroll-down-button"
       className={cn(
-        'z-10 flex cursor-default items-center justify-center bg-paper py-1 [&_svg:not([class*=\'size-\'])]:size-4',
+        'z-10 flex cursor-default items-center justify-center bg-paper py-1 [&_svg:not([class*=size-])]:size-4',
         className,
       )}
       {...props}
