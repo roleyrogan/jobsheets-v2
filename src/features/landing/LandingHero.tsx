@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Link } from 'react-router'
 
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,8 @@ type LandingHeroProps = {
 
 export function LandingHero({ signedIn }: LandingHeroProps) {
   const { cursor, onMouseMove, onMouseLeave } = useHeroCursor()
+  const textRef = useRef<HTMLDivElement>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
 
   return (
     <section
@@ -18,9 +21,13 @@ export function LandingHero({ signedIn }: LandingHeroProps) {
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      <HeroGrid cursor={cursor} />
-      <div className="relative z-[1] flex flex-col gap-10 pt-8 pb-4 sm:pt-12">
-        <div className="flex max-w-[900px] flex-col gap-5">
+      <HeroGrid
+        cursor={cursor}
+        textRef={textRef}
+        previewRef={previewRef}
+      />
+      <div className="relative z-[1] flex flex-col gap-14 pt-8 pb-4 sm:gap-10 sm:pt-12">
+        <div ref={textRef} className="flex max-w-[900px] flex-col gap-5">
           <h1 className="landing-hero-title">
             <span className="landing-hero-line-mask">
               <span className="landing-hero-line">Your whole job search,</span>
@@ -50,10 +57,11 @@ export function LandingHero({ signedIn }: LandingHeroProps) {
             )}
           </div>
         </div>
-        <div className="landing-hero-fade-preview">
+        <div ref={previewRef} className="landing-hero-fade-preview">
           <HeroPreview />
         </div>
       </div>
     </section>
   )
 }
+

@@ -19,7 +19,7 @@ type HeroSheetProps = {
 }
 
 const COLS =
-  'grid-cols-[2rem_minmax(0,1.2fr)_minmax(0,1fr)_7.5rem_minmax(0,0.8fr)_5.5rem] max-[759px]:grid-cols-[2rem_minmax(0,1.4fr)_7.5rem_5.5rem]'
+  'grid-cols-[2rem_minmax(0,1.2fr)_minmax(0,1fr)_7.5rem_minmax(0,0.8fr)_6rem] max-[759px]:grid-cols-[2rem_minmax(0,1fr)_7.5rem_6rem]'
 
 export function HeroSheet({
   rows,
@@ -71,7 +71,9 @@ export function HeroSheet({
         <span className="hidden border-r border-r-rule px-2 min-[760px]:block">
           Location
         </span>
-        <span className="px-2 text-right">{header('added', 'Added')}</span>
+        <span className="w-24 shrink-0 px-2 text-right whitespace-nowrap">
+          {header('added', 'Added')}
+        </span>
       </div>
 
       <div className="relative min-h-0 flex-1">
@@ -94,24 +96,24 @@ export function HeroSheet({
                 transition: 'transform 480ms var(--ease)',
               }}
             >
-              <span className="figure border-r border-r-rule bg-fill px-1 text-right text-ink-2">
+              <span className="figure border-r border-r-rule bg-fill px-1 text-right text-ink-2 whitespace-nowrap">
                 {rank + 1}
               </span>
               <span
-                className="truncate border-r border-r-rule px-2 font-medium"
+                className="min-w-0 truncate border-r border-r-rule px-2 font-medium"
                 title={row.company}
               >
                 {row.company}
               </span>
               <span
-                className="hidden truncate border-r border-r-rule px-2 min-[760px]:block"
+                className="hidden min-w-0 truncate border-r border-r-rule px-2 min-[760px]:block"
                 title={row.role}
               >
                 {row.role}
               </span>
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 border-r border-r-rule px-2 text-left"
+                className="inline-flex items-center gap-1.5 border-r border-r-rule px-2 text-left whitespace-nowrap"
                 onClick={() => {
                   onInteract()
                   onCycleStatus(id)
@@ -120,10 +122,12 @@ export function HeroSheet({
                 <StatusMark mark={config.mark} color={config.color} />
                 {config.label}
               </button>
-              <span className="hidden truncate border-r border-r-rule px-2 min-[760px]:block">
+              <span className="hidden min-w-0 truncate border-r border-r-rule px-2 min-[760px]:block">
                 {row.location}
               </span>
-              <span className="figure px-2 text-right">{row.added}</span>
+              <span className="figure w-24 shrink-0 px-2 text-right whitespace-nowrap">
+                {row.added}
+              </span>
             </div>
           )
         })}

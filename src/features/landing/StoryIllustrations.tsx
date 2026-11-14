@@ -79,22 +79,56 @@ function SheetArt() {
   )
 }
 
+const BOARD_COLUMNS = [
+  [
+    { company: 78, role: 48 },
+    { company: 64, role: 40 },
+    { company: 72, role: 52 },
+  ],
+  [
+    { company: 70, role: 44 },
+    { company: 60, role: 36 },
+  ],
+  [
+    { company: 80, role: 50 },
+    { company: 66, role: 42 },
+    { company: 74, role: 38 },
+  ],
+  [
+    { company: 68, role: 46 },
+    { company: 76, role: 54 },
+  ],
+] as const
+
 function BoardArt() {
-  const columns = [3, 2, 1, 2]
   return (
-    <div className="grid h-full grid-cols-4 gap-1.5">
-      {STATUSES.map((status, index) => (
-        <div key={status.value} className="flex flex-col border border-rule">
-          <div className="flex items-center gap-1 border-b border-b-ink bg-fill px-1 py-1">
-            <StatusMark mark={status.mark} color={status.color} />
+    <div className="flex h-full items-center">
+      <div className="grid w-full grid-cols-4 items-start gap-1.5">
+        {STATUSES.map((status, index) => (
+          <div key={status.value} className="flex flex-col border border-rule">
+            <div className="flex items-center gap-1 border-b border-b-ink bg-fill px-1 py-1">
+              <StatusMark mark={status.mark} color={status.color} />
+            </div>
+            <div className="flex flex-col gap-1 p-1">
+              {(BOARD_COLUMNS[index] ?? []).map((card, cardIndex) => (
+                <div
+                  key={cardIndex}
+                  className="flex flex-col gap-1 border border-rule bg-fill p-1.5"
+                >
+                  <span
+                    className="block h-1 bg-ink"
+                    style={{ width: `${card.company}%` }}
+                  />
+                  <span
+                    className="block h-1 bg-ink-2"
+                    style={{ width: `${card.role}%` }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-1 flex-col gap-1 p-1">
-            {Array.from({ length: columns[index] ?? 1 }, (_, card) => (
-              <div key={card} className="h-6 border border-rule bg-paper" />
-            ))}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   )
 }

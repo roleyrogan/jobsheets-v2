@@ -1,28 +1,55 @@
+import { useEffect, useRef, useState, type RefObject } from 'react'
+
+import {
+  CELL,
+  computeAmbientCells,
+  type AmbientCell,
+} from '@/features/landing/ambientCells'
+
 type HeroGridProps = {
   cursor: { x: number; y: number } | null
+  textRef: RefObject<HTMLElement | null>
+  previewRef: RefObject<HTMLElement | null>
 }
 
-const AMBIENT = [
-  { x: 2, y: 1, delay: '0s' },
-  { x: 5, y: 2, delay: '1.1s' },
-  { x: 8, y: 1, delay: '2.2s' },
-  { x: 3, y: 4, delay: '3s' },
-  { x: 11, y: 3, delay: '3.8s' },
-  { x: 6, y: 5, delay: '4.7s' },
-  { x: 14, y: 2, delay: '6s' },
-  { x: 9, y: 6, delay: '7.5s' },
-] as const
+export function HeroGrid({ cursor, textRef, previewRef }: HeroGridProps) {
+  const gridRef = useRef<HTMLDivElement>(null)
+  const [cells, setCells] = useState<AmbientCell[]>([])
 
-const CELL = 48
+  useEffect(() => {
+    const grid = gridRef.current
+    if (!grid) return
 
-export function HeroGrid({ cursor }: HeroGridProps) {
+    function update() {
+      const node = gridRef.current
+      if (!node) return
+      const rect = node.getBoundingClientRect()
+      const text = textRef.current?.getBoundingClientRect() ?? null
+      const preview = previewRef.current?.getBoundingClientRect() ?? null
+      const narrow = window.matchMedia('(max-width: 759px)').matches
+      setCells(computeAmbientCells(rect, text, preview, narrow))
+    }
+
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(grid)
+    if (textRef.current) observer.observe(textRef.current)
+    if (previewRef.current) observer.observe(previewRef.current)
+    window.addEventListener('resize', update)
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('resize', update)
+    }
+  }, [textRef, previewRef])
+
   return (
     <div
+      ref={gridRef}
       className="pointer-events-none absolute inset-0 overflow-hidden"
       aria-hidden
     >
       <div className="landing-hero-grid-bg absolute inset-0" />
-      {AMBIENT.map((cell) => (
+      {cells.map((cell) => (
         <span
           key={`${cell.x}-${cell.y}`}
           className="landing-ambient-cell absolute size-[47px] bg-[var(--flash)]"
