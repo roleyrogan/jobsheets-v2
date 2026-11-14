@@ -1,4 +1,4 @@
-import { useEffect, useRef, type RefObject } from 'react'
+import { useCallback, useEffect, useRef, type RefCallback } from 'react'
 
 type RevealOptions = {
   threshold?: number
@@ -14,39 +14,114 @@ function prefersStaticReveal(): boolean {
   )
 }
 
-/** Applies reveal classes on the node via the DOM after the observer is ready. */
+function markVisible(el: HTMLElement) {
+  el.classList.remove('landing-reveal-pending')
+  el.classList.add('landing-reveal-visible')
+}
+
+function isAlreadyInView(
+  el: HTMLElement,
+  threshold: number,
+  rootMargin?: string,
+): boolean {
+  const root = expandRoot(rootMargin)
+  const rect = el.getBoundingClientRect()
+  const visibleHeight =
+    Math.min(rect.bottom, root.bottom) - Math.max(rect.top, root.top)
+  const visibleWidth =
+    Math.min(rect.right, root.right) - Math.max(rect.left, root.left)
+  if (visibleHeight <= 0 || visibleWidth <= 0) return false
+  const ratio =
+    (visibleHeight * visibleWidth) / Math.max(rect.height * rect.width, 1)
+  return ratio >= threshold
+}
+
+function expandRoot(rootMargin?: string): {
+  top: number
+  right: number
+  bottom: number
+  left: number
+} {
+  const viewport = {
+    top: 0,
+    right: window.innerWidth,
+    bottom: window.innerHeight,
+    left: 0,
+  }
+  if (!rootMargin) return viewport
+  const parts = rootMargin.trim().split(/\s+/).map(parseMargin)
+  const top = parts[0] ?? 0
+  const right = parts[1] ?? top
+  const bottom = parts[2] ?? top
+  const left = parts[3] ?? right
+  return {
+    top: viewport.top - top,
+    right: viewport.right + right,
+    bottom: viewport.bottom + bottom,
+    left: viewport.left - left,
+  }
+}
+
+function parseMargin(value: string): number {
+  if (value.endsWith('px')) return Number.parseFloat(value)
+  if (value.endsWith('%')) {
+    return (Number.parseFloat(value) / 100) * window.innerHeight
+  }
+  return Number.parseFloat(value) || 0
+}
+
+/** Observes the element when it mounts (callback ref). Safe for late mounts. */
 export function useReveal<T extends HTMLElement = HTMLElement>(
   options: RevealOptions = {},
-): RefObject<T | null> {
+): RefCallback<T> {
   const { threshold = 0.15, rootMargin, enabled = true } = options
+  const observerRef = useRef<IntersectionObserver | null>(null)
   const nodeRef = useRef<T | null>(null)
 
-  useEffect(() => {
-    if (!enabled) return
-    const el = nodeRef.current
-    if (!el) return
-
-    if (prefersStaticReveal()) {
-      el.classList.add('landing-reveal-visible')
-      return
+  const cleanup = useCallback(() => {
+    observerRef.current?.disconnect()
+    observerRef.current = null
+    if (nodeRef.current) {
+      nodeRef.current.classList.remove(
+        'landing-reveal-pending',
+        'landing-reveal-visible',
+      )
     }
+    nodeRef.current = null
+  }, [])
 
-    el.classList.add('landing-reveal-pending')
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return
-        el.classList.remove('landing-reveal-pending')
-        el.classList.add('landing-reveal-visible')
-        observer.disconnect()
-      },
-      { threshold, rootMargin },
-    )
-    observer.observe(el)
-    return () => {
-      observer.disconnect()
-      el.classList.remove('landing-reveal-pending', 'landing-reveal-visible')
-    }
-  }, [threshold, rootMargin, enabled])
+  useEffect(() => cleanup, [cleanup])
 
-  return nodeRef
+  return useCallback(
+    (node: T | null) => {
+      cleanup()
+      if (!node || !enabled) return
+
+      nodeRef.current = node
+
+      if (prefersStaticReveal()) {
+        markVisible(node)
+        return
+      }
+
+      if (isAlreadyInView(node, threshold, rootMargin)) {
+        markVisible(node)
+        return
+      }
+
+      node.classList.add('landing-reveal-pending')
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return
+          markVisible(node)
+          observer.disconnect()
+          observerRef.current = null
+        },
+        { threshold, rootMargin },
+      )
+      observer.observe(node)
+      observerRef.current = observer
+    },
+    [cleanup, enabled, threshold, rootMargin],
+  )
 }

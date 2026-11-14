@@ -11,7 +11,7 @@ export function Landing() {
   const signedIn = status === 'signedIn'
 
   return (
-    <div className="flex min-h-svh flex-col overflow-x-hidden bg-paper text-ink">
+    <div className="flex min-h-svh flex-col overflow-x-clip bg-paper text-ink">
       <LandingHeader signedIn={signedIn} />
       <main className="mx-auto flex w-full max-w-[1200px] flex-1 flex-col gap-20 px-4 py-10 sm:gap-24 sm:py-14">
         <LandingHero signedIn={signedIn} />
