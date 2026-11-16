@@ -56,9 +56,9 @@ Scale (px / line-height). The app runs a dense base of 14px; the landing page us
 
 | Role | Size / LH | Weight | Notes |
 |---|---|---|---|
-| Landing headline | 44 / 48 | 600 | `font-stretch: 85%`, tracking -0.02em |
-| Page title (h1) | 24 / 30 | 600 | `font-stretch: 85%`, tracking -0.01em |
-| Section title (h2) | 15 / 20 | 600 | Sentence case |
+| Landing headline | 44 / 48 | 650 | `font-stretch: 92%`, tracking -0.02em |
+| Page title (h1) | 24 / 30 | 650 | `font-stretch: 92%`, tracking -0.015em |
+| Section title (h2) | 15 / 20 | 600 | `font-stretch: 92%`, sentence case |
 | Body / UI | 14 / 20 | 400 | |
 | Table cell | 13 / 20 | 400 | Company in 500 |
 | Small / secondary | 12 / 16 | 400 | `--ink-2` |

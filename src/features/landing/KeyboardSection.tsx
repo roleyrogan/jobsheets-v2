@@ -17,7 +17,7 @@ export function KeyboardSection() {
       className="flex flex-col gap-8 min-[760px]:grid min-[760px]:grid-cols-2 min-[760px]:gap-16"
     >
       <div className="landing-reveal-child flex flex-col gap-2">
-        <h2 className="text-[22px] leading-7 font-semibold min-[760px]:text-[28px] min-[760px]:leading-8">
+        <h2 className="landing-h2 text-[22px] leading-7 min-[760px]:text-[28px] min-[760px]:leading-8">
           Fast with a keyboard.
         </h2>
         <p className="max-w-[40ch] text-[15px] leading-6 text-ink-2">

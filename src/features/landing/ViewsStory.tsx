@@ -115,7 +115,7 @@ export function ViewsStory() {
   return (
     <section id="views" className="flex flex-col gap-8">
       <div ref={headingRef} className="flex flex-col gap-3">
-        <h2 className="text-[22px] leading-7 font-semibold min-[760px]:text-[28px] min-[760px]:leading-8">
+        <h2 className="landing-h2 text-[22px] leading-7 min-[760px]:text-[28px] min-[760px]:leading-8">
           Three views of the same sheet.
         </h2>
         <div className="landing-rule-draw h-px w-full bg-ink" />
@@ -146,7 +146,7 @@ export function ViewsStory() {
                   : 'text-ink-2 transition-colors duration-300 ease-[var(--ease)]'
               }`}
             >
-              <h3 className="text-[22px] leading-7 font-semibold">
+              <h3 className="landing-h3 text-[22px] leading-7">
                 {step.title}
               </h3>
               <p className="max-w-[40ch] text-[15px] leading-6">{step.body}</p>
