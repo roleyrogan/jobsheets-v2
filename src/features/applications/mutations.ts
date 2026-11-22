@@ -141,20 +141,16 @@ export function useUpdateStatuses() {
       if (!user) return
       const key = applicationKeys.list(user.id)
       await queryClient.cancelQueries({ queryKey: key })
-      const previous = queryClient.getQueryData<Application[]>(key)
       const idSet = new Set(ids)
       queryClient.setQueryData<Application[]>(key, (current) =>
         current?.map((row) =>
           idSet.has(row.id) ? { ...row, status } : row,
         ),
       )
-      return { previous, key }
+      return { key }
     },
-    onError: (_error, _variables, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(context.key, context.previous)
-      }
-    },
+    // No rollback: a failed bulk update may have saved earlier chunks.
+    // onSettled invalidates so the table matches what was actually written.
     onSettled: (_data, _error, _variables, context) => {
       if (context?.key) {
         void queryClient.invalidateQueries({ queryKey: context.key })
@@ -176,18 +172,13 @@ export function useDeleteApplications() {
       if (!user) return
       const key = applicationKeys.list(user.id)
       await queryClient.cancelQueries({ queryKey: key })
-      const previous = queryClient.getQueryData<Application[]>(key)
       const idSet = new Set(ids)
       queryClient.setQueryData<Application[]>(key, (current) =>
         current?.filter((row) => !idSet.has(row.id)),
       )
-      return { previous, key }
+      return { key }
     },
-    onError: (_error, _variables, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(context.key, context.previous)
-      }
-    },
+    // No rollback: a failed bulk delete may have removed earlier chunks.
     onSettled: (_data, _error, _variables, context) => {
       if (context?.key) {
         void queryClient.invalidateQueries({ queryKey: context.key })

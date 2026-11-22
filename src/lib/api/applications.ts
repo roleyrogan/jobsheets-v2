@@ -1,8 +1,11 @@
 import { supabase } from '@/lib/api/client'
+import { chunk } from '@/lib/chunk'
 import type { ImportRow } from '@/lib/csv'
 import type { Status } from '@/lib/status'
 import type { Application, ApplicationEvent } from '@/types/index'
 import type { TablesInsert, TablesUpdate } from '@/types/database'
+
+const BULK_CHUNK_SIZE = 200
 
 export type CreateApplicationValues = Omit<
   TablesInsert<'applications'>,
@@ -80,25 +83,45 @@ export async function deleteApplication(id: number): Promise<void> {
 export async function updateStatuses(
   ids: number[],
   status: Status,
-): Promise<void> {
-  if (ids.length === 0) return
-  const { error } = await supabase
-    .from('applications')
-    .update({ status })
-    .in('id', ids)
-  if (error) throw new Error(error.message)
+): Promise<number> {
+  if (ids.length === 0) return 0
+
+  let updated = 0
+  for (const idChunk of chunk(ids, BULK_CHUNK_SIZE)) {
+    const { error } = await supabase
+      .from('applications')
+      .update({ status })
+      .in('id', idChunk)
+    if (error) {
+      throw new Error(
+        `Updated ${updated} of ${ids.length} before an error: ${error.message}`,
+      )
+    }
+    updated += idChunk.length
+  }
+
+  return updated
 }
 
-export async function deleteApplications(ids: number[]): Promise<void> {
-  if (ids.length === 0) return
-  const { error } = await supabase
-    .from('applications')
-    .delete()
-    .in('id', ids)
-  if (error) throw new Error(error.message)
-}
+export async function deleteApplications(ids: number[]): Promise<number> {
+  if (ids.length === 0) return 0
 
-const IMPORT_CHUNK_SIZE = 200
+  let deleted = 0
+  for (const idChunk of chunk(ids, BULK_CHUNK_SIZE)) {
+    const { error } = await supabase
+      .from('applications')
+      .delete()
+      .in('id', idChunk)
+    if (error) {
+      throw new Error(
+        `Deleted ${deleted} of ${ids.length} before an error: ${error.message}`,
+      )
+    }
+    deleted += idChunk.length
+  }
+
+  return deleted
+}
 
 export async function createApplications(
   userId: string,
@@ -106,8 +129,8 @@ export async function createApplications(
 ): Promise<number> {
   let inserted = 0
 
-  for (let index = 0; index < rows.length; index += IMPORT_CHUNK_SIZE) {
-    const chunk = rows.slice(index, index + IMPORT_CHUNK_SIZE).map((row) => ({
+  for (const rowChunk of chunk(rows, BULK_CHUNK_SIZE)) {
+    const payload = rowChunk.map((row) => ({
       user_id: userId,
       company: row.company,
       role: row.role,
@@ -118,13 +141,13 @@ export async function createApplications(
       created_at: row.created_at,
     }))
 
-    const { error } = await supabase.from('applications').insert(chunk)
+    const { error } = await supabase.from('applications').insert(payload)
     if (error) {
       throw new Error(
         `Inserted ${inserted} of ${rows.length} before failure: ${error.message}`,
       )
     }
-    inserted += chunk.length
+    inserted += rowChunk.length
   }
 
   return inserted
