@@ -30,28 +30,23 @@ export function SelectionBar({
   const updateStatuses = useUpdateStatuses()
   const count = selected.length
 
-  function changeStatus(status: Status) {
+  async function changeStatus(status: Status) {
     const ids = selected
       .filter((row) => row.status !== status)
       .map((row) => row.id)
     if (ids.length === 0) return
-    updateStatuses.mutate(
-      { ids, status },
-      {
-        onSuccess: () => {
-          toast.success(
-            `Changed ${ids.length} applications to ${status}`,
-          )
-        },
-        onError: (error) => {
-          toast.error(
-            error instanceof Error
-              ? error.message
-              : "Couldn't update status",
-          )
-        },
-      },
-    )
+    try {
+      // mutateAsync: per-call callbacks are skipped if this bar unmounts
+      // (e.g. selection clears while the request is in flight).
+      await updateStatuses.mutateAsync({ ids, status })
+      toast.success(`Changed ${ids.length} applications to ${status}`)
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Couldn't update status",
+      )
+    }
   }
 
   return (
@@ -76,7 +71,9 @@ export function SelectionBar({
           {STATUSES.map((item) => (
             <DropdownMenuItem
               key={item.value}
-              onSelect={() => changeStatus(item.value)}
+              onSelect={() => {
+                void changeStatus(item.value)
+              }}
             >
               <StatusBadge value={item.value} />
             </DropdownMenuItem>

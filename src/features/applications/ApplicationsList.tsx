@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 
 import {
@@ -34,7 +34,11 @@ export function ApplicationsList({
     useApplications()
   const { filters, clear } = useApplicationFilters()
   const { q, status, sort } = filters
-  const [deleteOpen, setDeleteOpen] = useState(false)
+  // Snapshot of rows to delete — survives optimistic empty so the dialog
+  // stays mounted with a stable count instead of "Delete 0 applications?".
+  const [pendingDelete, setPendingDelete] = useState<Application[] | null>(
+    null,
+  )
 
   const visible = useMemo(
     () =>
@@ -55,16 +59,19 @@ export function ApplicationsList({
     return visible.filter((app) => idSet.has(app.id))
   }, [visible, selection.selectedIds])
 
+  const dialogOpen =
+    pendingDelete !== null && pendingDelete.length > 0
+
+  let body: ReactNode
+
   if (isPending) {
-    return (
+    body = (
       <div className="flex flex-col gap-4">
         <ApplicationsTableSkeleton />
       </div>
     )
-  }
-
-  if (isError) {
-    return (
+  } else if (isError) {
+    body = (
       <Alert variant="destructive">
         <AlertDescription className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <span>
@@ -85,81 +92,86 @@ export function ApplicationsList({
         </AlertDescription>
       </Alert>
     )
-  }
-
-  if (!data || data.length === 0) {
-    return (
+  } else if (!data || data.length === 0) {
+    body = (
       <div className="flex min-h-48 flex-col items-center justify-center gap-3 border border-rule">
         <p className="text-sm">No applications yet</p>
         <Button onClick={onAdd}>Add your first application</Button>
       </div>
     )
+  } else {
+    const searched = searchApplications(data, filters.q)
+    const counts = countByStatus(searched)
+
+    body = (
+      <div className="flex flex-col gap-4">
+        <div className="min-h-8">
+          <AnimatePresence mode="wait" initial={false}>
+            {selection.selectedCount > 0 ? (
+              <SelectionBar
+                key="selection"
+                selected={selectedApps}
+                onExport={() => onExport(selectedApps)}
+                onDelete={() => setPendingDelete(selectedApps)}
+                onClear={selection.clear}
+              />
+            ) : (
+              <motion.div
+                key="toolbar"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4, transition: exitTransition }}
+                transition={enterTransition}
+              >
+                <ApplicationsToolbar
+                  total={searched.length}
+                  counts={counts}
+                  exportCount={visible.length}
+                  onExport={() => onExport(visible)}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {visible.length === 0 ? (
+          <div className="flex min-h-48 flex-col items-center justify-center gap-3 border border-rule">
+            <p className="text-sm">No applications match your filters</p>
+            <Button variant="outline" onClick={clear}>
+              Clear filters
+            </Button>
+          </div>
+        ) : (
+          <ApplicationsTable
+            applications={visible}
+            onEdit={onEdit}
+            isSelected={selection.isSelected}
+            selectionMode={selection.selectedCount > 0}
+            allVisibleSelected={selection.allVisibleSelected}
+            someVisibleSelected={selection.someVisibleSelected}
+            onToggleSelectAll={selection.toggleSelectAll}
+            onGutterSelect={selection.onGutterSelect}
+            onToggleSelect={selection.toggleId}
+            onExtendSelect={selection.extendTo}
+            onSelectAll={selection.selectAllVisible}
+            onClearSelect={selection.clear}
+          />
+        )}
+      </div>
+    )
   }
 
-  const searched = searchApplications(data, filters.q)
-  const counts = countByStatus(searched)
-
   return (
-    <div className="flex flex-col gap-4">
-      <div className="min-h-8">
-        <AnimatePresence mode="wait" initial={false}>
-          {selection.selectedCount > 0 ? (
-            <SelectionBar
-              key="selection"
-              selected={selectedApps}
-              onExport={() => onExport(selectedApps)}
-              onDelete={() => setDeleteOpen(true)}
-              onClear={selection.clear}
-            />
-          ) : (
-            <motion.div
-              key="toolbar"
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4, transition: exitTransition }}
-              transition={enterTransition}
-            >
-              <ApplicationsToolbar
-                total={searched.length}
-                counts={counts}
-                exportCount={visible.length}
-                onExport={() => onExport(visible)}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {visible.length === 0 ? (
-        <div className="flex min-h-48 flex-col items-center justify-center gap-3 border border-rule">
-          <p className="text-sm">No applications match your filters</p>
-          <Button variant="outline" onClick={clear}>
-            Clear filters
-          </Button>
-        </div>
-      ) : (
-        <ApplicationsTable
-          applications={visible}
-          onEdit={onEdit}
-          isSelected={selection.isSelected}
-          selectionMode={selection.selectedCount > 0}
-          allVisibleSelected={selection.allVisibleSelected}
-          someVisibleSelected={selection.someVisibleSelected}
-          onToggleSelectAll={selection.toggleSelectAll}
-          onGutterSelect={selection.onGutterSelect}
-          onToggleSelect={selection.toggleId}
-          onExtendSelect={selection.extendTo}
-          onSelectAll={selection.selectAllVisible}
-          onClearSelect={selection.clear}
-        />
-      )}
-
+    <>
+      {body}
       <DeleteApplicationsDialog
-        applications={selectedApps}
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
+        applications={pendingDelete ?? []}
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          if (!open) setPendingDelete(null)
+        }}
         onDeleted={selection.clear}
       />
-    </div>
+    </>
   )
 }

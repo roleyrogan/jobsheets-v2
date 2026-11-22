@@ -66,21 +66,24 @@ export function DeleteApplicationsDialog({
             disabled={count === 0 || deleteMutation.isPending}
             onClick={(event) => {
               event.preventDefault()
-              const ids = applications.map((app) => app.id)
-              deleteMutation.mutate(ids, {
-                onSuccess: () => {
+              void (async () => {
+                const ids = applications.map((app) => app.id)
+                if (ids.length === 0) return
+                try {
+                  // mutateAsync so toast/close still run if the list empties
+                  // and unmounts selection UI while the request is in flight.
+                  await deleteMutation.mutateAsync(ids)
                   toast.success(`Deleted ${ids.length} applications`)
                   onDeleted()
                   onOpenChange(false)
-                },
-                onError: (error) => {
+                } catch (error) {
                   toast.error(
                     error instanceof Error
                       ? error.message
                       : 'Could not delete applications',
                   )
-                },
-              })
+                }
+              })()
             }}
           >
             {deleteMutation.isPending ? 'Deleting…' : 'Delete'}

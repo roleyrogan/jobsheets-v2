@@ -56,19 +56,22 @@ export function DeleteApplicationDialog({
             onClick={(event) => {
               event.preventDefault()
               if (!application) return
-              deleteMutation.mutate(application.id, {
-                onSuccess: () => {
+              const id = application.id
+              void (async () => {
+                try {
+                  // mutateAsync so toast/close still run if deleting the last
+                  // row unmounts the menu that opened this dialog.
+                  await deleteMutation.mutateAsync(id)
                   toast.success('Application deleted')
                   onOpenChange(false)
-                },
-                onError: (error) => {
+                } catch (error) {
                   toast.error(
                     error instanceof Error
                       ? error.message
                       : 'Could not delete application',
                   )
-                },
-              })
+                }
+              })()
             }}
           >
             {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
