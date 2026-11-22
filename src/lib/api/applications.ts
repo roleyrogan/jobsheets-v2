@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/api/client'
 import type { ImportRow } from '@/lib/csv'
+import type { Status } from '@/lib/status'
 import type { Application, ApplicationEvent } from '@/types/index'
 import type { TablesInsert, TablesUpdate } from '@/types/database'
 
@@ -73,6 +74,27 @@ export async function updateApplication(
 
 export async function deleteApplication(id: number): Promise<void> {
   const { error } = await supabase.from('applications').delete().eq('id', id)
+  if (error) throw new Error(error.message)
+}
+
+export async function updateStatuses(
+  ids: number[],
+  status: Status,
+): Promise<void> {
+  if (ids.length === 0) return
+  const { error } = await supabase
+    .from('applications')
+    .update({ status })
+    .in('id', ids)
+  if (error) throw new Error(error.message)
+}
+
+export async function deleteApplications(ids: number[]): Promise<void> {
+  if (ids.length === 0) return
+  const { error } = await supabase
+    .from('applications')
+    .delete()
+    .in('id', ids)
   if (error) throw new Error(error.message)
 }
 

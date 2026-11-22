@@ -8,6 +8,10 @@ type UseSheetKeyboardArgs = {
   openStatus: (id: number) => void
   openDelete: (id: number) => void
   focusRow: (id: number) => void
+  onToggleSelect: (id: number) => void
+  onExtendSelect: (fromId: number, toId: number) => void
+  onSelectAll: () => void
+  onClearSelect: () => void
 }
 
 export function useSheetKeyboard({
@@ -16,28 +20,32 @@ export function useSheetKeyboard({
   openStatus,
   openDelete,
   focusRow,
+  onToggleSelect,
+  onExtendSelect,
+  onSelectAll,
+  onClearSelect,
 }: UseSheetKeyboardArgs) {
-  const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [focusedId, setFocusedId] = useState<number | null>(null)
 
-  const resolvedSelectedId = useMemo(() => {
+  const resolvedFocusedId = useMemo(() => {
     if (applications.length === 0) return null
     if (
-      selectedId !== null &&
-      applications.some((app) => app.id === selectedId)
+      focusedId !== null &&
+      applications.some((app) => app.id === focusedId)
     ) {
-      return selectedId
+      return focusedId
     }
     return applications[0]?.id ?? null
-  }, [applications, selectedId])
+  }, [applications, focusedId])
 
-  const selectedIndex = applications.findIndex(
-    (app) => app.id === resolvedSelectedId,
+  const focusedIndex = applications.findIndex(
+    (app) => app.id === resolvedFocusedId,
   )
 
   const moveTo = useCallback(
     (application: Application | undefined) => {
       if (!application) return
-      setSelectedId(application.id)
+      setFocusedId(application.id)
       focusRow(application.id)
     },
     [focusRow],
@@ -46,20 +54,30 @@ export function useSheetKeyboard({
   const onKeyDown = useCallback(
     (event: KeyboardEvent<HTMLTableSectionElement>) => {
       if (!(event.target instanceof HTMLTableRowElement)) return
-      if (applications.length === 0 || selectedIndex < 0) return
+      if (applications.length === 0 || focusedIndex < 0) return
+
+      const current = applications[focusedIndex]
+      if (!current) return
 
       if (event.key === 'ArrowDown') {
         event.preventDefault()
-        moveTo(
+        const next =
           applications[
-            Math.min(selectedIndex + 1, applications.length - 1)
-          ],
-        )
+            Math.min(focusedIndex + 1, applications.length - 1)
+          ]
+        if (event.shiftKey && next) {
+          onExtendSelect(current.id, next.id)
+        }
+        moveTo(next)
         return
       }
       if (event.key === 'ArrowUp') {
         event.preventDefault()
-        moveTo(applications[Math.max(selectedIndex - 1, 0)])
+        const next = applications[Math.max(focusedIndex - 1, 0)]
+        if (event.shiftKey && next) {
+          onExtendSelect(current.id, next.id)
+        }
+        moveTo(next)
         return
       }
       if (event.key === 'Home') {
@@ -72,9 +90,6 @@ export function useSheetKeyboard({
         moveTo(applications[applications.length - 1])
         return
       }
-
-      const current = applications[selectedIndex]
-      if (!current) return
 
       if (event.key === 'Enter') {
         event.preventDefault()
@@ -89,21 +104,43 @@ export function useSheetKeyboard({
       if (event.key === 'Delete' || event.key === 'Backspace') {
         event.preventDefault()
         openDelete(current.id)
+        return
+      }
+      if (event.key === 'x' || event.key === 'X') {
+        event.preventDefault()
+        onToggleSelect(current.id)
+        return
+      }
+      if (
+        (event.key === 'a' || event.key === 'A') &&
+        (event.metaKey || event.ctrlKey)
+      ) {
+        event.preventDefault()
+        onSelectAll()
+        return
+      }
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClearSelect()
       }
     },
     [
       applications,
+      focusedIndex,
       moveTo,
+      onClearSelect,
       onEdit,
+      onExtendSelect,
+      onSelectAll,
+      onToggleSelect,
       openDelete,
       openStatus,
-      selectedIndex,
     ],
   )
 
   return {
-    selectedId: resolvedSelectedId,
-    setSelectedId,
+    focusedId: resolvedFocusedId,
+    setFocusedId,
     onKeyDown,
   }
 }

@@ -6,6 +6,7 @@ import {
 } from 'react'
 import { ExternalLink } from 'lucide-react'
 import { motion } from 'motion/react'
+import { cn } from 'cn'
 
 import { toLocalYmd } from '@/lib/dates'
 import {
@@ -16,6 +17,7 @@ import {
 import { safeExternalUrl } from '@/lib/urls'
 import { ApplicationRowActions } from '@/features/applications/ApplicationRowActions'
 import { ApplicationStatusCell } from '@/features/applications/ApplicationStatusCell'
+import { RowSelectCheckbox } from '@/features/applications/RowSelectCheckbox'
 import { SheetCell, SheetGutterCell } from '@/components/sheet'
 import { Button } from '@/components/ui/button'
 import type { Application } from '@/types/index'
@@ -23,14 +25,24 @@ import type { Application } from '@/types/index'
 export type ApplicationRowHandle = {
   openStatus: () => void
   openDelete: () => void
-  focus: () => void
+  /** Keyboard navigation should pass `{ keyboard: true }` so :focus-visible styling applies. */
+  focus: (options?: { keyboard?: boolean }) => void
 }
 
 type ApplicationRowProps = {
   application: Application
   rowNumber: number
-  selected: boolean
-  onSelect: () => void
+  focused: boolean
+  checked: boolean
+  selectionMode: boolean
+  onFocusRow: () => void
+  onGutterSelect: (modifiers: {
+    shiftKey: boolean
+    metaKey: boolean
+    ctrlKey: boolean
+    pointerType?: string
+  }) => void
+  onSelectRow: () => void
   onEdit: (application: Application) => void
 }
 
@@ -38,25 +50,43 @@ export const ApplicationRow = forwardRef<
   ApplicationRowHandle,
   ApplicationRowProps
 >(function ApplicationRow(
-  { application, rowNumber, selected, onSelect, onEdit },
+  {
+    application,
+    rowNumber,
+    focused,
+    checked,
+    selectionMode,
+    onFocusRow,
+    onGutterSelect,
+    onSelectRow,
+    onEdit,
+  },
   ref,
 ) {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [statusOpen, setStatusOpen] = useState(false)
+  const [focusVisible, setFocusVisible] = useState(false)
   const rowRef = useRef<HTMLTableRowElement>(null)
   const statusTriggerRef = useRef<HTMLButtonElement>(null)
   const externalUrl = safeExternalUrl(application.application_url)
   const added = toLocalYmd(new Date(application.created_at))
 
+  function focusRow(keyboard = false) {
+    setFocusVisible(keyboard)
+    const node = rowRef.current
+    if (!node) return
+    if (keyboard) {
+      node.focus({ focusVisible: true })
+      return
+    }
+    node.focus()
+  }
+
   useImperativeHandle(ref, () => ({
     openStatus: () => setStatusOpen(true),
     openDelete: () => setDeleteOpen(true),
-    focus: () => rowRef.current?.focus(),
+    focus: (options) => focusRow(options?.keyboard ?? true),
   }))
-
-  function focusRow() {
-    rowRef.current?.focus()
-  }
 
   return (
     <motion.tr
@@ -66,23 +96,46 @@ export const ApplicationRow = forwardRef<
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, transition: exitTransition }}
       transition={{ ...enterTransition, layout: layoutTransition }}
-      tabIndex={selected ? 0 : -1}
-      data-selected={selected ? 'true' : undefined}
+      tabIndex={focused ? 0 : -1}
+      data-selected={focused ? 'true' : undefined}
+      data-checked={checked ? 'true' : undefined}
+      data-focus-visible={focusVisible ? '' : undefined}
       onClick={() => {
-        onSelect()
-        focusRow()
+        onFocusRow()
+        focusRow(false)
       }}
-      onFocus={onSelect}
-      className={
-        selected
-          ? 'group/row h-9 bg-fill outline-2 outline-offset-[-2px] outline-select transition-colors duration-[120ms] ease-[var(--ease)]'
-          : 'group/row h-9 outline-none transition-colors duration-[120ms] ease-[var(--ease)] hover:bg-fill'
-      }
+      onFocus={(event) => {
+        onFocusRow()
+        // Only promote — never clear here. Mouse focus is not :focus-visible;
+        // keyboard/imperative paths set data-focus-visible explicitly.
+        if (event.currentTarget.matches(':focus-visible')) {
+          setFocusVisible(true)
+        }
+      }}
+      onBlur={() => setFocusVisible(false)}
+      className={cn(
+        'group/row h-9 outline-none transition-colors duration-[120ms] ease-[var(--ease)]',
+        checked ? 'bg-fill' : 'hover:bg-fill',
+        focused &&
+          'outline-2 outline-offset-[-2px] outline-select',
+      )}
     >
-      <SheetGutterCell>{rowNumber}</SheetGutterCell>
+      <SheetGutterCell checked={checked}>
+        <RowSelectCheckbox
+          checked={checked}
+          rowNumber={rowNumber}
+          selectionMode={selectionMode}
+          label={`Select ${application.company}, ${application.role}`}
+          onSelect={(modifiers) => {
+            onGutterSelect(modifiers)
+            onFocusRow()
+            focusRow(false)
+          }}
+        />
+      </SheetGutterCell>
       <SheetCell
         sticky="company"
-        selected={selected}
+        selected={focused || checked}
         truncate
         title={application.company}
       >
@@ -99,7 +152,7 @@ export const ApplicationRow = forwardRef<
           onOpenChange={setStatusOpen}
           onCloseAutoFocus={(event) => {
             event.preventDefault()
-            focusRow()
+            focusRow(false)
           }}
         />
       </SheetCell>
@@ -133,9 +186,14 @@ export const ApplicationRow = forwardRef<
           deleteOpen={deleteOpen}
           onDeleteOpenChange={setDeleteOpen}
           onEdit={onEdit}
+          onSelect={() => {
+            onSelectRow()
+            onFocusRow()
+            focusRow(false)
+          }}
           onCloseAutoFocus={(event) => {
             event.preventDefault()
-            focusRow()
+            focusRow(false)
           }}
         />
       </SheetCell>

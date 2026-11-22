@@ -4,7 +4,9 @@ import {
   createApplication,
   createApplications,
   deleteApplication,
+  deleteApplications,
   updateApplication,
+  updateStatuses,
 } from '@/lib/api/applications'
 import type { ImportRow } from '@/lib/csv'
 import { invalidateApplicationEvents } from '@/features/applications/invalidateEvents'
@@ -109,6 +111,75 @@ export function useDeleteApplication() {
       const previous = queryClient.getQueryData<Application[]>(key)
       queryClient.setQueryData<Application[]>(key, (current) =>
         current?.filter((row) => row.id !== id),
+      )
+      return { previous, key }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(context.key, context.previous)
+      }
+    },
+    onSettled: (_data, _error, _variables, context) => {
+      if (context?.key) {
+        void queryClient.invalidateQueries({ queryKey: context.key })
+      }
+      if (user) {
+        invalidateApplicationEvents(queryClient, user.id)
+      }
+    },
+  })
+}
+
+export function useUpdateStatuses() {
+  const { user } = useSession()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ ids, status }: { ids: number[]; status: Status }) =>
+      updateStatuses(ids, status),
+    onMutate: async ({ ids, status }) => {
+      if (!user) return
+      const key = applicationKeys.list(user.id)
+      await queryClient.cancelQueries({ queryKey: key })
+      const previous = queryClient.getQueryData<Application[]>(key)
+      const idSet = new Set(ids)
+      queryClient.setQueryData<Application[]>(key, (current) =>
+        current?.map((row) =>
+          idSet.has(row.id) ? { ...row, status } : row,
+        ),
+      )
+      return { previous, key }
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(context.key, context.previous)
+      }
+    },
+    onSettled: (_data, _error, _variables, context) => {
+      if (context?.key) {
+        void queryClient.invalidateQueries({ queryKey: context.key })
+      }
+      if (user) {
+        invalidateApplicationEvents(queryClient, user.id)
+      }
+    },
+  })
+}
+
+export function useDeleteApplications() {
+  const { user } = useSession()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (ids: number[]) => deleteApplications(ids),
+    onMutate: async (ids) => {
+      if (!user) return
+      const key = applicationKeys.list(user.id)
+      await queryClient.cancelQueries({ queryKey: key })
+      const previous = queryClient.getQueryData<Application[]>(key)
+      const idSet = new Set(ids)
+      queryClient.setQueryData<Application[]>(key, (current) =>
+        current?.filter((row) => !idSet.has(row.id)),
       )
       return { previous, key }
     },

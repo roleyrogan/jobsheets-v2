@@ -1,5 +1,3 @@
-import { useCallback, useState } from 'react'
-
 import { applicationsToCsv } from '@/lib/csv'
 import { toLocalYmd } from '@/lib/dates'
 import { downloadTextFile } from '@/lib/download'
@@ -9,16 +7,11 @@ import type { Application } from '@/types/index'
 
 export function SheetView() {
   const { openCreate, openEdit } = useApplicationDialogs()
-  const [visible, setVisible] = useState<Application[]>([])
 
-  const onVisibleChange = useCallback((applications: Application[]) => {
-    setVisible(applications)
-  }, [])
-
-  function handleExport() {
-    if (visible.length === 0) return
+  function handleExport(applications: Application[]) {
+    if (applications.length === 0) return
     downloadTextFile(
-      applicationsToCsv(visible),
+      applicationsToCsv(applications),
       `jobsheets-${toLocalYmd()}.csv`,
     )
   }
@@ -27,9 +20,7 @@ export function SheetView() {
     <ApplicationsList
       onAdd={openCreate}
       onEdit={openEdit}
-      onVisibleChange={onVisibleChange}
       onExport={handleExport}
-      exportCount={visible.length}
     />
   )
 }

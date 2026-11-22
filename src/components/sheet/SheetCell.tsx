@@ -37,7 +37,7 @@ export function SheetCell({
         sticky === 'company' &&
           (selected
             ? 'bg-fill'
-            : 'bg-paper group-hover/row:bg-fill group-data-[selected=true]/row:bg-fill'),
+            : 'bg-paper group-hover/row:bg-fill group-data-[selected=true]/row:bg-fill group-data-[checked=true]/row:bg-fill'),
         className,
       )}
       {...props}

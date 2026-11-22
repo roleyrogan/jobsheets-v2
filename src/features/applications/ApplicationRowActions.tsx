@@ -15,6 +15,7 @@ type ApplicationRowActionsProps = {
   deleteOpen: boolean
   onDeleteOpenChange: (open: boolean) => void
   onEdit: (application: Application) => void
+  onSelect: () => void
   onCloseAutoFocus: (event: Event) => void
 }
 
@@ -23,6 +24,7 @@ export function ApplicationRowActions({
   deleteOpen,
   onDeleteOpenChange,
   onEdit,
+  onSelect,
   onCloseAutoFocus,
 }: ApplicationRowActionsProps) {
   return (
@@ -38,6 +40,7 @@ export function ApplicationRowActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onSelect={onSelect}>Select</DropdownMenuItem>
           <DropdownMenuItem onSelect={() => onEdit(application)}>
             Edit
           </DropdownMenuItem>

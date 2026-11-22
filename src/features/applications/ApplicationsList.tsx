@@ -1,15 +1,20 @@
-import { useEffect } from 'react'
+import { useMemo, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
 
 import {
   countByStatus,
   filterAndSort,
   searchApplications,
 } from '@/lib/applicationFilters'
+import { enterTransition, exitTransition } from '@/lib/motion'
 import { useApplications } from '@/features/applications/queries'
 import { useApplicationFilters } from '@/features/applications/useApplicationFilters'
+import { useSheetSelection } from '@/features/applications/useSheetSelection'
 import { ApplicationsToolbar } from '@/features/applications/ApplicationsToolbar'
 import { ApplicationsTable } from '@/features/applications/ApplicationsTable'
 import { ApplicationsTableSkeleton } from '@/features/applications/ApplicationsTableSkeleton'
+import { DeleteApplicationsDialog } from '@/features/applications/DeleteApplicationsDialog'
+import { SelectionBar } from '@/features/applications/SelectionBar'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import type { Application } from '@/types/index'
@@ -17,44 +22,38 @@ import type { Application } from '@/types/index'
 type ApplicationsListProps = {
   onAdd: () => void
   onEdit: (application: Application) => void
-  onVisibleChange: (applications: Application[]) => void
-  onExport: () => void
-  exportCount: number
+  onExport: (applications: Application[]) => void
 }
 
 export function ApplicationsList({
   onAdd,
   onEdit,
-  onVisibleChange,
   onExport,
-  exportCount,
 }: ApplicationsListProps) {
   const { data, error, isPending, isError, refetch, isFetching } =
     useApplications()
   const { filters, clear } = useApplicationFilters()
+  const { q, status, sort } = filters
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
-  const visible =
-    data && data.length > 0 ? filterAndSort(data, filters) : []
+  const visible = useMemo(
+    () =>
+      data && data.length > 0
+        ? filterAndSort(data, { q, status, sort })
+        : [],
+    [data, q, status, sort],
+  )
+  const visibleIds = useMemo(
+    () => visible.map((app) => app.id),
+    [visible],
+  )
 
-  useEffect(() => {
-    if (!data || data.length === 0) {
-      onVisibleChange([])
-      return
-    }
-    onVisibleChange(
-      filterAndSort(data, {
-        q: filters.q,
-        status: filters.status,
-        sort: filters.sort,
-      }),
-    )
-  }, [
-    data,
-    filters.q,
-    filters.status,
-    filters.sort,
-    onVisibleChange,
-  ])
+  const selection = useSheetSelection(visibleIds)
+
+  const selectedApps = useMemo(() => {
+    const idSet = new Set(selection.selectedIds)
+    return visible.filter((app) => idSet.has(app.id))
+  }, [visible, selection.selectedIds])
 
   if (isPending) {
     return (
@@ -102,12 +101,34 @@ export function ApplicationsList({
 
   return (
     <div className="flex flex-col gap-4">
-      <ApplicationsToolbar
-        total={searched.length}
-        counts={counts}
-        exportCount={exportCount}
-        onExport={onExport}
-      />
+      <div className="min-h-8">
+        <AnimatePresence mode="wait" initial={false}>
+          {selection.selectedCount > 0 ? (
+            <SelectionBar
+              key="selection"
+              selected={selectedApps}
+              onExport={() => onExport(selectedApps)}
+              onDelete={() => setDeleteOpen(true)}
+              onClear={selection.clear}
+            />
+          ) : (
+            <motion.div
+              key="toolbar"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4, transition: exitTransition }}
+              transition={enterTransition}
+            >
+              <ApplicationsToolbar
+                total={searched.length}
+                counts={counts}
+                exportCount={visible.length}
+                onExport={() => onExport(visible)}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {visible.length === 0 ? (
         <div className="flex min-h-48 flex-col items-center justify-center gap-3 border border-rule">
@@ -117,8 +138,28 @@ export function ApplicationsList({
           </Button>
         </div>
       ) : (
-        <ApplicationsTable applications={visible} onEdit={onEdit} />
+        <ApplicationsTable
+          applications={visible}
+          onEdit={onEdit}
+          isSelected={selection.isSelected}
+          selectionMode={selection.selectedCount > 0}
+          allVisibleSelected={selection.allVisibleSelected}
+          someVisibleSelected={selection.someVisibleSelected}
+          onToggleSelectAll={selection.toggleSelectAll}
+          onGutterSelect={selection.onGutterSelect}
+          onToggleSelect={selection.toggleId}
+          onExtendSelect={selection.extendTo}
+          onSelectAll={selection.selectAllVisible}
+          onClearSelect={selection.clear}
+        />
       )}
+
+      <DeleteApplicationsDialog
+        applications={selectedApps}
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onDeleted={selection.clear}
+      />
     </div>
   )
 }
